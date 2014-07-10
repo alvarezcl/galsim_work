@@ -18,16 +18,27 @@ gal_flux = 1e5     # total counts on the image
 gal_HLR = 8.       # arcsec
 psf_sigma = 1.     # arcsec
 pixel_scale = 0.2  # arcsec / pixel
-noise = 12.        # standard deviation of the counts in each pixel
+noise = 2.        # standard deviation of the counts in each pixel
 
+# Shear params
 g1 = 0.5
 g2 = 0.1
 
+# Booleans to affect final image
 noise_on_image = True
+sum_of_galaxy = True
 shear_on_image = True
 
-# Create galaxy 
+# Create primary galaxy 
 galaxy = galsim.Gaussian(flux=gal_flux,half_light_radius=gal_HLR)
+
+# Create secondary galaxy and shift
+galaxy_sec = galsim.Gaussian(flux=gal_flux/2.0,half_light_radius=gal_HLR/2.0)
+galaxy_sec.shift((100,100))
+
+# Sum the galaxies (concatenate the images)
+if sum_of_galaxy:
+    galaxy = galaxy + galaxy_sec
 
 # Produce a shear on the galaxy
 if shear_on_image:

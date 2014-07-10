@@ -17,7 +17,7 @@ import plotutils
 
 # Produce a number of points in x-y from 1 2D distribution. 
 mean = [0,3]
-cov = [[2,5],[5,6]]
+cov = [[2,-20],[-20,2]]
 N = 5000
 x,y = np.random.multivariate_normal(mean,cov,N).T
 plt.scatter(y,x,marker='x',linewidths=0.5) # Note transpose switches y and x
@@ -49,4 +49,5 @@ coeff, var_matrix = curve_fit(gauss.mult_gaussFun_Fit,(X,Y),H,p0=p0)
 Z = gauss.mult_gaussFun_Fit((X,Y),*coeff)
 Z = Z.reshape((x_len,y_len))
 plt.contour(X,Y,Z)
+plt.colorbar()
 plt.show()
