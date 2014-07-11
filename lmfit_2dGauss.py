@@ -27,7 +27,8 @@ def mult_gaussFun_Fit((X,Y),*m):
     z_sq = ((X-x0)/(sigma_x))**2 + ((Y-y0)/(sigma_y))**2 - 2*(sigma_xy/(sigma_x*sigma_y)**2)*(X-x0)*(Y-y0)
     Z = A*np.exp(-a*z_sq)
     return Z
-        
+
+# Residual function to minimize.
 def resid(params, data,(X,Y)):
     A = params['amplitude'].value
     x0 = params['x_mean'].value
@@ -38,7 +39,7 @@ def resid(params, data,(X,Y)):
     model = mult_gaussFun_Fit((X,Y),*(A,x0,y0,sigma_x,sigma_y,sigma_xy))
     return (model - data).ravel()
 
-# Seed
+# Seed and Parameters
 p0 = (30,0,0,1,2,0.5)
 params = lmfit.Parameters()
 params.add('amplitude',value=p0[0])
@@ -48,11 +49,12 @@ params.add('sigma_x',value=p0[3])
 params.add('sigma_y',value=p0[4])
 params.add('sigma_xy',value=p0[5])
 
-
+# Create the data
 x = y = np.linspace(-15,15,1000)
 truth_val = (15,1,1,2,3,0.25)
 X,Y = np.meshgrid(x,y)
 data = mult_gaussFun_Fit((X,Y),*truth_val)
 data += np.random.randn(*data.shape)*0.1
 
+# Extract the best-fit parameters
 result = lmfit.minimize(resid,params,args=(data,(X,Y)))
