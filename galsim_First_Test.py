@@ -11,7 +11,7 @@ import sys
 import numpy as np
 import galsim
 import os
-
+import matplotlib.pyplot as plt
 
 # Parameters
 gal_flux = 1e5     # total counts on the image
@@ -22,19 +22,19 @@ noise = 2.        # standard deviation of the counts in each pixel
 
 # Shear params
 g1 = 0.5
-g2 = 0.1
+g2 = 0.0
 
 # Booleans to affect final image
-noise_on_image = True
-sum_of_galaxy = True
+noise_on_image = False
+sum_of_galaxy = False
 shear_on_image = True
 
 # Create primary galaxy 
 galaxy = galsim.Gaussian(flux=gal_flux,half_light_radius=gal_HLR)
 
 # Create secondary galaxy and shift
-galaxy_sec = galsim.Gaussian(flux=gal_flux/2.0,half_light_radius=gal_HLR/2.0)
-galaxy_sec.shift((100,100))
+galaxy_sec = galsim.Gaussian(flux=gal_flux/2.0,half_light_radius=gal_HLR)
+galaxy_sec = galaxy_sec.shift((10,10))
 
 # Sum the galaxies (concatenate the images)
 if sum_of_galaxy:
@@ -44,6 +44,10 @@ if sum_of_galaxy:
 if shear_on_image:
     galaxy = galaxy.shear(g1=g1,g2=g2)
 
+im = galaxy.drawShoot()
+plt.imshow(im.array,interpolation='none')
+plt.show()
+
 # Create psf
 psf = galsim.Gaussian(flux=1.,sigma=psf_sigma)
 
@@ -51,9 +55,9 @@ psf = galsim.Gaussian(flux=1.,sigma=psf_sigma)
 final = galsim.Convolve([galaxy, psf])
 
 # Draws Images of each for comparison
-image_gal = galaxy.draw(scale=pixel_scale)
+image_gal = galaxy.drawShoot(scale=pixel_scale)
 image_psf = psf.draw(scale=pixel_scale)
-image_final = final.draw(scale=pixel_scale)
+image_final = final.drawShoot(scale=pixel_scale)
 
 # Add noise    
 if noise_on_image:
