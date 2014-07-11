@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Jul 10 15:50:34 2014
+Created on Thu Jul 10 20:16:33 2014
 
 @author: luis
 """
@@ -10,35 +10,35 @@ import lmfit
 import matplotlib.pyplot as plt
 import gauss
 import plotutils
+import galsim
 
-# Produce a number of points in x-y from a 2D gaussian distribution.
-# Note the transpose 
-N = 10000
-mean = [2,2]
-cov = [[1,0],[0,1]]
-sigma_x = np.sqrt(cov[0][0])
-sigma_y = np.sqrt(cov[1][1])
-sigma_xy = cov[0][1]
-y,x = np.random.multivariate_normal(mean,cov,N).T
+# Parameters
+gal_flux = 1e5     # total counts on the image
+gal_HLR = 16.       # arcsec
+psf_sigma = 1.     # arcsec
+pixel_scale = 0.2  # arcsec / pixel
+noise = 2.        # standard deviation of the counts in each pixel
+size_image = (100,100) # Pixels or Arcsec?
 
-# Plot the scatter of the second draw
-plt.scatter(y,x,marker='x',linewidths=0.5) # Note transpose switches y and x
+# Create primary galaxy 
+galaxy = galsim.Gaussian(flux=gal_flux,half_light_radius=gal_HLR)
 
-# Prep bins for histogram
-bin_size = 0.1
-max_edge = 4*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1])) 
-min_edge = -max_edge
-bin_num = (max_edge-min_edge)/bin_size
-bin_numPlus1 = bin_num + 1
-bins = np.linspace(min_edge,max_edge,bin_numPlus1)
+# Plot information from created galaxy on contour
+im = galaxy.drawShoot(scale=pixel_scale)
+bounds = im.bounds
+center = im.center()
+x_cen = center.x
+y_cen = center.y
+xmin = bounds.getXMin(); xmax = bounds.getXMax()
+ymin = bounds.getYMin(); ymax = bounds.getYMax()
+x = np.linspace(xmin,xmax,xmax-xmin+1)
+y = np.linspace(ymin,ymax,ymax-ymin+1)
+X,Y = np.meshgrid(x,y)
+H = im.array
+plt.contour(X,Y,H)
 
-# Produce 2D histogram
-H,xedges,yedges = np.histogram2d(x,y,bins,normed=False)
-bin_centers_x = (xedges[:-1]+xedges[1:])/2.0
-x_len = len(bin_centers_x)
-bin_centers_y = (yedges[:-1]+yedges[1:])/2.0
-y_len = len(bin_centers_y)
-X,Y = np.meshgrid(bin_centers_x,bin_centers_y)
+
+# Obtain the estimate of the gaussian from lmfit
 
 # Return a gaussian distribution at an angle alpha from the x-axis
 # from astroML for use with curve_fit
@@ -63,8 +63,7 @@ def resid(params, data,(X,Y)):
 
 # Seed and Parameters
 
-#p0 = (H.max(),mean[0],mean[0],sigma_x,sigma_y,sigma_xy)
-p0 = np.random.uniform(0,10,6)
+p0 = (H.max(),x_cen,y_cen,50,50,0)
 params = lmfit.Parameters()
 params.add('amplitude',value=p0[0],min=0)
 params.add('x_mean',value=p0[1])
