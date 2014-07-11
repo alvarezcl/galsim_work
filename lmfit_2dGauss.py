@@ -8,15 +8,38 @@ Created on Thu Jul 10 15:50:34 2014
 import numpy as np
 import lmfit
 import matplotlib.pyplot as plt
+import gauss
+import plotutils
 
 # Produce a number of points in x-y from a 2D gaussian distribution.
 # Note the transpose 
-N = 1000
-mean = [0,0]
-cov = [[3,0],[0,1]]
-x,y = np.random.multivariate_normal(mean,cov,N).T
+N = 10000
+mean = [2,2]
+cov = [[1,0],[0,1]]
+sigma_x = np.sqrt(cov[0][0])
+sigma_y = np.sqrt(cov[1][1])
+sigma_xy = cov[0][1]
+y,x = np.random.multivariate_normal(mean,cov,N).T
+
 # Plot the scatter of the second draw
-plt.scatter(x,y,marker='x',linewidths=0.5) # Note transpose switches y and x
+#plt.scatter(y,x,marker='x',linewidths=0.5) # Note transpose switches y and x
+
+# Prep bins for histogram
+bin_size = 0.1
+max_edge = 4*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1])) 
+min_edge = -max_edge
+bin_num = (max_edge-min_edge)/bin_size
+bin_numPlus1 = bin_num + 1
+bins = np.linspace(min_edge,max_edge,bin_numPlus1)
+
+# Produce 2D histogram
+H,xedges,yedges = np.histogram2d(x,y,bins,normed=False)
+bin_centers_x = (xedges[:-1]+xedges[1:])/2.0
+x_len = len(bin_centers_x)
+bin_centers_y = (yedges[:-1]+yedges[1:])/2.0
+y_len = len(bin_centers_y)
+X,Y = np.meshgrid(bin_centers_x,bin_centers_y)
+plt.contour(X,Y,H)
 
 # Return a gaussian distribution at an angle alpha from the x-axis
 # from astroML for use with curve_fit
@@ -40,21 +63,28 @@ def resid(params, data,(X,Y)):
     return (model - data).ravel()
 
 # Seed and Parameters
-p0 = (30,0,0,1,2,0.5)
+
+#p0 = (H.max(),mean[0],mean[0],sigma_x,sigma_y,sigma_xy)
+p0 = np.random.uniform(0,10,6)
 params = lmfit.Parameters()
-params.add('amplitude',value=p0[0])
+params.add('amplitude',value=p0[0],min=0)
 params.add('x_mean',value=p0[1])
 params.add('y_mean',value=p0[2])
-params.add('sigma_x',value=p0[3])
-params.add('sigma_y',value=p0[4])
-params.add('sigma_xy',value=p0[5])
-
-# Create the data
-x = y = np.linspace(-15,15,1000)
-truth_val = (15,1,1,2,3,0.25)
-X,Y = np.meshgrid(x,y)
-data = mult_gaussFun_Fit((X,Y),*truth_val)
-data += np.random.randn(*data.shape)*0.1
+params.add('sigma_x',value=p0[3],min=0)
+params.add('sigma_y',value=p0[4],min=0)
+params.add('sigma_xy',value=p0[5],min=0)
 
 # Extract the best-fit parameters
-result = lmfit.minimize(resid,params,args=(data,(X,Y)))
+result = lmfit.minimize(resid,params,args=(H,(X,Y)))
+lmfit.report_errors(result.params)
+
+p_est = (params['amplitude'].value,params['x_mean'].value,params['y_mean'].value,params['sigma_x'].value,params['sigma_y'].value,params['sigma_xy'].value)
+A_est = params['amplitude'].value
+x0_est = params['x_mean'].value
+y0_est = params['y_mean'].value
+sigma_x_est = params['sigma_x'].value
+sigma_y_est = params['sigma_y'].value
+sigma_xy_est = params['sigma_xy'].value
+
+plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+plt.show()
