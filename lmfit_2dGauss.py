@@ -15,7 +15,7 @@ import plotutils
 # Note the transpose 
 N = 10000
 mean = [2,2]
-cov = [[1,0],[0,1]]
+cov = [[4,2],[2,5]]
 sigma_x = np.sqrt(cov[0][0])
 sigma_y = np.sqrt(cov[1][1])
 sigma_xy = cov[0][1]
@@ -77,13 +77,13 @@ params.add('sigma_xy',value=p0[5],min=0)
 result = lmfit.minimize(resid,params,args=(H,(X,Y)))
 lmfit.report_errors(result.params)
 
-p_est = (params['amplitude'].value,params['x_mean'].value,params['y_mean'].value,params['sigma_x'].value,params['sigma_y'].value,params['sigma_xy'].value)
-A_est = params['amplitude'].value
-x0_est = params['x_mean'].value
-y0_est = params['y_mean'].value
-sigma_x_est = params['sigma_x'].value
-sigma_y_est = params['sigma_y'].value
-sigma_xy_est = params['sigma_xy'].value
-
+p_est = (result.params['amplitude'].value,result.params['x_mean'].value,result.params['y_mean'].value,
+         result.params['sigma_x'].value,result.params['sigma_y'].value,result.params['sigma_xy'].value)
+A_est = result.params['amplitude'].value
+x0_est = result.params['x_mean'].value
+y0_est = result.params['y_mean'].value
+sigma_x_est = result.params['sigma_x'].value
+sigma_y_est = result.params['sigma_y'].value
+sigma_xy_est = result.params['sigma_xy'].value
 plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
 plt.show()

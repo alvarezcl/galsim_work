@@ -22,7 +22,7 @@ noise = 2.        # standard deviation of the counts in each pixel
 
 # Shear params
 g1 = 0.5
-g2 = 0.0
+g2 = 0.5
 
 # Booleans to affect final image
 noise_on_image = False
