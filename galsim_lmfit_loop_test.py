@@ -18,20 +18,20 @@ import plotutils
 import galsim
 from mpl_toolkits.mplot3d import Axes3D
 
-
-
-mag_shear = 0.3
+mag_shear = 0.5
 # Ellipticities
 el = [[mag_shear,0.0],[mag_shear,mag_shear],[0.0,mag_shear],[-mag_shear,mag_shear],
       [-mag_shear,0.0],[-mag_shear,-mag_shear],[0.0,-mag_shear],[mag_shear,-mag_shear]]
+pi = np.pi
 
 # Store [e1_est/e1_galsim,e2_est/e2_galsim]
 stats = []
-
+angle = np.linspace(0,7*np.pi/8,8)
+count = 0
 for val in el:
 
     # Parameters
-    gal_flux = 1e4     # total counts on the image
+    gal_flux = 1e5     # total counts on the image
     gal_HLR = 8.       # arcsec
     psf_sigma = 1.     # arcsec
     pixel_scale = 0.2  # arcsec / pixel
@@ -60,22 +60,12 @@ for val in el:
     y = np.linspace(ymin,ymax,ymax-ymin+1)
     X,Y = np.meshgrid(x,y)
     H = im.array
-    plt.imshow(H,origin='lower')
     
-    
-#    fig = plt.figure()
-#    ax = Axes3D(fig)
-#    elements = (len(x) - 1) * (len(y) - 1)
-#    xpos, ypos = np.meshgrid(x[:-1]+0.25, y[:-1]+0.25)
-#    xpos = xpos.flatten()
-#    ypos = ypos.flatten()
-#    zpos = np.zeros(elements)
-#    dx = 0.3*np.ones_like(zpos)
-#    dy = dx.copy()
-#    dz = H.flatten()
-#    ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color='b', zsort='average')
-#    plt.show()
-    
+#    plt.imshow(H,origin='lower')
+#    plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
+#    plt.colorbar()
+#    plt.title('Galaxy distribution witth ellipticity contours at ' + r'$\frac{%d\pi}{8}$'%(count),fontsize=18)
+        
     # Obtain the estimate of the gaussian from lmfit
     
     # Return a gaussian distribution at an angle alpha from the x-axis
@@ -101,7 +91,7 @@ for val in el:
     
     # Seed and Parameters
     
-    p0 = (H.max(),x_cen,y_cen,34,34,0)
+    p0 = (H.max(),x_cen,y_cen,30,30,0)
     params = lmfit.Parameters()
     params.add('amplitude',value=p0[0],min=0)
     params.add('x_mean',value=p0[1])
@@ -111,6 +101,7 @@ for val in el:
     params.add('sigma_xy',value=p0[5])
     
     # Extract the best-fit parameters
+    
     result = lmfit.minimize(resid,params,args=(H,(X,Y)))
     lmfit.report_errors(result.params)
     
@@ -123,8 +114,35 @@ for val in el:
     sigma_y_est = result.params['sigma_y'].value
     sigma_xy_est = result.params['sigma_xy'].value
     
-    plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
-    plt.show()
+# Attempt to plot figures of snapshots    
+#    if count == 0:
+#        ax1 = fig.add_subplot(131)
+#        a = ax1.imshow(H,interpolation='none',origin='lower')
+#        plt.title('Angle: ' + r'$\frac{%d\pi}{8}$'%(count),fontsize=18)
+#        plt.colorbar(a,shrink=0.4)
+#        plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
+#        plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+#
+#
+#    if count == 5:
+#        ax2 = fig.add_subplot(132)
+#        a = ax2.imshow(H,interpolation='none',origin='lower')
+#        plt.title('Angle: ' + r'$\frac{%d\pi}{8}$'%(count),fontsize=18)
+#        plt.colorbar(a,shrink=0.4)
+#        plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
+#        plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+#
+#    
+#    if count == 8:
+#        ax3 = fig.add_subplot(131)
+#        a = ax3.imshow(H,interpolation='none',origin='lower')
+#        plt.title('Angle: ' + r'$\frac{%d\pi}{8}$'%(count),fontsize=18)
+#        plt.colorbar(a,shrink=0.4)
+#        plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
+#        plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+#        plt.show()
+    
+    count += 1    
     divisor = sigma_x_est**2 + sigma_y_est**2 + 2*(sigma_x_est*sigma_y_est - sigma_xy_est**2)**(1/2)
     e1_est = (sigma_x_est**2 - sigma_y_est**2)/divisor
     e2_est = 2*sigma_xy_est/divisor
@@ -134,6 +152,16 @@ for val in el:
 #    e1_galsim = shear.e1
 #    e2_galsim = shear.e2
     
-    stats.append([(e1_est-e1)/np.sqrt(e1**2+e2**2),(e2_est-e2)/np.sqrt(e1**2+e2**2)])
+    stats.append([(e1_est-e1),(e2_est-e2)])
     
 stats = np.array(stats)
+
+plt.scatter(angle,stats[:,0],c='r',marker='x',label='$e_{1est}-e_{1true}$')
+plt.scatter(angle,stats[:,1],label='$e_{2est}-e_{2true}$')
+plt.xticks([0, pi/8, 2*pi/8, 3*pi/8, 4*pi/8, 5*pi/8, 6*pi/8, 7*pi/8],
+           ['$0$', r'$\frac{\pi}{8}$', r'$\frac{2\pi}{8}$', r'$\frac{3\pi}{8}$', r'$\frac{4\pi}{8}$',
+           r'$\frac{5\pi}{8}$', r'$\frac{6\pi}{8}$', r'$\frac{7\pi}{8}$'],fontsize = 16)
+plt.ylabel('Difference: $e_1, e_2$',fontsize=16)           
+plt.legend(prop={'size':16})
+plt.title('Measured Minus True Ellipticity vs Angle of Orientation')
+plt.show()

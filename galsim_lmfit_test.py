@@ -23,7 +23,6 @@ gal_HLR = 8.       # arcsec
 psf_sigma = 1.     # arcsec
 pixel_scale = 0.2  # arcsec / pixel
 noise = 0.        # standard deviation of the counts in each pixel
-size_image = (100,100) # Pixels or Arcsec?
 
 # Create primary galaxy 
 galaxy = galsim.Gaussian(flux=gal_flux,half_light_radius=gal_HLR)
@@ -40,7 +39,9 @@ x = np.linspace(xmin,xmax,xmax-xmin+1)
 y = np.linspace(ymin,ymax,ymax-ymin+1)
 X,Y = np.meshgrid(x,y)
 H = im.array
-plt.imshow(H)
+plt.imshow(H,interpolation='none',origin='lower')
+plt.title('Galsim distribution with Gaussian Contour Fit by LM_Fit\n')
+plt.colorbar()
 
 # Obtain the estimate of the gaussian from lmfit
 
@@ -68,7 +69,7 @@ def resid(params, data,(X,Y)):
 # Seed and Parameters
 
 #p0 = np.random.uniform(0,10,6)
-p0 = np.array([H.max(),x_cen,y_cen,34,34,0])*1.9
+p0 = np.array([H.max(),x_cen,y_cen,34,34,0])*2.0
 params = lmfit.Parameters()
 params.add('amplitude',value=p0[0],min=0)
 params.add('x_mean',value=p0[1])
@@ -91,6 +92,7 @@ sigma_y_est = result.params['sigma_y'].value
 sigma_xy_est = result.params['sigma_xy'].value
 
 plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 plt.show()
 divisor = sigma_x_est**2 + sigma_y_est**2 + 2*(sigma_x_est*sigma_y_est - sigma_xy_est**2)**(1/2)
 e1 = (sigma_x_est**2 - sigma_y_est**2)/divisor

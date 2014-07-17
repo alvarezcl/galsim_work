@@ -5,6 +5,11 @@ Created on Thu Jul 10 15:50:34 2014
 @author: luis
 """
 
+## This file draws from a bivariate gaussian distribution 
+## and attempts to find the parameters drawn from using
+## lm fit. Plots the resultant gaussian contours on the
+## drawn points and plots 2D histogram.
+
 import numpy as np
 import lmfit
 import matplotlib.pyplot as plt
@@ -13,20 +18,20 @@ import plotutils
 
 # Produce a number of points in x-y from a 2D gaussian distribution.
 # Note the transpose 
-N = 10000
-mean = [2,2]
-cov = [[4,2],[2,5]]
+N = 1000
+mean = [1,1]
+cov = [[4,-1],[-1,3]]
 sigma_x = np.sqrt(cov[0][0])
 sigma_y = np.sqrt(cov[1][1])
 sigma_xy = cov[0][1]
 y,x = np.random.multivariate_normal(mean,cov,N).T
 
 # Plot the scatter of the second draw
-plt.scatter(y,x,marker='x',linewidths=0.5) # Note transpose switches y and x
+p2 = plt.scatter(y,x,marker='x',linewidths=0.5) # Note transpose switches y and x
 
 # Prep bins for histogram
 bin_size = 0.1
-max_edge = 4*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1])) 
+max_edge = 2*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1])) 
 min_edge = -max_edge
 bin_num = (max_edge-min_edge)/bin_size
 bin_numPlus1 = bin_num + 1
@@ -71,7 +76,7 @@ params.add('x_mean',value=p0[1])
 params.add('y_mean',value=p0[2])
 params.add('sigma_x',value=p0[3],min=0)
 params.add('sigma_y',value=p0[4],min=0)
-params.add('sigma_xy',value=p0[5],min=0)
+params.add('sigma_xy',value=p0[5])
 
 # Extract the best-fit parameters
 result = lmfit.minimize(resid,params,args=(H,(X,Y)))
@@ -86,4 +91,14 @@ sigma_x_est = result.params['sigma_x'].value
 sigma_y_est = result.params['sigma_y'].value
 sigma_xy_est = result.params['sigma_xy'].value
 plt.contour(X,Y,mult_gaussFun_Fit((X,Y),*p_est))
+plt.legend([p2],['Points Drawn'])
+plt.title('Scattered Points and Gaussian Contour Fit Using LM_Fit')
+plt.xlabel('$x$'); plt.ylabel('$y$')
+plt.show()
+
+# Plot the 2d histogram of the points
+fig = plotutils.hist_3dBar_points(y,x,bins)
+ax = fig.gca(projection='3d')
+ax.set_xlabel('$x$'); ax.set_ylabel('$y$'); ax.set_zlabel('$Frequency$')
+ax.text2D(0.05,0.95,'3D Histogram of Point Density',transform=ax.transAxes)
 plt.show()

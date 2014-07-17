@@ -5,16 +5,16 @@ Created on Fri Jul 11 16:32:06 2014
 @author: luis
 """
 
-## Structure for generating 2 2D gaussians through galsim
-## and estimates the parameters for both using lmfit.
+## This file creates the functions necessary for usage with
+## lmfit and obtains the estimates of HLR,Flux,e1,e2,x0, and
+## y0 for a 2 object image.
 
 import lmfit
 import galsim
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-# Now the two galaxy version
+# The "data" aspect that throws photons at the image for two galaxies
 def drawShoot_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                        flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                        x_len,y_len,scale):
@@ -34,6 +34,7 @@ def drawShoot_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     
     return image
 
+# Continous version, or what you would call the "model" for two galaxies
 def draw_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                   flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                   x_len,y_len,scale):
@@ -53,7 +54,7 @@ def draw_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     
     return image
 
-
+# Take the difference of the data and the model for two galaxies
 def resid_2(param, target_image,x_len, y_len, scale):
     flux_1 = param['flux_1'].value
     hlr_1 = param['hlr_1'].value
@@ -82,14 +83,14 @@ scale = 0.2
 
 # Draw from some true distribution of points with flux, hlr, e1, e2
 # x0, y0, and picture parameters.
-im = drawShoot_galaxy_2(4000, 1.0, 0.2, 0.3, 0, 0,
-                        3000, 1.0, 0.1, 0.2, 2, 2, 
+im = drawShoot_galaxy_2(10000, 1.0, 0.5, 0.3, 0, 0,
+                        3000, 0.5, 0.5, -0.5, 2.0, 2.0, 
                         x_len, y_len, scale)
 
 # Define some seed that's far from true values and insert into
 # lmfit object for galaxy one and two
-p0 = (4000,1.0,0.2,0.3,0,0,
-      3000,1.0,0.1,0.2,2,2)
+p0 = (5500,2.0,0.2,0.3,-2.1,2.1,
+      2000,0.3,0.1,-0.2,2.1,2.1)
 parameters = lmfit.Parameters()
 parameters.add('flux_1', value=p0[0])
 parameters.add('hlr_1', value=p0[1], min=0.0)
@@ -129,14 +130,21 @@ lmfit.report_errors(result.params)
 #print hsm.observed_shape.e1
 #print hsm.observed_shape.e2
 
+# Plot results on one figure
 fig = plt.figure()
 ax1 = fig.add_subplot(131)
-a = ax1.imshow(im.array,origin='lower')
-plt.colorbar(a)
+a = ax1.imshow(im.array,interpolation='none',origin='lower')
+plt.colorbar(a,shrink=0.4)
+plt.title('Binned Data')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 ax2 = fig.add_subplot(132)
 b = ax2.imshow(best_fit.array,origin='lower')
-plt.colorbar(b)
+plt.colorbar(b,shrink=0.4)
+plt.title('Gaussian Surfaces')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 ax3 = fig.add_subplot(133)
-blah = ax3.imshow((im-best_fit).array,origin='lower')
-plt.colorbar(blah)
+c = ax3.imshow((best_fit-im).array,origin='lower')
+plt.colorbar(c,shrink=0.4)
+plt.title('Residual')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 plt.show()

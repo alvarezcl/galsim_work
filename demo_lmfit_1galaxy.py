@@ -1,12 +1,14 @@
-## Josh's structure for fitting a 2D gauss onto a galsim generated
-## object. I updated for shifted coordinates.
+
+## This file creates the functions necessary for usage with
+## lmfit and obtains the estimates of HLR,Flux,e1,e2,x0, and
+## y0 for a 1 object image. 
 
 import lmfit
 import galsim
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Essentially the "data" aspect that throws photons at the image for one galaxy
+# The "data" aspect that throws photons at the image for one galaxy
 def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale):
     gal = galsim.Gaussian(half_light_radius=hlr, flux=flux)
     gal = gal.shear(e1=e1, e2=e2)
@@ -25,7 +27,7 @@ def draw_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale):
     return image
 
 # Take the difference of the data and the model for one galaxy
-def resid(param, target_image, x_len, y_len, scale):
+def resid_1(param, target_image, x_len, y_len, scale):
     flux = param['flux'].value
     hlr = param['hlr'].value
     e1 = param['e1'].value
@@ -36,13 +38,13 @@ def resid(param, target_image, x_len, y_len, scale):
     return (image-target_image).array.ravel()
     
 # Define independent parameters for image not trying to minimize
-x_len = 100
-y_len = 100
+x_len = 40
+y_len = 40
 scale = 0.2
 
 # Draw from some true distribution of points with flux, hlr, e1, e2
 # x0, y0, and picture parameters.
-im = drawShoot_galaxy(4000, 1.0, 0.2, 0.3, 1, 1, x_len, y_len, scale)
+im = drawShoot_galaxy(4000, 1.0, 0.2, 0.3, -0.2, 0, x_len, y_len, scale)
 
 # Define some seed that's far from true values and insert into
 # lmfit object.
@@ -56,7 +58,7 @@ parameters.add('x0',value=p0[4])
 parameters.add('y0',value=p0[5])
 
 # Extract params that minimize the difference of the data from the model.
-result = lmfit.minimize(resid, parameters, args=(im,x_len,y_len,scale))
+result = lmfit.minimize(resid_1, parameters, args=(im,x_len,y_len,scale))
 best_fit = draw_galaxy(result.params['flux'].value,
                        result.params['hlr'].value,
                        result.params['e1'].value,
@@ -66,16 +68,26 @@ best_fit = draw_galaxy(result.params['flux'].value,
 
 lmfit.report_errors(result.params)
 
+# Use galsim methods to find ellipticities
 #hsm = im.FindAdaptiveMom()
 #print hsm.observed_shape.e1
 #print hsm.observed_shape.e2
 
+# Plot on one figure
 fig = plt.figure()
 ax1 = fig.add_subplot(131)
-ax1.imshow(im.array,origin='lower')
+a = ax1.imshow(im.array,interpolation='none',origin='lower')
+plt.colorbar(a,shrink=0.4)
+plt.title('Binned Data')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 ax2 = fig.add_subplot(132)
-ax2.imshow(best_fit.array,origin='lower')
+b = ax2.imshow(best_fit.array,origin='lower')
+plt.colorbar(b,shrink=0.4)
+plt.title('Gaussian Surface')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 ax3 = fig.add_subplot(133)
-blah = ax3.imshow((im-best_fit).array,origin='lower')
-plt.colorbar(blah)
+c = ax3.imshow((best_fit-im).array,origin='lower')
+plt.colorbar(c,shrink=0.4)
+plt.title('Residual')
+plt.xlabel('$Pixels$'); plt.ylabel('$Pixels$')
 plt.show()
