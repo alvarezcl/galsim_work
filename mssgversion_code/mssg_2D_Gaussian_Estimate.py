@@ -37,8 +37,8 @@ xp, cov = bivariate_normal(mean, sigma_1, sigma_2, alpha, size=1000,
 # Luis believes that the cov returned above is analytic, and not from the 1000 points that are being returned
 
 # Get now the separate entries of the covar mat
-sigma_xx = np.sqrt(cov[0, 0])
-sigma_yy = np.sqrt(cov[1, 1])
+sigma_x = np.sqrt(cov[0, 0])
+sigma_y = np.sqrt(cov[1, 1])
 sigma_xy = cov[0, 1]
 
 # Plot the scatter of the first draw
@@ -57,7 +57,7 @@ scatterplot = plt.scatter(y,x,marker='.',linewidths=0.1) # Note transpose switch
 ################################ Now make the 2D binned histo (lego plot)
 # Prep bins for histogram
 bin_size = 0.25 # Good binwidth for the lego plot display
-max_edge = 2*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1]))  # Get the width from taking 2* geometric mean of sigma_xx and sigma_yy 
+max_edge = 2*(np.sqrt(cov[0][0])+np.sqrt(cov[1][1]))  # Get the width from taking 2* geometric mean of sigma_x and sigma_y 
 min_edge = -max_edge
 numbins = (max_edge-min_edge)/bin_size
 numbinsPlus1 = numbins + 1
@@ -80,20 +80,20 @@ Xmesh,Ymesh = np.meshgrid(bin_centers_x,bin_centers_y)
 #plt.contour(Xmesh,Ymesh,p(Xmesh,Ymesh))
 
 # Initial Guess
-initguess = (twoDHist.max(),mean[0],mean[1],sigma_xx,sigma_yy,sigma_xy)
+initguess = (twoDHist.max(),mean[0],mean[1],sigma_x,sigma_y,sigma_xy)
 
 # Curve Fit parameters -- get the functional form we're going to fit to from the gauss utility file, feed it the twoDHist data
 outputcoeffs, var_matrix = curve_fit(gauss.mult_gaussFun_Fit_Ravel,(Xmesh,Ymesh), twoDHist, p0=initguess)
 
 # Check to see if estimated parameters are close to the original.
-sigma_xx_est = outputcoeffs[3]
-sigma_yy_est = outputcoeffs[4]
+sigma_x_est = outputcoeffs[3]
+sigma_y_est = outputcoeffs[4]
 sigma_xy_est = outputcoeffs[5]
 
 # Getting out sigma1 and 2 from the rotated axes
-sigma_1_est = np.sqrt((sigma_xx_est**2+sigma_yy_est**2)/2.0 + np.sqrt(((sigma_xx_est**2-sigma_yy_est**2)/2.0)**2 + sigma_xy**2))
-sigma_2_est = np.sqrt((sigma_xx_est**2+sigma_yy_est**2)/2.0 - np.sqrt(((sigma_xx_est**2-sigma_yy_est**2)/2.0)**2 + sigma_xy**2))
-alpha_est = 0.5*np.arctan(2*sigma_xy/(sigma_xx**2-sigma_yy**2))
+sigma_1_est = np.sqrt((sigma_x_est**2+sigma_y_est**2)/2.0 + np.sqrt(((sigma_x_est**2-sigma_y_est**2)/2.0)**2 + sigma_xy**2))
+sigma_2_est = np.sqrt((sigma_x_est**2+sigma_y_est**2)/2.0 - np.sqrt(((sigma_x_est**2-sigma_y_est**2)/2.0)**2 + sigma_xy**2))
+alpha_est = 0.5*np.arctan(2*sigma_xy/(sigma_x**2-sigma_y**2))
 
 print " sigma_1_est, sigma_2_est = " ,  sigma_1_est, sigma_2_est 
 
