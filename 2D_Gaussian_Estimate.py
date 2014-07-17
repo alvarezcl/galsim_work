@@ -76,7 +76,7 @@ plt.contour(X,Y,p(X,Y))
 p0 = (H.max(),mean[0],mean[1],sigma_x,sigma_y,sigma_xy)
 
 # Curve Fit parameters
-coeff, var_matrix = curve_fit(gauss.mult_gaussFun_Fit,(X,Y),H,p0=p0)
+coeff, var_matrix = curve_fit(gauss.mult_gaussFun_Fit_Ravel,(X,Y),H,p0=p0)
 
 # Check to see if estimated parameters are close to the original.
 sigma_x_est = coeff[3]

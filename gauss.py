@@ -71,6 +71,17 @@ def mult_gaussFun_Fit((X,Y),*m):
     Z = A*np.exp(-a*z_sq)
     return Z
     
+# Return a gaussian distribution at an angle alpha from the x-axis
+# from astroML for use with curve_fit
+def mult_gaussFun_Fit_Ravel((X,Y),*m):
+    A,x0,y0,sigma_x,sigma_y,sigma_xy = m
+    rho = sigma_xy/(sigma_x*sigma_y)
+    a = 1/(2*(1-rho**2))
+    z_sq = ((X-x0)/(sigma_x))**2 + ((Y-y0)/(sigma_y))**2 - 2*(sigma_xy/(sigma_x*sigma_y)**2)*(X-x0)*(Y-y0)
+    Z = A*np.exp(-a*z_sq)
+    return Z.ravel()
+
+    
 # Alternate parametrization from Wikipedia   
 def mult_gaussFunAlt(A,x,y,x0,y0,varx,vary,alpha):
     assert alpha >= -np.pi/2
