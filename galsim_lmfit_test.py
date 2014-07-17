@@ -63,7 +63,7 @@ def resid(params, data,(X,Y)):
     sigma_x = params['sigma_x'].value
     sigma_y = params['sigma_y'].value
     sigma_xy = params['sigma_xy'].value
-    model = mult_gaussFun_Fit((X,Y),*(A,x0,y0,sigma_x,sigma_y,sigma_xy))
+    model = gauss.mult_gaussFun_Fit((X,Y),*(A,x0,y0,sigma_x,sigma_y,sigma_xy))
     return (model - data).ravel()
 
 # Seed and Parameters
