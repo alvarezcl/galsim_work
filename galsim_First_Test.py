@@ -26,9 +26,10 @@ e1 = 0.5
 e2 = 0.5
 
 # Booleans to affect final image
-noise_on_image = True
+noise_on_image = False
 sum_of_galaxy = True
 shear_on_image = True
+set_seed = True
 
 # Create primary galaxy 
 galaxy = galsim.Gaussian(flux=gal_flux*2.0,half_light_radius=gal_HLR)
@@ -36,6 +37,10 @@ galaxy = galsim.Gaussian(flux=gal_flux*2.0,half_light_radius=gal_HLR)
 # Create secondary galaxy and shift
 galaxy_sec = galsim.Gaussian(flux=gal_flux/2.5,half_light_radius=gal_HLR/2)
 galaxy_sec = galaxy_sec.shift((5,5))
+
+# Set seed to non-zero integer value for reproducability
+if set_seed:
+    dev = galsim.BaseDeviate(213524)
 
 # Produce a shear on the galaxy
 if shear_on_image:
@@ -52,11 +57,17 @@ psf = galsim.Gaussian(flux=1.,sigma=psf_sigma)
 # Convolve
 final = galsim.Convolve([galaxy, psf])
 
+## Draws Images of each for comparison
+#image = galsim.ImageD(size,size,scale=pixel_scale)
+#image_gal = galaxy.drawImage(image=image,method='phot',rng=dev)
+#image_psf = psf.draw(image=image)
+#image_final = final.drawImage(image=image,method='phot',rng=dev)
+
 # Draws Images of each for comparison
 image = galsim.ImageD(size,size,scale=pixel_scale)
-image_gal = galaxy.drawShoot(image=image)
+image_gal = galaxy.drawImage(image=image,method='phot',rng=dev)
 image_psf = psf.draw(image=image)
-image_final = final.drawShoot(image=image)
+image_final = final.drawImage(image=image,method='phot',rng=dev)
 
 # Add noise    
 if noise_on_image:

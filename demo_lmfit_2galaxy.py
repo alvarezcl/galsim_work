@@ -43,13 +43,13 @@ def draw_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     gal_1 = gal_1.shear(e1=e1_1, e2=e2_1)
     gal_1 = gal_1.shift(x_center1,y_center1)
     image_1 = galsim.ImageD(x_len, y_len, scale=scale)
-    image_1 = gal_1.draw(image=image_1)
+    image_1 = gal_1.drawImage(image=image_1)
  
     gal_2 = galsim.Gaussian(half_light_radius=hlr_2, flux=flux_2)
     gal_2 = gal_2.shear(e1=e1_2, e2=e2_2)
     gal_2 = gal_2.shift(x_center2,y_center2)
     image_2 = galsim.ImageD(x_len, y_len, scale=scale)
-    image_2 = gal_2.draw(image=image_2)
+    image_2 = gal_2.drawImage(image=image_2)
     image = image_1 + image_2
     
     return image
@@ -73,24 +73,26 @@ def resid_2(param, target_image,x_len, y_len, scale):
     image = draw_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                   flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                   x_len,y_len,scale)
-                  
-    return (image-target_image).array.ravel()
+    
+    error = np.sqrt(target_image.array.ravel())
+    error[error==0] = 1
+    return (image-target_image).array.ravel()/error
 
 # Define independent parameters for image not trying to minimize
-x_len = 50
-y_len = 50
+x_len = 150
+y_len = 150
 scale = 0.2
 
 # Draw from some true distribution of points with flux, hlr, e1, e2
 # x0, y0, and picture parameters.
-im = drawShoot_galaxy_2(10000, 1.0, 0.5, 0.3, 0, 0,
-                        3000, 0.5, 0.5, -0.5, 2.0, 2.0, 
+im = drawShoot_galaxy_2(1000, 1.0, 0.0, 0.0, 0, 0,
+                        1000, 1.0, 0.0, 0.0, 2, 0, 
                         x_len, y_len, scale)
 
 # Define some seed that's far from true values and insert into
 # lmfit object for galaxy one and two
-p0 = (5500,2.0,0.2,0.3,-2.1,2.1,
-      2000,0.3,0.1,-0.2,2.1,2.1)
+p0 = (1000,1.0,0.0,0.0,0,0,
+      1000,1.0,0.0,0.0,2.0,0.0)
 parameters = lmfit.Parameters()
 parameters.add('flux_1', value=p0[0])
 parameters.add('hlr_1', value=p0[1], min=0.0)
