@@ -151,8 +151,8 @@ for theta in thetas:
     lmfit.report_errors(result.params)
     
     # Print the 
-    print 'Angle for plot = '+ org_theta
-    print 'Angle in calculation = ' + theta
+    print 'Angle for plot = '+ str(org_theta)
+    print 'Angle in calculation = ' + str(theta)
     
     # Update the count
     count += 1
