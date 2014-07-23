@@ -46,7 +46,7 @@ differences = []
 errors = []
 
 # Frequency of plots for loop
-freq = 10
+freq = 1
 
 # Error type to plot
 error_types = ['rel_error','abs_error']
@@ -147,13 +147,13 @@ for d in d_coeff:
         # Plot the best fit as looping occur
         plt.figure(2)
         plt.title('Best Fit')
-        plt.imshow(best_fit.array,interpolation='none',origin='lower')
+        plt.imshow(best_fit.array,interpolation='none')
         plt.show()
         error_diag = np.sqrt(np.diag(result.covar))
         error_mat = np.outer(error_diag,error_diag)
         correlation_mat = result.covar/error_mat
-        plt.title('Correlation Coefficient Matrix at ')
-        plt.imshow(correlation_mat,interpolation='none')
+        plt.title('Correlation Coefficient Matrix')
+        plt.imshow(correlation_mat,interpolation='none',origin='lower',vmin=-1,vmax=1)
         plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11],['$Flux_a$','$HLR_a$','$e1_a$','$e2_a$','$x0_a$','$y0_a$',
                    '$Flux_b$','$HLR_b$','$e1_b$','$e2_b$','$x0_b$','$y0_b$'])
         plt.yticks([0,1,2,3,4,5,6,7,8,9,10,11],['$Flux_a$','$HLR_a$','$e1_a$','$e2_a$','$x0_a$','$y0_a$',
