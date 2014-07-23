@@ -5,7 +5,7 @@ Created on Thu Jul 17 10:00:16 2014
 @author: luis
 """
 
-## Loop through different positions for a secondary galaxy
+## Loop through different angles for a secondary galaxy
 ## with the exact profile as the same as the primary galaxy.
 
 from __future__ import division
@@ -37,7 +37,7 @@ y0_a = 0
 psf_sigma = 1e-8      # arcsec
 pixel_scale = 1/5     # arcsec / pixel
 noise = 1e-8          # standard deviation of the counts in each pixel
-size = 300             # pixel
+size = 500             # pixel
 
 # Galsim function definitions
 func_gauss = galsim.Gaussian
@@ -58,7 +58,7 @@ twenty_two_five_deg_axes = []; error_twenty_two_five = []
 d = 1
 
 # Frequency of plots for loop
-freq = 100
+freq = 2
 
 # Error type to plot
 error_types = ['rel_error','abs_error']

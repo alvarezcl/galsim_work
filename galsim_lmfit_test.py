@@ -14,12 +14,11 @@ import numpy as np
 import lmfit
 import matplotlib.pyplot as plt
 import gauss
-import plotutils
 import galsim
 
 # Parameters
-gal_flux = 1e5     # total counts on the image
-gal_HLR = 8.       # arcsec
+gal_flux = 5e6     # total counts on the image
+gal_HLR = 3.       # arcsec
 psf_sigma = 1.     # arcsec
 pixel_scale = 0.2  # arcsec / pixel
 noise = 0.        # standard deviation of the counts in each pixel
