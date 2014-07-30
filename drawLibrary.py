@@ -13,20 +13,22 @@ import numpy as np
 import gauss
 
 # Draw from a distribution and return a binned image object with one galaxy. 
-def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale,func):
+def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed):
+    big_fft_params = galsim.GSParams(maximum_fft_size=100240)    
     if func is galsim.Gaussian:    
-        gal = func(half_light_radius=hlr, flux=flux)
-        gal = gal.shear(e1=e1, e2=e2)
+        gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+        gal = gal.shear(g1=e1, g2=e2)
         gal = gal.shift(x0,y0)
         image = galsim.ImageD(x_len, y_len, scale=scale)
-        image = gal.drawShoot(image=image)
+        image = gal.drawImage(image=image, method='phot',rng=seed)
         return image
 
 # Use the analytic definition of an image profile for one galaxy. 
 def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func):
+    big_fft_params = galsim.GSParams(maximum_fft_size=100240)
     if func is galsim.Gaussian:        
-        gal = func(half_light_radius=hlr, flux=flux)
-        gal = gal.shear(e1=e1, e2=e2)
+        gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+        gal = gal.shear(g1=e1, g2=e2)
         gal = gal.shift(x0,y0)
         image = galsim.ImageD(x_len, y_len, scale=scale)
         image = gal.drawImage(image=image)
@@ -42,43 +44,43 @@ def resid_1(param, target_image, x_len, y_len, scale):
     x0 = param['x0'].value
     y0 = param['y0'].value
     image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale)
-    return (image-target_image).array.ravel()/(target_image.array.ravel())
+    return (image-target_image).array.ravel()
 
 # Draw from two distributions and return a binned image object with two 
 # galaxies. 
 def drawShoot_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                        flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                        x_len,y_len,scale,func_1,func_2,seed):
-                           
+    big_fft_params = galsim.GSParams(maximum_fft_size=100240)                       
     if func_1 is galsim.Gaussian:                           
-        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1)
-        gal_1 = gal_1.shear(e1=e1_1, e2=e2_1)
+        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
+        gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
         gal_1 = gal_1.shift(x_center1,y_center1)
         image_1 = galsim.ImageD(x_len, y_len, scale=scale)
         image_1 = gal_1.drawImage(image=image_1,method='phot',rng=seed)
     if func_2 is galsim.Gaussian:    
-        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2)
-        gal_2 = gal_2.shear(e1=e1_2, e2=e2_2)
+        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2, gsparams=big_fft_params)
+        gal_2 = gal_2.shear(g1=e1_2, g2=e2_2)
         gal_2 = gal_2.shift(x_center2,y_center2)
         image_2 = galsim.ImageD(x_len, y_len, scale=scale)
-        image_2 = gal_2.drawImage(image=image_2,method='phot',rng=seed)
-    image = image_1 + image_2
-    
+        image_2 = gal_2.drawImage(image=image_2,method='phot',rng=seed)        
+    image = image_1 + image_2    
     return image
 
 # Use the analytic definition of an image profile for two galaxies. 
 def draw_galaxy_2(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                   flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                   x_len,y_len,scale,func_1,func_2):
+    big_fft_params = galsim.GSParams(maximum_fft_size=100240)
     if func_1 is galsim.Gaussian:                       
-        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1)
-        gal_1 = gal_1.shear(e1=e1_1, e2=e2_1)
+        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
+        gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
         gal_1 = gal_1.shift(x_center1,y_center1)
         image_1 = galsim.ImageD(x_len, y_len, scale=scale)
         image_1 = gal_1.drawImage(image=image_1)
     if func_2 is galsim.Gaussian:
-        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2)
-        gal_2 = gal_2.shear(e1=e1_2, e2=e2_2)
+        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2, gsparams=big_fft_params)
+        gal_2 = gal_2.shear(g1=e1_2, g2=e2_2)
         gal_2 = gal_2.shift(x_center2,y_center2)
         image_2 = galsim.ImageD(x_len, y_len, scale=scale)
         image_2 = gal_2.drawImage(image=image_2)
