@@ -46,7 +46,7 @@ differences = []
 errors = []
 
 # Frequency of plots for loop
-freq = 1
+freq = 18
 
 # Error type to plot
 error_types = ['rel_error','abs_error']
@@ -58,9 +58,9 @@ count = 0
 for d in d_coeff: 
     
     
-    x0_a = -d*HLR_a
+    x0_a = -d*HLR_a*0.5
     y0_a = 0
-    x0_b = d*HLR_b       # Shift of arcsec from center
+    x0_b = d*HLR_b*0.5       # Shift of arcsec from center
     y0_b = 0             # Shift of arcsec from center
     
     param_array = np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
@@ -69,12 +69,16 @@ for d in d_coeff:
     #------------------------------------------------------------------------
     # Create the image
     
-    # Set the seed to vary or stay constant
-    dev = galsim.BaseDeviate(213*count)
+    # Random Seed
+    dev_1 = galsim.BaseDeviate(0)
+    dev_2 = galsim.BaseDeviate(0)    
     
-    im = drawLibrary.drawShoot_galaxy_2(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                           flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                           size,size,pixel_scale,func_gauss,func_gauss,dev)
+    im_1 = drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                        size,size,pixel_scale,func_gauss,dev_1)
+    im_2 = drawLibrary.drawShoot_galaxy(flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                        size,size,pixel_scale,func_gauss,dev_2)
+    
+    im = im_1 + im_2    
     
     # Obtain the image bounds and domain information
     x_cen,y_cen,x,y,X,Y = drawLibrary.return_domain(im)

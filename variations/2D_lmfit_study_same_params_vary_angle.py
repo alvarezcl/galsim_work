@@ -18,10 +18,6 @@ import numpy as np
 # Angle to create the secondary galaxy at with respect to the center
 # of the image.
 thetas = np.linspace(0,360-22.5,16)
-#thetas[4] = 90.1 # Avoid pi/2
-#thetas[8] = 180.2 # Avoid pi
-#thetas[12] = 270.3 # Avoid 3pi/2
-#thetas[len(thetas)-1] = 337.6
 
 # Begin with parameters for the image
 
@@ -58,14 +54,11 @@ twenty_two_five_deg_axes = []; error_twenty_two_five = []
 d = 1
 
 # Frequency of plots for loop
-freq = 2
+freq = 18
 
 # Error type to plot
 error_types = ['rel_error','abs_error']
 error_type = error_types[1]
-
-# Set the seed
-seed = galsim.BaseDeviate(215324)
 
 # Counter to measure where one is at in the loop
 count = 0
@@ -73,7 +66,7 @@ count = 0
 for theta in thetas: 
     
     org_theta = theta
-    theta += 0.01
+    theta += 0.0
 
     # Parameters for object b
     flux_b = flux_a       # total counts on the image
@@ -89,12 +82,15 @@ for theta in thetas:
     #------------------------------------------------------------------------
     # Create the image
     
-    # Set the seed
-    dev = galsim.BaseDeviate(2134)
+    # Random Seed
+    dev_1 = galsim.BaseDeviate(0)
+    dev_2 = galsim.BaseDeviate(0)
     
-    im = drawLibrary.drawShoot_galaxy_2(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                           flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                           size,size,pixel_scale,func_gauss,func_gauss,dev)
+    im_1 = drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                        size,size,pixel_scale,func_gauss,dev_1)
+    im_2 = drawLibrary.drawShoot_galaxy(flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                        size,size,pixel_scale,func_gauss,dev_2)
+    im = im_1 + im_2                                
     
     # Obtain the image bounds and domain information
     x_cen,y_cen,x,y,X,Y = drawLibrary.return_domain(im)
