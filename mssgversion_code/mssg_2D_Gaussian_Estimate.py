@@ -23,7 +23,7 @@ import ipdb
 # Provide seed for the random draw
 np.random.seed(0)
 
-# Define the parameters of the 2D gaussian to draw from.
+# Define the parameters of the 2D gaussian to draw from -- this declares them by hand
 mean = np.array([0, 0])
 sigma_1 = 2
 sigma_2 = 1
