@@ -20,7 +20,7 @@ import sys
 # Draw from a distribution and return a binned image object with one galaxy 
 # Shoots photons, see last line before it returns image -mg
 def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed):
-    big_fft_params = galsim.GSParams(maximum_fft_size=1002400)    
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)    
 
     print " *********************** Using MSSG version of drawLibrary"
 
@@ -47,7 +47,7 @@ def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed)
 # Use the analytic definition of an image profile for one galaxy 
 # Uses FFT,  see last line before it returns image and compare to drawshoot_galaxy above  -mg
 def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func):
-    big_fft_params = galsim.GSParams(maximum_fft_size=1002400)
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
     if func is galsim.Gaussian:        
         gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
 
@@ -81,11 +81,11 @@ def resid_1(param, target_image, x_len, y_len, scale):
     return (image-target_image).array.ravel()
 
 # Draw from two distributions and return a binned image object with two 
-# galaxies. 
+# galaxies 
 def drawShoot_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                        flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                        x_len,y_len,scale,func_1,func_2,seed):
-    big_fft_params = galsim.GSParams(maximum_fft_size=1002400)                       
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)                       
     if func_1 is galsim.Gaussian:                           
         gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
         gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
@@ -101,11 +101,11 @@ def drawShoot_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     image = image_1 + image_2    
     return image
 
-# Use the analytic definition of an image profile for two galaxies. 
+# Use the analytic definition of an image profile for two galaxies -- Gaussian or Sersic -mg
 def draw_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
                   flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
                   x_len,y_len,scale,func_1,func_2):
-    big_fft_params = galsim.GSParams(maximum_fft_size=1002400)
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
     if func_1 is galsim.Gaussian:                       
         gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
         gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
