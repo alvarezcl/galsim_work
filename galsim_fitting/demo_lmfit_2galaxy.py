@@ -14,6 +14,7 @@ import galsim
 import numpy as np
 import matplotlib.pyplot as plt
 import drawLibrary
+import scipy.linalg as scla
 
 # Define independent parameters for image not trying to minimize
 x_len = 250
@@ -80,6 +81,7 @@ best_fit = drawLibrary.draw_galaxy_2(flux_ae,hlr_ae,e1_ae,e2_ae,x0_ae,y0_ae,
                                      x_len,y_len,scale,func,func)
 
 lmfit.report_errors(result.params)
+
 
 #hsm = im.FindAdaptiveMom()
 #print hsm.observed_shape.e1

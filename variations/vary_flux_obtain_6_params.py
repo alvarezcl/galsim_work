@@ -5,6 +5,10 @@ Created on Sun Jul 27 16:25:02 2014
 @author: luis
 """
 
+## This script outputs 3 plots of the 6 parameter residuals
+## for both objects as flux for object B decreases.
+
+
 from __future__ import division
 import galsim
 import drawLibrary

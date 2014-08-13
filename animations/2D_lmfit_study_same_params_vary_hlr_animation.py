@@ -16,9 +16,9 @@ import matplotlib.gridspec as gridspec
 
 # Function definition to return the original data array, best-fit array,
 # residual, and correlation matrix with differences and error on e1 and e2.
-def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                               flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                               size_1,size_2,pixel_scale,func_gauss_1,func_gauss_2,dev_1,dev_2):
+def run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                 flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                 size_1,size_2,pixel_scale,func_gauss_1,func_gauss_2,dev_1,dev_2):
 
     im_1 = drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
                                         size,size,pixel_scale,func_gauss,dev_1)
@@ -71,10 +71,10 @@ def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
     
     if result.covar is None:
         print "Undefined Covariance Matrix\n Rerunning"
-        return run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                          flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                          size_1,size_2,pixel_scale,
-                                          func_gauss_1,func_gauss_2,galsim.BaseDeviate(0),galsim.BaseDeviate(0))
+        return run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                            flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                            size_1,size_2,pixel_scale,
+                            func_gauss_1,func_gauss_2,galsim.BaseDeviate(0),galsim.BaseDeviate(0))
     else:
         print "result.covar is defined."    
     
@@ -128,9 +128,9 @@ dev_1 = galsim.UniformDeviate(1)
 dev_2 = galsim.UniformDeviate(2)
 
 # Obtain instantiation
-im,best_fit,residual,correlation_mat,diff_e,error_e = run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                                                                 flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                                                                 size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
+im,best_fit,residual,correlation_mat,diff_e,error_e = run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                                                   flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                                                   size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
 
 # Provide the fontsize
 fonts = 10
@@ -175,13 +175,20 @@ text = ax4.text(0,-1.5,'$HLR_b$: %.2f arcsecond'%(HLR_b),fontsize=18)
 
 # Update the plots using the following function
 def updategal(*args):
-    global HLR_b,x0_b,dev_1,dev_2
+    # Define globals to be updated throughout the iteration
+    global HLR_b,x0_b
+    # Either move the x-coordinate or don't.
     x0_b += 0.00
+    # Update the half-light-radius    
     HLR_b += 0.02 
-    im, best_fit, residual, correlation_mat,diff_e,error_e = run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                                                                        flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                                                                        size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
-    print HLR_b                                                                                        
+    # Return the data on the changed information.
+    im, best_fit, residual, correlation_mat,diff_e,error_e = run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                                                          flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                                                          size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
+                                                                                        
+    # Print the HLR to the screen for reference                                                                                       
+    print HLR_b
+    # Set the new data arrays                                                                                        
     a.set_array(im)
     b.set_array(best_fit)
     c.set_array(residual)
@@ -189,8 +196,11 @@ def updategal(*args):
     text.set_text('$HLR_b$: %.2f arcseconds'%(HLR_b))
         
     return a,b,c,d
-    
-time = 0.5    
-ani = animation.FuncAnimation(fig, updategal, frames=74, interval=time, blit=True)
-ani.save('hlr_text_cons_sep.avi',fps=1, codec='avi')
+
+# Save the animation    
+time = 0.2
+frame_num = 8
+fps = 1    
+ani = animation.FuncAnimation(fig, updategal, frames=frame_num, interval=time, blit=True)
+ani.save('hlr_text_cons_sep.avi',fps=fps, codec='avi')
 plt.show()
