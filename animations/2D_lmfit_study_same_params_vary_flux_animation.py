@@ -5,6 +5,9 @@ Created on Thu Jul 24 14:23:16 2014
 @author: luis
 """
 
+## This file will create an animation of two objects with one decreasing in
+## flux value. 
+
 from __future__ import division
 import galsim
 import drawLibrary
@@ -16,9 +19,9 @@ import matplotlib.gridspec as gridspec
 
 # Function definition to return the original data array, best-fit array,
 # residual, and correlation matrix with differences and error on e1 and e2.
-def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                               flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                               size_1,size_2,pixel_scale,func_gauss_1,func_gauss_2,dev_1,dev_2):
+def run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                 flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                 size_1,size_2,pixel_scale,func_gauss_1,func_gauss_2,dev_1,dev_2):
 
     im_1 = drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
                                         size,size,pixel_scale,func_gauss,dev_1)
@@ -71,10 +74,10 @@ def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
     
     if result.covar is None:
         print "Undefined Covariance Matrix\n Rerunning"
-        return run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                          flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                          size_1,size_2,pixel_scale,
-                                          func_gauss_1,func_gauss_2,galsim.BaseDeviate(0),galsim.BaseDeviate(0))
+        return run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                            flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                            size_1,size_2,pixel_scale,
+                            func_gauss_1,func_gauss_2,galsim.BaseDeviate(0),galsim.BaseDeviate(0))
     else:
         print "result.covar is defined."
         
@@ -114,8 +117,6 @@ e2_b = 0.0
 x0_b = HLR_b
 y0_b = 0.0
 
-d = x0_b - x0_a       # arcsec
-
 # Image properties
 psf_sigma = 1e-8      # arcsec
 pixel_scale = 1/5     # arcsec / pixel
@@ -130,9 +131,9 @@ dev_1 = galsim.UniformDeviate(1)
 dev_2 = galsim.UniformDeviate(2)
 
 # Obtain instantiation
-im,best_fit,residual,correlation_mat,diff_e,error_e = run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                                                                 flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                                                                 size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
+im,best_fit,residual,correlation_mat,diff_e,error_e = run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                                                   flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                                                   size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
 
 # Provide the fontsize
 fonts = 10
@@ -177,24 +178,31 @@ text = ax4.text(0,-1.5,'Flux Ratio: %.2f '%(flux_b/flux_a),fontsize=18)
 
 # Update the plots using the following function
 def updategal(*args):
-    global flux_b,dev_1,dev_2
+    # Assign glbal value so that we can update the parameters of interest.
+    global flux_b
     flux_r = float(flux_b/flux_a)
-    im, best_fit, residual, correlation_mat,diff_e,error_e = run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-                                                                                        flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-                                                                                        size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
+    # Obtain the data from the parameter
+    im, best_fit, residual, correlation_mat,diff_e,error_e = run_2_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                                                          flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
+                                                                          size,size,pixel_scale,func_gauss,func_gauss,dev_1,dev_2)
+    # Check that the matrix is changing.    
     print correlation_mat[1][0]
     print correlation_mat[2][0]
     print correlation_mat[3][0]
-    print flux_b                                                                                        
+    print flux_b                       
+    # Set the new data arrays.                                                                 
     a.set_array(im)
     b.set_array(best_fit)
     c.set_array(residual)
     d.set_array(correlation_mat)
     text.set_text('Flux Ratio: %.2f '%flux_r)
+    # Update the parameter.
     flux_b += -50000    
     return a,b,c,d
-    
-time = 0.5    
-ani = animation.FuncAnimation(fig, updategal, frames=95, interval=time, blit=True)
-ani.save('flux_text.avi', fps=1, codec='avi')
-plt.show()
+
+# Save the animation.    
+time = 0.2
+frame_num = 8
+fps = 1    
+ani = animation.FuncAnimation(fig, updategal, frames=frame_num, interval=time, blit=True)
+ani.save('flux_text.avi', fps=fps, codec='avi')

@@ -1,0 +1,447 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{Eigenmode\_Analysis\_New}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\def\PY@tok@gd{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\def\PY@tok@gu{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\def\PY@tok@gt{\def\PY@tc##1{\textcolor[rgb]{0.00,0.25,0.82}{##1}}}
+\def\PY@tok@gs{\let\PY@bf=\textbf}
+\def\PY@tok@gr{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\def\PY@tok@cm{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@vg{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@m{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@mh{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@go{\def\PY@tc##1{\textcolor[rgb]{0.50,0.50,0.50}{##1}}}
+\def\PY@tok@ge{\let\PY@it=\textit}
+\def\PY@tok@vc{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@il{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@cs{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@cp{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\def\PY@tok@gi{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\def\PY@tok@gh{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\def\PY@tok@ni{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\def\PY@tok@nl{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\def\PY@tok@nn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@no{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\def\PY@tok@na{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\def\PY@tok@nb{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@nc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@nd{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\def\PY@tok@ne{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\def\PY@tok@nf{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\def\PY@tok@si{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\def\PY@tok@s2{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@vi{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@nt{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@nv{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@s1{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sh{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sc{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@sx{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@bp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@c1{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@kc{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@c{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\def\PY@tok@mf{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@err{\def\PY@bc##1{\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{##1}}}
+\def\PY@tok@kd{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@ss{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\def\PY@tok@sr{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\def\PY@tok@mo{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@kn{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@mi{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@gp{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\def\PY@tok@o{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\def\PY@tok@kr{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@s{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@kp{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@w{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\def\PY@tok@kt{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\def\PY@tok@ow{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\def\PY@tok@sb{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\def\PY@tok@k{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\def\PY@tok@se{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\def\PY@tok@sd{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+
+    \section{We now move to a parameterization for a two object system of the
+following:}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}19}]:} \PY{o}{\PYZpc{}\PYZpc{}}\PY{k}{latex}
+         \PYZbs{}\PY{n}{begin}\PY{p}{\PYZob{}}\PY{n}{equation}\PY{p}{\PYZcb{}}
+         \PY{n}{f\PYZus{}}\PY{p}{\PYZob{}}\PY{n+nb}{sum}\PY{p}{\PYZcb{}} \PY{o}{=} \PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b} \PYZbs{}\PYZbs{}
+         \PY{n}{f\PYZus{}}\PY{p}{\PYZob{}}\PY{n}{dif}\PY{p}{\PYZcb{}} \PY{o}{=} \PY{n}{flux\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b} \PYZbs{}\PYZbs{}
+         \PY{n}{x\PYZus{}}\PY{p}{\PYZob{}}\PY{n+nb}{sum}\PY{p}{\PYZcb{}} \PY{o}{=} \PYZbs{}\PY{n}{frac}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{x0\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{x0\PYZus{}b}\PY{p}{\PYZcb{}}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{\PYZcb{}}\PYZbs{}\PYZbs{}
+         \PY{n}{x\PYZus{}}\PY{p}{\PYZob{}}\PY{n}{dif}\PY{p}{\PYZcb{}} \PY{o}{=} \PYZbs{}\PY{n}{frac}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{x0\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{x0\PYZus{}b}\PY{p}{\PYZcb{}}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{\PYZcb{}}\PYZbs{}\PYZbs{}
+         \PY{n}{y\PYZus{}}\PY{p}{\PYZob{}}\PY{n+nb}{sum}\PY{p}{\PYZcb{}} \PY{o}{=} \PYZbs{}\PY{n}{frac}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{y0\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{y0\PYZus{}b}\PY{p}{\PYZcb{}}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{\PYZcb{}}\PYZbs{}\PYZbs{}
+         \PY{n}{y\PYZus{}}\PY{p}{\PYZob{}}\PY{n}{dif}\PY{p}{\PYZcb{}} \PY{o}{=} \PYZbs{}\PY{n}{frac}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{y0\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{y0\PYZus{}b}\PY{p}{\PYZcb{}}\PY{p}{\PYZob{}}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{\PYZcb{}}\PYZbs{}\PYZbs{}
+         \PY{n}{hlr\PYZus{}a}\PYZbs{}\PYZbs{}
+         \PY{n}{e1\PYZus{}a}\PYZbs{}\PYZbs{}
+         \PY{n}{e2\PYZus{}a}\PYZbs{}\PYZbs{}
+         \PY{n}{hlr\PYZus{}b}\PYZbs{}\PYZbs{}
+         \PY{n}{e1\PYZus{}b}\PYZbs{}\PYZbs{}
+         \PY{n}{e2\PYZus{}b}\PYZbs{}\PYZbs{}
+         \PYZbs{}\PY{n}{end}\PY{p}{\PYZob{}}\PY{n}{equation}\PY{p}{\PYZcb{}}
+\end{Verbatim}
+
+    \begin{equation}
+f_{sum} = flux_a + flux_b \\
+f_{dif} = flux_a - flux_b \\
+x_{sum} = \frac{flux_a*x0_a + flux_b*x0_b}{flux_a + flux_b}\\
+x_{dif} = \frac{flux_a*x0_a - flux_b*x0_b}{flux_a + flux_b}\\
+y_{sum} = \frac{flux_a*y0_a + flux_b*y0_b}{flux_a + flux_b}\\
+y_{dif} = \frac{flux_a*y0_a - flux_b*y0_b}{flux_a + flux_b}\\
+hlr_a\\
+e1_a\\
+e2_a\\
+hlr_b\\
+e1_b\\
+e2_b\\
+\end{equation}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}20}]:} \PY{k+kn}{from} \PY{n+nn}{\PYZus{}\PYZus{}future\PYZus{}\PYZus{}} \PY{k+kn}{import} \PY{n}{division}
+         \PY{k+kn}{from} \PY{n+nn}{pandas} \PY{k+kn}{import} \PY{n}{Series}\PY{p}{,} \PY{n}{DataFrame}
+         \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k+kn}{as} \PY{n+nn}{pd}
+         \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+         \PY{k+kn}{import} \PY{n+nn}{drawLibrary}
+         \PY{k+kn}{import} \PY{n+nn}{galsim}
+         \PY{k+kn}{import} \PY{n+nn}{lmfit}
+         \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
+         \PY{k+kn}{import} \PY{n+nn}{scipy.linalg} \PY{k+kn}{as} \PY{n+nn}{scla}
+         \PY{k+kn}{import} \PY{n+nn}{matplotlib.gridspec} \PY{k+kn}{as} \PY{n+nn}{gridspec}
+         \PY{o}{\PYZpc{}}\PY{k}{matplotlib} \PY{n}{inline}
+         \PY{n}{pd}\PY{o}{.}\PY{n}{set\PYZus{}option}\PY{p}{(}\PY{l+s}{'}\PY{l+s}{display.max\PYZus{}columns}\PY{l+s}{'}\PY{p}{,} \PY{n+nb+bp}{None}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}21}]:} \PY{c}{\PYZsh{} Parameters for object a}
+         \PY{n}{flux\PYZus{}a} \PY{o}{=} \PY{l+m+mf}{5e6}          \PY{c}{\PYZsh{} total counts on the image}
+         \PY{n}{hlr\PYZus{}a} \PY{o}{=} \PY{l+m+mi}{1}         \PY{c}{\PYZsh{} arcsec}
+         \PY{n}{e1\PYZus{}a} \PY{o}{=} \PY{l+m+mf}{0.0}
+         \PY{n}{e2\PYZus{}a} \PY{o}{=} \PY{l+m+mf}{0.0}
+         \PY{n}{q\PYZus{}a} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{+}\PY{p}{(}\PY{n}{e1\PYZus{}a}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{e2\PYZus{}a}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{-}\PY{p}{(}\PY{n}{e1\PYZus{}a}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{e2\PYZus{}a}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Parameters for object b}
+         \PY{n}{flux\PYZus{}b} \PY{o}{=} \PY{l+m+mf}{5e6}       \PY{c}{\PYZsh{} total counts on the image}
+         \PY{n}{hlr\PYZus{}b} \PY{o}{=} \PY{n}{hlr\PYZus{}a}         \PY{c}{\PYZsh{} arcsec}
+         \PY{n}{e1\PYZus{}b} \PY{o}{=} \PY{l+m+mf}{0.0}
+         \PY{n}{e2\PYZus{}b} \PY{o}{=} \PY{l+m+mf}{0.0}
+         \PY{n}{q\PYZus{}b} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{+}\PY{p}{(}\PY{n}{e1\PYZus{}b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{e2\PYZus{}b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{-}\PY{p}{(}\PY{n}{e1\PYZus{}b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{e2\PYZus{}b}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+         
+         \PY{n}{sum\PYZus{}flux} \PY{o}{=} \PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}
+         \PY{n}{dif\PYZus{}flux} \PY{o}{=} \PY{n}{flux\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b}
+         
+         \PY{n}{pixel\PYZus{}scale} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{5}     \PY{c}{\PYZsh{} arcsec / pixel}
+         \PY{n}{size} \PY{o}{=} \PY{l+m+mi}{100}            \PY{c}{\PYZsh{} pixel}
+         
+         \PY{c}{\PYZsh{} Set the centroid location of a}
+         \PY{n}{x0\PYZus{}a} \PY{o}{=} \PY{o}{-}\PY{l+m+mi}{1}
+         \PY{n}{y0\PYZus{}a} \PY{o}{=} \PY{l+m+mi}{0}
+         \PY{n}{centroid\PYZus{}a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{x0\PYZus{}a}\PY{p}{,}\PY{n}{y0\PYZus{}a}\PY{p}{]}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Set the centroid location of b}
+         \PY{n}{x0\PYZus{}b} \PY{o}{=} \PY{l+m+mi}{1}
+         \PY{n}{y0\PYZus{}b} \PY{o}{=} \PY{l+m+mi}{0}
+         \PY{n}{centroid\PYZus{}b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{x0\PYZus{}b}\PY{p}{,}\PY{n}{y0\PYZus{}b}\PY{p}{]}\PY{p}{)}
+         
+         \PY{n}{distance} \PY{o}{=} \PY{n}{x0\PYZus{}b} \PY{o}{-} \PY{n}{x0\PYZus{}a}
+         
+         \PY{c}{\PYZsh{} Calculate values for use in correlations}
+         \PY{n}{x\PYZus{}sum} \PY{o}{=} \PY{p}{(}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{x0\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{x0\PYZus{}b}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{)}
+         \PY{n}{x\PYZus{}dif} \PY{o}{=} \PY{p}{(}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{x0\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{x0\PYZus{}b}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{)}
+         
+         \PY{n}{y\PYZus{}sum} \PY{o}{=} \PY{p}{(}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{y0\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{y0\PYZus{}b}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{)}
+         \PY{n}{y\PYZus{}dif} \PY{o}{=} \PY{p}{(}\PY{n}{flux\PYZus{}a}\PY{o}{*}\PY{n}{y0\PYZus{}a} \PY{o}{-} \PY{n}{flux\PYZus{}b}\PY{o}{*}\PY{n}{y0\PYZus{}b}\PY{p}{)}\PY{o}{/}\PY{p}{(}\PY{n}{flux\PYZus{}a} \PY{o}{+} \PY{n}{flux\PYZus{}b}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Calculate the second central moment of object a and b and respective sigmas}
+         
+         \PY{n}{Q\PYZus{}a} \PY{o}{=} \PY{n}{drawLibrary}\PY{o}{.}\PY{n}{Q\PYZus{}Gauss}\PY{p}{(}\PY{n}{hlr\PYZus{}a}\PY{p}{,}\PY{n}{e1\PYZus{}a}\PY{p}{,}\PY{n}{e2\PYZus{}a}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}minus\PYZus{}a} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{det}\PY{p}{(}\PY{n}{Q\PYZus{}a}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}plus\PYZus{}a} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{Q\PYZus{}a}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{Q\PYZus{}a}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{q\PYZus{}a\PYZus{}from\PYZus{}Q\PYZus{}a} \PY{o}{=} \PY{p}{(}\PY{n}{sigma\PYZus{}plus\PYZus{}a}\PY{o}{/}\PY{n}{sigma\PYZus{}minus\PYZus{}a}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         
+         \PY{n}{Q\PYZus{}b} \PY{o}{=} \PY{n}{drawLibrary}\PY{o}{.}\PY{n}{Q\PYZus{}Gauss}\PY{p}{(}\PY{n}{hlr\PYZus{}b}\PY{p}{,}\PY{n}{e1\PYZus{}b}\PY{p}{,}\PY{n}{e2\PYZus{}b}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}minus\PYZus{}b} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{det}\PY{p}{(}\PY{n}{Q\PYZus{}b}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}plus\PYZus{}b} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{Q\PYZus{}b}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{Q\PYZus{}b}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{q\PYZus{}b\PYZus{}from\PYZus{}Q\PYZus{}b} \PY{o}{=} \PY{p}{(}\PY{n}{sigma\PYZus{}plus\PYZus{}b}\PY{o}{/}\PY{n}{sigma\PYZus{}minus\PYZus{}b}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+         
+         \PY{c}{\PYZsh{} Calculate the second central moment of the mixture}
+         \PY{n}{Q} \PY{o}{=} \PY{n}{drawLibrary}\PY{o}{.}\PY{n}{Q\PYZus{}two\PYZus{}mixture}\PY{p}{(}\PY{n}{flux\PYZus{}a}\PY{p}{,}\PY{n}{hlr\PYZus{}a}\PY{p}{,}\PY{n}{e1\PYZus{}a}\PY{p}{,}\PY{n}{e2\PYZus{}a}\PY{p}{,}\PY{n}{x0\PYZus{}a}\PY{p}{,}\PY{n}{y0\PYZus{}a}\PY{p}{,}
+                                       \PY{n}{flux\PYZus{}b}\PY{p}{,}\PY{n}{hlr\PYZus{}b}\PY{p}{,}\PY{n}{e1\PYZus{}b}\PY{p}{,}\PY{n}{e2\PYZus{}b}\PY{p}{,}\PY{n}{x0\PYZus{}b}\PY{p}{,}\PY{n}{y0\PYZus{}b}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}minus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{det}\PY{p}{(}\PY{n}{Q}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{)}
+         \PY{n}{sigma\PYZus{}plus} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{Q}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{Q}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Galsim function definitions}
+         \PY{n}{func\PYZus{}gauss} \PY{o}{=} \PY{n}{galsim}\PY{o}{.}\PY{n}{Gaussian}
+         
+         \PY{c}{\PYZsh{} Set the RNG}
+         \PY{n}{dev\PYZus{}1} \PY{o}{=} \PY{n}{galsim}\PY{o}{.}\PY{n}{BaseDeviate}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{dev\PYZus{}2} \PY{o}{=} \PY{n}{galsim}\PY{o}{.}\PY{n}{BaseDeviate}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+         \PY{n}{dev\PYZus{}3} \PY{o}{=} \PY{n}{galsim}\PY{o}{.}\PY{n}{BaseDeviate}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Obtain instantiation}
+         \PY{n}{im}\PY{p}{,}\PY{n}{best\PYZus{}fit}\PY{p}{,}\PY{n}{result} \PY{o}{=} \PY{n}{drawLibrary}\PY{o}{.}\PY{n}{run\PYZus{}2\PYZus{}galaxy}\PY{p}{(}\PY{n}{sum\PYZus{}flux}\PY{p}{,}\PY{n}{dif\PYZus{}flux}\PY{p}{,}\PY{n}{x\PYZus{}sum}\PY{p}{,}\PY{n}{x\PYZus{}dif}\PY{p}{,}\PY{n}{y\PYZus{}sum}\PY{p}{,}\PY{n}{y\PYZus{}dif}\PY{p}{,}
+                                                       \PY{n}{hlr\PYZus{}a}\PY{p}{,}\PY{n}{e1\PYZus{}a}\PY{p}{,}\PY{n}{e2\PYZus{}a}\PY{p}{,}
+                                                       \PY{n}{hlr\PYZus{}b}\PY{p}{,}\PY{n}{e1\PYZus{}b}\PY{p}{,}\PY{n}{e2\PYZus{}b}\PY{p}{,}
+                                                       \PY{n}{size}\PY{p}{,}\PY{n}{size}\PY{p}{,}\PY{n}{pixel\PYZus{}scale}\PY{p}{,}\PY{n}{func\PYZus{}gauss}\PY{p}{,}\PY{n}{func\PYZus{}gauss}\PY{p}{,}\PY{n}{dev\PYZus{}1}\PY{p}{,}\PY{n}{dev\PYZus{}2}\PY{p}{,}\PY{n}{dev\PYZus{}3}\PY{p}{)}
+         
+         \PY{c}{\PYZsh{} Obtain the covariance and correlation matrix.}
+         \PY{n}{error\PYZus{}diag} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{result}\PY{o}{.}\PY{n}{covar}\PY{p}{)}\PY{p}{)}
+         \PY{n}{error\PYZus{}mat} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{outer}\PY{p}{(}\PY{n}{error\PYZus{}diag}\PY{p}{,}\PY{n}{error\PYZus{}diag}\PY{p}{)}
+         \PY{n}{correlation\PYZus{}mat} \PY{o}{=} \PY{n}{result}\PY{o}{.}\PY{n}{covar}\PY{o}{/}\PY{n}{error\PYZus{}mat}
+         \PY{n}{correlation\PYZus{}mat}\PY{p}{[}\PY{n}{correlation\PYZus{}mat}\PY{o}{==}\PY{o}{-}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{=} \PY{l+m+mf}{0.00}
+         
+         \PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}
+\end{Verbatim}
+
+
+    \subsubsection{We show the correlation\_matrix at a 2 arcsecond separation:}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}22}]:} \PY{n}{correlation\PYZus{}mat} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{correlation\PYZus{}mat}\PY{p}{,}\PY{n}{columns} \PY{o}{=} \PY{n}{columns}\PY{p}{,} \PY{n}{index} \PY{o}{=} \PY{n}{columns}\PY{p}{)}
+         \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{'}\PY{l+s}{Correlation Coefficient Matrix}\PY{l+s}{'}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{18}\PY{p}{)}
+         \PY{n}{d} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{correlation\PYZus{}mat}\PY{o}{.}\PY{n}{values}\PY{p}{,}\PY{n}{origin}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lower}\PY{l+s}{'}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{none}\PY{l+s}{'}\PY{p}{,}\PY{n}{vmin}\PY{o}{=}\PY{o}{-}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{d}\PY{p}{,}\PY{n}{shrink}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{k}{for} \PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{,} \PY{n}{val} \PY{o+ow}{in} \PY{n}{np}\PY{o}{.}\PY{n}{ndenumerate}\PY{p}{(}\PY{n}{correlation\PYZus{}mat}\PY{o}{.}\PY{n}{values}\PY{p}{)}\PY{p}{:}
+             \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}\PY{l+s}{'}\PY{l+s+si}{\PYZpc{}0.2f}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{val}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n}{ha}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,} \PY{n}{va}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+         \PY{n}{text} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{-}\PY{l+m+mf}{1.5}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{Separation: }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s}{ arcseconds}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{k}{distance}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Eigenmode_Analysis_New_files/Eigenmode_Analysis_New_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \subsubsection{We diagonalize the correlation matrix and show the eigenvalues matrix:}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}23}]:} \PY{c}{\PYZsh{} Diagonalize the correlation matrix}
+         \PY{n}{EVal}\PY{p}{,} \PY{n}{EVec} \PY{o}{=} \PY{n}{scla}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{correlation\PYZus{}mat}\PY{o}{.}\PY{n}{values}\PY{p}{)}
+         \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{'}\PY{l+s}{Eigenvalue Matrix}\PY{l+s}{'}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{18}\PY{p}{)}
+         \PY{n}{d} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{real}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{EVal}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{origin}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lower}\PY{l+s}{'}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{none}\PY{l+s}{'}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{d}\PY{p}{,}\PY{n}{shrink}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{k}{for} \PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{,} \PY{n}{val} \PY{o+ow}{in} \PY{n}{np}\PY{o}{.}\PY{n}{ndenumerate}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{real}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{diag}\PY{p}{(}\PY{n}{EVal}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+             \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}\PY{l+s}{'}\PY{l+s+si}{\PYZpc{}0.2f}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{val}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n}{ha}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,} \PY{n}{va}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+         \PY{n}{text} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{-}\PY{l+m+mf}{1.5}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{Separation: }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s}{ arcseconds}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{k}{distance}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Eigenmode_Analysis_New_files/Eigenmode_Analysis_New_7_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \subsubsection{Now we show the eigenbasis noting it is the transpose of the
+eigenvectors:}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}24}]:} \PY{n}{EVec} \PY{o}{=} \PY{n}{DataFrame}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{real}\PY{p}{(}\PY{p}{(}\PY{n}{EVec}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{decimals}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,}\PY{n}{index}\PY{o}{=}\PY{n}{columns}\PY{p}{)}
+         \PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{)}\PY{p}{)}
+         \PY{n}{ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}subplot}\PY{p}{(}\PY{l+m+mi}{111}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{'}\PY{l+s}{Eigenbasis}\PY{l+s}{'}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{18}\PY{p}{)}
+         \PY{n}{d} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{real}\PY{p}{(}\PY{n}{EVec}\PY{o}{.}\PY{n}{T}\PY{o}{.}\PY{n}{values}\PY{p}{)}\PY{p}{,}\PY{n}{origin}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{lower}\PY{l+s}{'}\PY{p}{,}\PY{n}{interpolation}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{none}\PY{l+s}{'}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{5}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{11}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}F\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}x\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}sum\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}y\PYZus{}\PYZob{}dif\PYZcb{}\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}a\PYZdl{}}\PY{l+s}{'}\PY{p}{,}
+                    \PY{l+s}{'}\PY{l+s}{\PYZdl{}HLR\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e1\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{\PYZdl{}e2\PYZus{}b\PYZdl{}}\PY{l+s}{'}\PY{p}{]}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{d}\PY{p}{,}\PY{n}{shrink}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+         \PY{k}{for} \PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{n}{j}\PY{p}{)}\PY{p}{,} \PY{n}{val} \PY{o+ow}{in} \PY{n}{np}\PY{o}{.}\PY{n}{ndenumerate}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{real}\PY{p}{(}\PY{n}{EVec}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+             \PY{n}{ax}\PY{o}{.}\PY{n}{annotate}\PY{p}{(}\PY{l+s}{'}\PY{l+s+si}{\PYZpc{}0.2f}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n}{val}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n}{ha}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,} \PY{n}{va}\PY{o}{=}\PY{l+s}{'}\PY{l+s}{center}\PY{l+s}{'}\PY{p}{,}\PY{n}{size}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+         \PY{n}{text} \PY{o}{=} \PY{n}{ax}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{o}{-}\PY{l+m+mf}{1.5}\PY{p}{,}\PY{l+s}{'}\PY{l+s}{Separation: }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s}{ arcseconds}\PY{l+s}{'}\PY{o}{\PYZpc{}}\PY{k}{distance}\PY{p}{,}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Eigenmode_Analysis_New_files/Eigenmode_Analysis_New_9_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \subsubsection{After rounding to show significant values, we note that the new unit
+vectors in diagonalized space contain more entries that are zero than
+our previous parameterization but on the whole, there seem to be many
+non-zero entries. A suitable re-parameterization does not necessarily
+follow. We follow with the re-parameterization of hlr,e1, and e2, with
+the second moments of individual objects.}
+
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}

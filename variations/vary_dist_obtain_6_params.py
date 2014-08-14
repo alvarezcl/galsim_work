@@ -5,6 +5,9 @@ Created on Sun Jul 27 15:12:57 2014
 @author: luis
 """
 
+## This script outputs 3 plots of the 6 parameter residuals
+## for both objects as separation increases.
+
 from __future__ import division
 import galsim
 import drawLibrary

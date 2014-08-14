@@ -5,6 +5,8 @@ Created on Sun Jul 27 16:33:45 2014
 @author: luis
 """
 
+## This script outputs 3 plots of the 6 parameter residuals
+## for both objects as HLR increases.
 
 from __future__ import division
 import galsim
@@ -12,7 +14,6 @@ import drawLibrary
 import matplotlib.pyplot as plt
 import lmfit
 import numpy as np
-import matplotlib.animation as animation
 import matplotlib.gridspec as gridspec
 
 # Function definition to return the original data array, best-fit array,
@@ -70,18 +71,6 @@ def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
                                        result.params['y_center2'].value,
                                        size_1,size_2,pixel_scale,func_gauss_1,func_gauss_2)
     
-#    if result.covar is None:
-#        print "Undefined Covariance Matrix\n Rerunning"
-#        return run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
-#                                          flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b,
-#                                          size_1,size_2,pixel_scale,
-#                                          func_gauss_1,func_gauss_2,galsim.BaseDeviate(0),galsim.BaseDeviate(0))
-#    else:
-#        print "result.covar is defined."    
-    
-#    error_diag = np.sqrt(np.diag(result.covar))
-#    error_mat = np.outer(error_diag,error_diag)
-#    correlation_mat = result.covar/error_mat
     diff_flux_a = result.params['flux_1'].value - flux_a
     diff_HLR_a = result.params['hlr_1'].value - HLR_a
     diff_e1_a = result.params['e1_1'].value - e1_a
@@ -99,9 +88,6 @@ def run_2_galaxy_vary_distance(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
     
     
     diff = (diff_flux_a,diff_HLR_a,diff_e1_a,diff_e2_a,diff_x0_a,diff_y0_a,diff_flux_b,diff_HLR_b,diff_e1_b,diff_e2_b,diff_x0_b,diff_y0_b)
-    #error_e = [error_diag[2],error_diag[3],error_diag[8],error_diag[9]]
-    
-    #error_e = np.array(error_e)
                                                                       
     return im.array,best_fit.array,(best_fit-im).array,diff,result.covar
 
