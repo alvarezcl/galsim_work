@@ -26,6 +26,16 @@ flux_a = 5e4          # total counts on the image
 HLR_a = 3.            # arcsec
 e1_a = 0.0
 e2_a = 0.0
+x0_a = -2.0
+y0_a = 0
+
+# Parameters for object b
+flux_b = 5e4          # total counts on the image
+HLR_b = 3.            # arcsec
+e1_b = 0.0
+e2_b = 0.0
+x0_b = 2.0
+y0_b = 0
 
 
 # Image properties
@@ -48,7 +58,6 @@ galtype = galsim.Sersic # New for Sersic gals - mg
 differences = []
 errors = []
 
-
 # Error type to plot
 error_types = ['rel_error','abs_error']
 error_type = error_types[1]
@@ -62,17 +71,9 @@ count = 0
 plotfreq = 1
 
 
-# Parameters for object a
-flux_a = 5e4          # total counts on the image
-HLR_a = 3.            # arcsec
-e1_a = 0.0
-e2_a = 0.0
-x0_a = 0
-y0_a = 0
-        
 # Define a numpy array of params - mg
 # param_array = np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a])    
-p0 = 1.0*np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a])
+p0 = np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a])
 parameters = lmfit.Parameters()
 
 parameters.add('flux_a', value=p0[0])   
@@ -85,36 +86,35 @@ parameters.add('y0_a',value=p0[5])
     #------------------------------------------------------------------------
     # Create the image
 
-    # Random Seed
+# Random Seed
 # Putting in a zero in the arg means it will vary from plot to plot, *not* exactly same each time - mg
 dev_1 = galsim.BaseDeviate(0) 
 
     
 # Fill in the images - mg
-img1 = mssg_drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+img_a = mssg_drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
                                         imsize,imsize,pixel_scale,galtype,dev_1)
 
-# Add a Gaussian
-galtype = galsim.Gaussian
-
-x0_b = 2*HLR_a
-
-img2 = mssg_drawLibrary.drawShoot_galaxy(flux_a,HLR_a,e1_a,e2_a, x0_b, y0_a,
-                                        imsize,imsize,pixel_scale,galtype,dev_1)
-
-origimg = img1+img2
-
+# Add Second gal 
+# galtype = galsim.Gaussian
 galtype = galsim.Sersic
+
+img_b = mssg_drawLibrary.drawShoot_galaxy(flux_b,HLR_b,e1_b,e2_b, x0_b, y0_b,
+                                        imsize,imsize,pixel_scale,galtype,dev_1)
+
+origimg = img_a # + img_b
+
+
     
 # Obtain the image bounds and domain information
 x_cen,y_cen,x,y,X,Y = mssg_drawLibrary.return_domain(origimg)
-H = origimg.array # I believe this returns the 2D numpy array assoc with the image - mg
+imghisto  = origimg.array # I believe this returns the 2D numpy array assoc with the image - mg
 
 
 # Draw the orig img
 plt.figure(1)
 plt.title('Orig Gal Image')
-plt.imshow(H,interpolation='none',origin='lower')
+plt.imshow(imghisto ,interpolation='none',origin='lower')
 #        plt.plot(x,pos_contour_a,'k',x,neg_contour_a,'k')
 #        plt.plot(x,pos_contour_b,'k',x,neg_contour_b,'k')
 plt.xlim([1,imsize])
@@ -173,21 +173,21 @@ titleStr = 'Sersic bulge+disk galaxy with parameters: \n [ Photon Flux, HLR (arc
 fig.suptitle(titleStr, fontsize=12)
 
 #Plotting the mixture
-ax11 = fig.add_subplot(131)
-c1 = ax11.imshow(H, origin='lower')
-ax11.set_title('Orig Gal Image')
+subplt1 = fig.add_subplot(131)
+c1 = subplt1.imshow(imghisto , origin='lower')
+subplt1.set_title('Orig Gal Image')
 plt.colorbar(c1, shrink=.5)
 
 #Plotting the fit
-ax12 = fig.add_subplot(132)
-c2 = ax12.imshow(best_fit.array, origin='lower')
-ax12.set_title('Best Fit')
+subplt2 = fig.add_subplot(132)
+c2 = subplt2.imshow(best_fit.array, origin='lower')
+subplt2.set_title('Best Fit')
 plt.colorbar(c2, shrink=.5)
 
 #Plotting the residual
-ax13 = fig.add_subplot(133)
-c3 = ax13.imshow((origimg - best_fit).array, origin='lower')
-ax13.set_title('Residual')
+subplt3 = fig.add_subplot(133)
+c3 = subplt3.imshow((origimg - best_fit).array, origin='lower')
+subplt3.set_title('Residual')
 plt.colorbar(c3, shrink=.5)
 
 plt.show()
