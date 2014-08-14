@@ -17,6 +17,10 @@ for usage with fitters.
 
 ---------------------------------- Under: mssgversion
 
+------- mssg_drawLibrary.py
+
+Supersedes the drawLibrary.py in Luis' dir, by instantiating functions needed to draw Sersic gals
+
 ------ mssg_galsim_Sersic_test.py --- early code that replaced the Gaussians
 in Luis' galsim_first_test with Sersic profiles (cur: 8/2/2014)
 
@@ -24,6 +28,14 @@ in Luis' galsim_first_test with Sersic profiles (cur: 8/2/2014)
 Gaussians in Luis' 2D_lmfit_study_same_params_vary_distance.py with
 Sersic profiles (cur: 8/3/2014)
 
+------ mssg_single_Sersic_fit.py
+
+Simplified code from the vary distance one to only fit one Sersic gal
+
+------ mssg_double_Sersic_fit.py
+
+Code building up from the single Sersic one to fit 2 Sersic's, or a
+Sersic + Gaussian.
 
 ---------------------------------- Under: galsim_fitting  (mostly from early July 2014)
 

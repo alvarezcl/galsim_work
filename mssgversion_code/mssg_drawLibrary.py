@@ -29,11 +29,11 @@ def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed)
 
     if func is galsim.Sersic:                       
         deVauc_ix = 4 # deVauc bulge
-        expl_ix = 1   # expl bulge
-        btodratio = 0.5
+        expl_ix = 1   # expl disk
+        btodsize = 0.5
         gal_HLR = hlr
         gal_flux = flux
-        gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodratio) # bulge
+        gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodsize) # bulge
         gal += galsim.Sersic(n=expl_ix, flux=gal_flux,half_light_radius=gal_HLR)  # add in expl
 
     # Same for either
@@ -46,18 +46,18 @@ def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed)
 
 # Use the analytic definition of an image profile for one galaxy 
 # Uses FFT,  see last line before it returns image and compare to drawshoot_galaxy above  -mg
-def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func):
+def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype):
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
-    if func is galsim.Gaussian:        
-        gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+    if galtype is galsim.Gaussian:        
+        gal = galtype(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
 
-    if func is galsim.Sersic:        
+    if galtype is galsim.Sersic:        
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl bulge
-        btodratio = 0.5
+        btodsize = 0.5
         gal_HLR = hlr
         gal_flux = flux
-        gal = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodratio) # bulge
+        gal = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
         gal += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
     # Same for either
@@ -70,14 +70,14 @@ def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func):
 
 # The difference of the data and the model for one galaxy
 # that is to be reduced.
-def resid_1(param, target_image, x_len, y_len, scale):
-    flux = param['flux'].value
-    hlr = param['hlr'].value
-    e1 = param['e1'].value
-    e2 = param['e2'].value
-    x0 = param['x0'].value
-    y0 = param['y0'].value
-    image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale)
+def resid_1obj(param, target_image, x_len, y_len, scale, galtype):
+    flux = param['flux_a'].value
+    hlr = param['hlr_a'].value
+    e1 = param['e1_a'].value
+    e2 = param['e2_a'].value
+    x0 = param['x0_a'].value
+    y0 = param['y0_a'].value
+    image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale, galtype)
     return (image-target_image).array.ravel()
 
 # Draw from two distributions and return a binned image object with two 
@@ -114,10 +114,10 @@ def draw_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     if func_1 is galsim.Sersic:        
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl bulge
-        btodratio = 0.5
+        btodsize = 0.5
         gal_HLR = hlr_1
         gal_flux = flux_1
-        gal_1 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodratio) # bulge
+        gal_1 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
         gal_1 += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
     image_1 = galsim.ImageD(x_len, y_len, scale=scale)
@@ -132,10 +132,10 @@ def draw_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
     if func_1 is galsim.Sersic:        
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl bulge
-        btodratio = 0.5
+        btodsize = 0.5
         gal_HLR = hlr_2
         gal_flux = flux_2
-        gal_2 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodratio) # bulge
+        gal_2 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
         gal_2 += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
     image_2 = galsim.ImageD(x_len, y_len, scale=scale)

@@ -42,8 +42,8 @@ imsize = 5*HLR_a/pixel_scale            # Total size of image on a side, in pixe
 
 # Separation vars - mg 
 min_sep = 0.5
-max_sep = 1.0
-sep_step = 0.2 # This makes it 16 steps
+max_sep = 6.0
+sep_step = 0.5 # This makes it 16 steps
 
 sep_array = np.arange(min_sep, max_sep, sep_step) # mg - Changed name from d_coeff
 
@@ -148,6 +148,9 @@ for sep in sep_array:
 # -- third is the list of args we pass to it, which are the image and its properties, including the function we're fitting to for each obj
 
     print " About to run lmfit "
+
+### Set the type of galaxy to fit
+#    galtype = galsim.Sersic 
 
     result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   parameters,   args=(im,imsize,imsize,pixel_scale, galtype, galtype ))
 
