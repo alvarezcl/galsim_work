@@ -114,8 +114,6 @@ dev_1 = galsim.BaseDeviate(1)
 dev_2 = galsim.BaseDeviate(2)
 dev_3 = galsim.BaseDeviate(3)
 
-# Galsim function definitions
-func_gauss = galsim.Gaussian
 
 # Noise level
 sky_level = 0
