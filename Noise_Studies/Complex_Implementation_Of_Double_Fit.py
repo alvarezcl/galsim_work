@@ -60,6 +60,7 @@ seed_3 = galsim.BaseDeviate(3)
 pixel_scale = 1/5     # arcsec / pixel
 x_len = y_len = 100            # pixel
 sky_level = 0         # counts / pixel
+add_noise_flag = True
 
 # Obtain instantiation
 im, best_fit, result = noiseLibrary.run_2_galaxy_full_params_complex(flux_a_tot,bulge_a_frac,hlr_a_bulge,n_a_bulge,hlr_a_disk,n_a_disk,e1_a,e2_a,x0_a,y0_a,
@@ -68,7 +69,7 @@ im, best_fit, result = noiseLibrary.run_2_galaxy_full_params_complex(flux_a_tot,
                                                                      x_len,y_len,pixel_scale,
                                                                      sersic_func,sersic_func,
                                                                      seed_1,seed_2,seed_3,
-                                                                     sky_level)
+                                                                     add_noise_flag,sky_level)
 
 # Report errors
 lmfit.report_errors(result.params)

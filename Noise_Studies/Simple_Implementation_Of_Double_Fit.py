@@ -24,7 +24,7 @@ flux_a = 5e4          # total counts on the image
 hlr_a = 1         # arcsec
 e1_a = 0.0
 e2_a = 0.0
-x0_a = -2
+x0_a = -1
 y0_a = 0
 n_a = 0.5
 
@@ -33,7 +33,7 @@ flux_b = 5e4       # total counts on the image
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
-x0_b = 2
+x0_b = 1
 y0_b = 0
 n_b = 0.5
 
@@ -49,11 +49,13 @@ seed_3 = galsim.BaseDeviate(3)
 pixel_scale = 1/5     # arcsec / pixel
 x_len = y_len = 100            # pixel
 sky_level = 1000         # counts / pixel
+add_noise_flag = True
 
 # Obtain instantiation
 im, best_fit, result = noiseLibrary.run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                                                     flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
-                                                                    x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,sky_level)
+                                                                    x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
+                                                                    add_noise_flag,sky_level)
 
 
 # Report errors

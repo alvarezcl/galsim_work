@@ -70,8 +70,8 @@ def convolve_with_psf(gal, beta, size_psf, psf_type=galsim.Moffat, flux_psf=1):
     return psf_gal
     
     
-def residual_func_simple(param, data_image, x_len, y_len, pixel_scale, 
-                  galtype_a,n_a,galtype_b,n_b,galtype,n):
+def residual_func_simple(param, data_image, sky_level, x_len, y_len, pixel_scale, 
+                         galtype_a,n_a,galtype_b,n_b,galtype,n):
     # If we are looking at one object only:
     if len(param) == 6:
         assert galtype != None
@@ -113,17 +113,19 @@ def residual_func_simple(param, data_image, x_len, y_len, pixel_scale,
                                 x_len=x_len,y_len=y_len,scale=pixel_scale)
                             
         image = image_a + image_b
-        # Create error array
-        error = np.sqrt(data_image.array.ravel())
-        # Set the errors equal to 1 where 0 is.
-        error[error==0] = 1
-        return (image-data_image).array.ravel()
+        
+        if sky_level > 10:        
+            return (image-data_image).array.ravel()/np.sqrt(sky_level + data_image.array).ravel()
+        else:
+            return (image-data_image).array.ravel()
+
         
 # Function definition to return the original data array, best-fit array,
 # residual, and correlation matrix with differences and error on e1 and e2.
 def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                     flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
-                                    x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_a,seed_b,seed_p,sky_level):
+                                    x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_a,seed_b,seed_p,
+                                    add_noise_flag,sky_level):
 
     image_a = create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype_a,sersic_index=n_a,
                             x_len=x_len,y_len=y_len,scale=pixel_scale)
@@ -132,7 +134,8 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                             x_len=x_len,y_len=y_len,scale=pixel_scale)
                             
     image = image_a + image_b
-    image = add_noise(image,seed=seed_p,sky_level=sky_level)    
+    if add_noise_flag == True:
+        image = add_noise(image,seed=seed_p,sky_level=sky_level)    
     # Obtain the image bounds and domain information
     x_cen,y_cen,x,y,X,Y = drawLibrary.return_domain(image)
     
@@ -141,7 +144,7 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     
     # Define some seed that's far from true values and insert into
     # lmfit object for galaxy one and two
-    p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
+    p0 = 2.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
                        flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])
     parameters = lmfit.Parameters()
     parameters.add('flux_a', value=p0[0])
@@ -160,7 +163,7 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     
     
     # Extract params that minimize the difference of the data from the model.
-    result = lmfit.minimize(residual_func_simple, parameters, args=(image, x_len, y_len, pixel_scale, galtype_a, n_a, galtype_b, n_b, None,0))
+    result = lmfit.minimize(residual_func_simple, parameters, args=(image, sky_level, x_len, y_len, pixel_scale, galtype_a, n_a, galtype_b, n_b, None,0))
     best_fit_a = create_galaxy(result.params['flux_a'].value,
                                result.params['hlr_a'].value,
                                result.params['e1_a'].value,
@@ -180,7 +183,7 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                                                       
     return image, best_fit_a+best_fit_b, result
 
-def residual_func_complex(param, data_image, x_len, y_len, pixel_scale, 
+def residual_func_complex(param, data_image, sky_level, x_len, y_len, pixel_scale, 
                           galtype_a_bulge, galtype_a_disk, n_a_bulge, n_a_disk,
                           galtype_b_bulge, galtype_b_disk, n_b_bulge, n_b_disk,
                           galtype_bulge, galtype_disk, n_bulge, n_disk):
@@ -255,11 +258,11 @@ def residual_func_complex(param, data_image, x_len, y_len, pixel_scale,
 
                             
         image = image_a_bulge + image_a_disk + image_b_bulge + image_b_disk
-        # Create error array
-        error = np.sqrt(data_image.array.ravel())
-        # Set the errors equal to 1 where 0 is.
-        error[error==0] = 1
-        return (image-data_image).array.ravel()
+        
+        if sky_level > 10:        
+            return (image-data_image).array.ravel()
+        else:
+            return (image-data_image).array.ravel()
         
 # Function definition to return the original data array, best-fit array,
 # residual, and correlation matrix with differences and error on e1 and e2.
@@ -269,7 +272,7 @@ def run_2_galaxy_full_params_complex(flux_a_tot,bulge_a_frac,hlr_a_bulge,n_a_bul
                                      x_len,y_len,pixel_scale,
                                      galtype_a,galtype_b,
                                      seed_a,seed_b,seed_p,
-                                     sky_level):
+                                     add_noise_flag,sky_level):
 
     flux_a_bulge = flux_a_tot*bulge_a_frac
     flux_a_disk = flux_a_tot*(1-bulge_a_frac)
@@ -295,7 +298,8 @@ def run_2_galaxy_full_params_complex(flux_a_tot,bulge_a_frac,hlr_a_bulge,n_a_bul
 
                             
     image = image_a_bulge + image_a_disk + image_b_bulge + image_b_disk
-    image = add_noise(image,seed=seed_p,sky_level=sky_level)    
+    if add_noise_flag == True:
+        image = add_noise(image,seed=seed_p,sky_level=sky_level)    
     # Obtain the image bounds and domain information
     x_cen,y_cen,x,y,X,Y = drawLibrary.return_domain(image)
     
@@ -328,7 +332,7 @@ def run_2_galaxy_full_params_complex(flux_a_tot,bulge_a_frac,hlr_a_bulge,n_a_bul
     
     # Extract params that minimize the difference of the data from the model.
     result = lmfit.minimize(residual_func_complex, parameters, 
-                            args=(image, x_len, y_len, pixel_scale, 
+                            args=(image, sky_level, x_len, y_len, pixel_scale, 
                                   galtype_a, galtype_a, n_a_bulge, n_a_disk,
                                   galtype_b, galtype_b, n_b_bulge, n_b_disk,
                                   None,None,0,0)) # Case for one object
