@@ -15,6 +15,8 @@ import gauss
 import lmfit
 import scipy.optimize
 import drawLibrary
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as grid 
 
 # Create a galaxy with a sersic profile and optional psf to the image. 
 def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_index=0.5,
@@ -48,7 +50,27 @@ def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_i
         
     else:
         raise ValueError("Not using a sersic profile for the object.")
+        
+# Draw objects onto an image or return the objects themselves.
+def draw_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+                flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                psf_flag,beta,fwhm_psf,
+                x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_a,seed_b,seed_p,
+                add_noise_flag,sky_level):
 
+    image_a = create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype_a,sersic_index=n_a,
+                            x_len=x_len,y_len=y_len,scale=pixel_scale,
+                            psf_flag=psf_flag, beta=beta, size_psf=fwhm_psf)
+                                
+    image_b = create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype_b,sersic_index=n_b,
+                            x_len=x_len,y_len=y_len,scale=pixel_scale,
+                            psf_flag=psf_flag, beta=beta, size_psf=fwhm_psf)
+                            
+    image = image_a + image_b
+    if add_noise_flag == True:
+        image = add_noise(image,seed=seed_p,sky_level=sky_level)        
+    return image
+    
 # Add poisson noise to an image with a sky level argument.        
 def add_noise(image, noise_type=galsim.PoissonNoise, seed=None, sky_level=0):
     if sky_level == 0: 
@@ -60,6 +82,23 @@ def add_noise(image, noise_type=galsim.PoissonNoise, seed=None, sky_level=0):
         return image
     else:
         raise ValueError("Not using poisson noise in your image.")
+        
+def calc_SNR(im, texp, sbar, weight):
+    # Work with the image in count per second
+    Di = im.array/texp
+    # Calculate the threshold and mask per second
+    threshold_per_s = weight*np.sqrt(sbar/texp)
+    mask_per_s = Di > threshold_per_s
+    # Calculate SNR using David's formulation
+    nu_s = np.sqrt(texp/sbar)*np.sqrt((mask_per_s*Di*Di).sum())
+    
+    # Now work with the original galsim image (Di*texp=im.array)
+    threshold = weight*np.sqrt(texp*sbar)
+    mask = im.array > threshold
+    # Now calculate the SNR using the original galsim image
+    nu = np.sqrt(1/(sbar*texp))*np.sqrt((mask*im.array**2).sum())
+
+    return nu_s, mask_per_s, nu, mask
 
 # Convolve an object with a PSF.
 def convolve_with_psf(gal, beta, size_psf, psf_type=galsim.Moffat, flux_psf=1):
@@ -124,14 +163,17 @@ def residual_func_simple(param, data_image, sky_level, x_len, y_len, pixel_scale
 # residual, and correlation matrix with differences and error on e1 and e2.
 def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                     flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                                    psf_flag,beta,fwhm_psf,
                                     x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_a,seed_b,seed_p,
                                     add_noise_flag,sky_level):
 
     image_a = create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype_a,sersic_index=n_a,
-                            x_len=x_len,y_len=y_len,scale=pixel_scale)
+                            x_len=x_len,y_len=y_len,scale=pixel_scale,
+                            psf_flag=psf_flag, beta=beta, size_psf=fwhm_psf)
                                 
     image_b = create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype_b,sersic_index=n_b,
-                            x_len=x_len,y_len=y_len,scale=pixel_scale)
+                            x_len=x_len,y_len=y_len,scale=pixel_scale,
+                            psf_flag=psf_flag, beta=beta, size_psf=fwhm_psf)
                             
     image = image_a + image_b
     if add_noise_flag == True:
@@ -144,7 +186,7 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     
     # Define some seed that's far from true values and insert into
     # lmfit object for galaxy one and two
-    p0 = 2.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
+    p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
                        flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])
     parameters = lmfit.Parameters()
     parameters.add('flux_a', value=p0[0])
@@ -374,4 +416,38 @@ def run_2_galaxy_full_params_complex(flux_a_tot,bulge_a_frac,hlr_a_bulge,n_a_bul
     best_fit_b_disk = create_galaxy(flux_b_disk_est,hlr_b_disk_est,e1_b_est,e2_b_est,x0_b_est,y0_b_est,
                                      x_len=x_len,y_len=y_len,scale=pixel_scale,galtype_gal=galtype_a,sersic_index=n_b_disk)                                                                        
                                                                       
-    return image, best_fit_a_bulge + best_fit_a_disk + best_fit_b_bulge + best_fit_b_disk, result                
+    return image, best_fit_a_bulge + best_fit_a_disk + best_fit_b_bulge + best_fit_b_disk, result
+
+# TODO implement more than one datum
+def plot(domain, data, figsize, pos, row, col, colors, markers, legend=None, fontsize=12, legend_fontsize=12, t_fontsize=15, 
+         text_x=0, text_y=0, text_s='', text_fs=12,
+         yerr=None, suptitle='', x_label='', x_lim=None, y_label=None, y_lim=None, scatter_flag=True, plot_flag=True):
+    figure = plt.figure(figsize=figsize)
+    if text_s != '':
+        plt.text(text_x,text_y,text_s,fontsize=text_fs)         
+    gs = grid.GridSpec(row,col)
+    for i, key in enumerate(data):
+        figure.add_subplot(gs[pos[i]])
+        plt.xlabel(x_label,fontsize=fontsize)
+        if y_label != None:
+            plt.ylabel(y_label[i],fontsize=fontsize)
+        plt.suptitle(suptitle,fontsize=t_fontsize)
+        if y_lim != None:
+            plt.ylim(y_lim[i])
+        if x_lim != None:
+            plt.xlim(x_lim)
+        if scatter_flag == True:
+            p = plt.scatter(domain,data[key],c=colors[i],marker=markers[i])
+            if legend != None:
+                plt.legend([p],[legend[i]],loc=1,prop={'size':legend_fontsize})
+        if plot_flag == True and scatter_flag == True:
+            plt.plot(domain,data[key],c=colors[i])
+        else:
+            if legend != None:
+                plt.plot(domain,data[key],c=colors[i],label=legend[i])
+            else:
+                plt.plot(domain,data[key],c=colors[i])
+        if yerr != None:
+            plt.errorbar(domain,data[key],c=colors[i])
+    return figure        
+                        
