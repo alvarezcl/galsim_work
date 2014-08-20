@@ -11,9 +11,7 @@ Created on Wed Aug 13 13:57:03 2014
 from __future__ import division
 import galsim
 import numpy as np
-import gauss
 import lmfit
-import scipy.optimize
 import drawLibrary
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as grid 
@@ -82,7 +80,8 @@ def add_noise(image, noise_type=galsim.PoissonNoise, seed=None, sky_level=0):
         return image
     else:
         raise ValueError("Not using poisson noise in your image.")
-        
+
+# Calculate the SNR for a given noise-free image.        
 def calc_SNR(im, texp, sbar, weight):
     # Work with the image in count per second
     Di = im.array/texp
@@ -99,6 +98,39 @@ def calc_SNR(im, texp, sbar, weight):
     nu = np.sqrt(1/(sbar*texp))*np.sqrt((mask*im.array**2).sum())
 
     return nu_s, mask_per_s, nu, mask
+
+# Calculate the function that takes in some SNR and returns total flux.    
+def calc_SNR_to_flux(hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+                     hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                     psf_flag,beta,fwhm_psf,
+                     x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_1,seed_2,seed_3,
+                     add_noise_flag,sky_level,sbar,texp,
+                     loops,increment,order_polynomial):
+                         
+    data = {'Flux_tot':[],'SNR':[],'Frac_pix':[]}
+    flux_a = 0
+    flux_b = 0
+    for i in xrange(0,loops):
+        flux_a += (i+1)*increment
+        flux_b = flux_a
+        data['Flux_tot'].append(flux_a+flux_b)
+        # Obtain instantiation
+        im = draw_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+                         flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                         psf_flag,beta,fwhm_psf,
+                         x_len,y_len,pixel_scale,galtype_a,galtype_b,seed_1,seed_2,seed_3,
+                         add_noise_flag,sky_level)
+                                      
+        nu_s, mask_per_s, nu, mask = calc_SNR(im, texp, sbar, 0.5)
+        data['SNR'].append(nu)
+        pix_count_image = (im.array > 0).sum()
+        pix_count_masked_image = (mask > 0).sum()
+        fractional_pix_count = pix_count_masked_image/pix_count_image 
+        data['Frac_pix'].append(fractional_pix_count)
+    
+    domain = (data.pop('Flux_tot'))                        
+    z = np.polyfit(data['SNR'],domain,order_polynomial)
+    return np.poly1d(z)    
 
 # Convolve an object with a PSF.
 def convolve_with_psf(gal, beta, size_psf, psf_type=galsim.Moffat, flux_psf=1):
@@ -154,9 +186,9 @@ def residual_func_simple(param, data_image, sky_level, x_len, y_len, pixel_scale
         image = image_a + image_b
         
         if sky_level > 10:        
-            return (image-data_image).array.ravel()/np.sqrt(sky_level + data_image.array).ravel()
+            return (data_image-image).array.ravel()/np.sqrt(sky_level + image.array).ravel()
         else:
-            return (image-data_image).array.ravel()
+            return (data_image-image).array.ravel()
 
         
 # Function definition to return the original data array, best-fit array,
@@ -174,10 +206,18 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     image_b = create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype_b,sersic_index=n_b,
                             x_len=x_len,y_len=y_len,scale=pixel_scale,
                             psf_flag=psf_flag, beta=beta, size_psf=fwhm_psf)
-                            
+    
+    image_no_noise = image_a + image_b                        
     image = image_a + image_b
     if add_noise_flag == True:
-        image = add_noise(image,seed=seed_p,sky_level=sky_level)    
+        image_noise = add_noise(image,seed=seed_p,sky_level=sky_level)
+        image = image_noise
+    elif add_noise_flag == True and sky_level == 0:
+        image_noise = add_noise(image,seed=seed_p,sky_level=sky_level)
+        image = image_noise
+    else:
+        image_noise = image
+
     # Obtain the image bounds and domain information
     x_cen,y_cen,x,y,X,Y = drawLibrary.return_domain(image)
     
@@ -223,7 +263,7 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                x_len=x_len,y_len=y_len,scale=pixel_scale,galtype_gal=galtype_b,sersic_index=n_b)
                                        
                                                                       
-    return image, best_fit_a+best_fit_b, result
+    return image_no_noise, image_noise, best_fit_a+best_fit_b, result
 
 def residual_func_complex(param, data_image, sky_level, x_len, y_len, pixel_scale, 
                           galtype_a_bulge, galtype_a_disk, n_a_bulge, n_a_disk,
@@ -449,5 +489,13 @@ def plot(domain, data, figsize, pos, row, col, colors, markers, legend=None, fon
                 plt.plot(domain,data[key],c=colors[i])
         if yerr != None:
             plt.errorbar(domain,data[key],c=colors[i])
-    return figure        
+    return figure
+
+# Calculate the residuals of extracted parameters
+def calc_resid(result_params,true_val):
+    list = result_params.values()
+    list = np.array(list)
+    return (list - true_val).tolist()
+    
+    
                         
