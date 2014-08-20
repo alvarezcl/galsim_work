@@ -82,88 +82,88 @@ def resid_1obj(param, target_image, x_len, y_len, scale, galtype):
 
 # Draw from two distributions and return a binned image object with two 
 # galaxies 
-def drawShoot_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
-                       flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
-                       x_len,y_len,scale,func_1,func_2,seed):
+def drawShoot_2galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
+                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,
+                       x_len,y_len,scale,func_a,func_b,seed):
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)                       
-    if func_1 is galsim.Gaussian:                           
-        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
-        gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
-        gal_1 = gal_1.shift(x_center1,y_center1)
-        image_1 = galsim.ImageD(x_len, y_len, scale=scale)
-        image_1 = gal_1.drawImage(image=image_1,method='phot',rng=seed)
-    if func_2 is galsim.Gaussian:    
-        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2, gsparams=big_fft_params)
-        gal_2 = gal_2.shear(g1=e1_2, g2=e2_2)
-        gal_2 = gal_2.shift(x_center2,y_center2)
-        image_2 = galsim.ImageD(x_len, y_len, scale=scale)
-        image_2 = gal_2.drawImage(image=image_2,method='phot',rng=seed)        
-    image = image_1 + image_2    
+    if func_a is galsim.Gaussian:                           
+        gal_a = func_a(half_light_radius=hlr_a, flux=flux_a, gsparams=big_fft_params)
+        gal_a = gal_a.shear(g1=e1_a, g2=e2_a)
+        gal_a = gal_a.shift(x0_a,y0_a)
+        image_a = galsim.ImageD(x_len, y_len, scale=scale)
+        image_a = gal_a.drawImage(image=image_a,method='phot',rng=seed)
+    if func_b is galsim.Gaussian:    
+        gal_b = func_b(half_light_radius=hlr_b, flux=flux_b, gsparams=big_fft_params)
+        gal_b = gal_b.shear(g1=e1_b, g2=e2_b)
+        gal_b = gal_b.shift(x0_b,y0_b)
+        image_b = galsim.ImageD(x_len, y_len, scale=scale)
+        image_b = gal_b.drawImage(image=image_b,method='phot',rng=seed)        
+    image = image_a + image_b    
     return image
 
 # Use the analytic definition of an image profile for two galaxies -- Gaussian or Sersic -mg
-def draw_2galaxies(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,
-                  flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,
-                  x_len,y_len,scale,func_1,func_2):
+def draw_2galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
+                  flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,
+                  x_len,y_len,scale,func_a,func_b):
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
-    if func_1 is galsim.Gaussian:                       
-        gal_1 = func_1(half_light_radius=hlr_1, flux=flux_1, gsparams=big_fft_params)
-        gal_1 = gal_1.shear(g1=e1_1, g2=e2_1)
-        gal_1 = gal_1.shift(x_center1,y_center1)
+    if func_a is galsim.Gaussian:                       
+        gal_a = func_a(half_light_radius=hlr_a, flux=flux_a, gsparams=big_fft_params)
+        gal_a = gal_a.shear(g1=e1_a, g2=e2_a)
+        gal_a = gal_a.shift(x0_a,y0_a)
 
-    if func_1 is galsim.Sersic:        
+    if func_a is galsim.Sersic:        
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl bulge
         btodsize = 0.5
-        gal_HLR = hlr_1
-        gal_flux = flux_1
-        gal_1 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
-        gal_1 += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
+        gal_HLR = hlr_a
+        gal_flux = flux_a
+        gal_a = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
+        gal_a += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
-    image_1 = galsim.ImageD(x_len, y_len, scale=scale)
-    image_1 = gal_1.drawImage(image=image_1)
+    image_a = galsim.ImageD(x_len, y_len, scale=scale)
+    image_a = gal_a.drawImage(image=image_a)
 
-    if func_2 is galsim.Gaussian:
-        gal_2 = func_2(half_light_radius=hlr_2, flux=flux_2, gsparams=big_fft_params)
-        gal_2 = gal_2.shear(g1=e1_2, g2=e2_2)
-        gal_2 = gal_2.shift(x_center2,y_center2)
+    if func_b is galsim.Gaussian:
+        gal_b = func_b(half_light_radius=hlr_b, flux=flux_b, gsparams=big_fft_params)
+        gal_b = gal_b.shear(g1=e1_b, g2=e2_b)
+        gal_b = gal_b.shift(x0_b,y0_b)
 
 
-    if func_1 is galsim.Sersic:        
+    if func_a is galsim.Sersic:        
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl bulge
         btodsize = 0.5
-        gal_HLR = hlr_2
-        gal_flux = flux_2
-        gal_2 = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
-        gal_2 += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
+        gal_HLR = hlr_b
+        gal_flux = flux_b
+        gal_b = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
+        gal_b += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
-    image_2 = galsim.ImageD(x_len, y_len, scale=scale)
-    image_2 = gal_2.drawImage(image=image_2)
+    image_b = galsim.ImageD(x_len, y_len, scale=scale)
+    image_b = gal_b.drawImage(image=image_b)
 
-    image = image_1 + image_2
+    image = image_a + image_b
     
     return image
 
 # The difference of the data and the model for a pair of galaxies
 # that is to be minimized by fitter - mg
-def resid_2obj(param, target_image, x_len, y_len, scale, func_1, func_2):
-    flux_1 = param['flux_1'].value
-    hlr_1 = param['hlr_1'].value
-    e1_1 = param['e1_1'].value
-    e2_1 = param['e2_1'].value
-    x_center1 = param['x_center1'].value
-    y_center1 = param['y_center1'].value
+def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
+    flux_a = param['flux_a'].value
+    hlr_a = param['hlr_a'].value
+    e1_a = param['e1_a'].value
+    e2_a = param['e2_a'].value
+    x0_a = param['x0_a'].value
+    y0_a = param['y0_a'].value
 
-    flux_2 = param['flux_2'].value
-    hlr_2 = param['hlr_2'].value
-    e1_2 = param['e1_2'].value
-    e2_2 = param['e2_2'].value
-    x_center2 = param['x_center2'].value
-    y_center2 = param['y_center2'].value
+    flux_b = param['flux_b'].value
+    hlr_b = param['hlr_b'].value
+    e1_b = param['e1_b'].value
+    e2_b = param['e2_b'].value
+    x0_b = param['x0_b'].value
+    y0_b = param['y0_b'].value
     
-    image1 = draw_galaxy_1(flux_1,hlr_1,e1_1,e2_1,x_center1,y_center1,x_len,y_len,scale,func_1)
-    image2 = draw_galaxy_1(flux_2,hlr_2,e1_2,e2_2,x_center2,y_center2,x_len,y_len,scale,func_2)
+    image1 = draw_galaxy_1(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,x_len,y_len,scale,func_a)
+    image2 = draw_galaxy_1(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,x_len,y_len,scale,func_b)
     image = image1 + image2
 
     # Put just sum of one galaxy instead
