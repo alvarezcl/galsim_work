@@ -20,11 +20,13 @@ import scipy.linalg as scla
 import matplotlib.gridspec as gridspec
 import sys
 import ipdb
+import time
+# import timeit
 
-
+start= time.time()
 
 # Parameters for object a
-flux_a = 5e4          # total counts on the image
+flux_a = 5e5          # total counts on the image
 hlr_a = 1         # arcsec -- code will segfault without telling you why, if you accidentally set this negative
 e1_a = 0.0
 e2_a = 0.0
@@ -33,13 +35,13 @@ y0_a = 0
 n_a = 4
 
 # Parameters for object b
-flux_b = 5e4       # total counts on the image
+flux_b = flux_a       # total counts on the image
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
 x0_b = +1
 y0_b = 0
-n_b = 4
+n_b = n_a
 
 # Galsim function definitions
 sersic_func = galsim.Sersic
@@ -53,10 +55,10 @@ seed_3 = galsim.BaseDeviate(3)
 
 # Image properties
 pixel_scale = 0.2     # arcsec / pixel
-imsize = 50            # pixels
+imsize = 100            # pixels
 x_len = y_len = imsize
-sky_level = 0         # counts / pixel
-add_noise_flag = False
+sky_level = 11         # counts / pixel
+add_noise_flag = True
 
 
 # psf properties
@@ -66,9 +68,9 @@ fwhm_psf = 0.6
 
 
 # Separation vars - mg 
-min_sep = 0
-max_sep = 1.0
-sep_step = 0.25 
+min_sep = 0.5
+max_sep = 6.0
+sep_step = 0.5
 
 sep_array = np.arange(min_sep, max_sep, sep_step) # mg - Changed name from d_coeff
 
@@ -82,8 +84,15 @@ errors = []
 error_types = ['rel_error','abs_error']
 error_type = error_types[1]
 
+cur= time.time()
+
+print " About to enter loop -- current-start time = ", cur-start 
+
+
+
 for sep in sep_array: 
-    
+    loopstarttime = time.time()
+    print " At start of sep loop -- current-start time = ", cur-start 
     print " sep = ", sep
 
     x0_a = -sep*hlr_a  # We'll step gal A to the left in steps of 0.5*step_sep - mg (Shift in arcsec from center)
@@ -96,13 +105,14 @@ for sep in sep_array:
     galimg_b = mssg_noiseLibrary.create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype,sersic_index=n_b, x_len = imsize , y_len = imsize)
     
     galimg = galimg_a + galimg_b
-    
+    galimg.addNoise(galsim.PoissonNoise(sky_level=0) )
+
     galimg_array = galimg.array
     
 
 ########################################################################################################################################
     
-    
+    '''    
 # Obtain instantiation
     img, best_fit, result = mssg_noiseLibrary.fit_2_galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                                              flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
@@ -120,6 +130,7 @@ for sep in sep_array:
     print " \n Have fit the 2 gal img \n"
     
     '''
+
 ########### Show the galaxies + fit
     fig = plt.figure()
 
@@ -135,7 +146,8 @@ for sep in sep_array:
     c1 = ax1.imshow(galimg_array, origin='lower')
     ax1.set_title('Orig Gals Image')
     plt.colorbar(c1, shrink=.5)
-    
+
+    '''    
     ax2 = fig.add_subplot(132)
     c2 = plt.imshow(best_fit.array, origin='lower')
     ax2.set_title('Best Fit Image')
@@ -145,10 +157,11 @@ for sep in sep_array:
     c3 = plt.imshow(resid.array, origin='lower')
     ax3.set_title('Resid Image')
     plt.colorbar(c3, shrink=.5)
+   '''
+ 
+    plt.show()
     
-    #    plt.show()
     '''
-    
     # Differences on measure and true for object one    
     diff_flux_a = result.params['flux_a'].value - flux_a
     diff_hlr_a = result.params['hlr_a'].value - hlr_a
@@ -172,6 +185,10 @@ for sep in sep_array:
 
     # Obtain the errors on each parameter
     errors.append(np.sqrt(np.diag(result.covar)))                           
+    '''
+
+    cur = time.time()
+    print " At end of sep loop -- current-start time = ", cur-loopstarttime 
 
     print " ********************************* On to next sep.. "
 
