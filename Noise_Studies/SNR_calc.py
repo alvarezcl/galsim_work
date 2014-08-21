@@ -20,6 +20,7 @@ import lmfit
 import matplotlib.pyplot as plt
 import scipy.linalg as scla
 import matplotlib.gridspec as gridspec
+import scipy.interpolate
 
 # Parameters for object a
 flux_a = 0          # total counts on the image
@@ -68,8 +69,8 @@ fwhm_psf = 0.6
 
 data = {'Flux_tot':[],'SNR':[],'Frac_pix':[]}
 
-for i in xrange(0,100):
-    flux_a += (i+1)*1000
+for i in xrange(0,500):
+    flux_a += 1000
     flux_b = flux_a
     data['Flux_tot'].append(flux_a+flux_b)
     # Obtain instantiation
@@ -116,12 +117,22 @@ fig = noiseLibrary.plot(domain,data,figsize,pos,row,col,colors,markers,
                         suptitle=suptitle,x_label=x_label,x_lim=x_lim,y_lim=None,y_label=y_label)
                         
 # Fit a polynomial to the data for SNR
-order = 5                        
-z = np.polyfit(data['SNR'],domain,order)
+order = 5
+data['SNR'] = np.array(data['SNR'])
+snr = data['SNR']
+domain = np.array(domain) 
+domain = domain[snr>0] 
+domain = domain[snr<15]
+snr = snr[snr>0]
+snr = snr[snr<15]                         
+z = np.polyfit(snr,domain,order)
 flux_func = np.poly1d(z)
-x_new = np.linspace(0,50,100)
-y_new = flux_func(x_new)
+SNR_range = np.linspace(2,15,10)
+flux_range = flux_func(SNR_range)
 plt.figure()
-plt.plot(y_new,x_new)
-plt.show()
-                        
+plt.plot(SNR_range,flux_range,c='b')
+plt.scatter(snr,domain)
+plt.ylim([0,150000]); plt.xlim([0,15])
+
+f = scipy.interpolate.interp1d(snr,domain,kind='cubic')
+plt.plot(SNR_range,f(SNR_range),c='g')                        

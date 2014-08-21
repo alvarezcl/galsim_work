@@ -110,8 +110,8 @@ def calc_SNR_to_flux(hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     data = {'Flux_tot':[],'SNR':[],'Frac_pix':[]}
     flux_a = 0
     flux_b = 0
-    for i in xrange(0,loops):
-        flux_a += (i+1)*increment
+    for i in xrange(1,loops):
+        flux_a += increment
         flux_b = flux_a
         data['Flux_tot'].append(flux_a+flux_b)
         # Obtain instantiation
@@ -127,10 +127,9 @@ def calc_SNR_to_flux(hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
         pix_count_masked_image = (mask > 0).sum()
         fractional_pix_count = pix_count_masked_image/pix_count_image 
         data['Frac_pix'].append(fractional_pix_count)
-    
-    domain = (data.pop('Flux_tot'))                        
-    z = np.polyfit(data['SNR'],domain,order_polynomial)
-    return np.poly1d(z)    
+                            
+    z = np.polyfit(data['SNR'],data['Flux_tot'],order_polynomial)
+    return np.poly1d(z), data['SNR'], data['Flux_tot']    
 
 # Convolve an object with a PSF.
 def convolve_with_psf(gal, beta, size_psf, psf_type=galsim.Moffat, flux_psf=1):
@@ -186,7 +185,7 @@ def residual_func_simple(param, data_image, sky_level, x_len, y_len, pixel_scale
         image = image_a + image_b
         
         if sky_level > 10:        
-            return (data_image-image).array.ravel()/np.sqrt(sky_level + image.array).ravel()
+            return (data_image-image).array.ravel()/np.sqrt(sky_level).ravel()
         else:
             return (data_image-image).array.ravel()
 
