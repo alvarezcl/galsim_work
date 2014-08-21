@@ -5,7 +5,9 @@ Created on Tue Aug 19 10:08:16 2014
 @author: luis
 """
 
-## This script runs through a simple double fit of two sersic profiles
+## This script draws an image of two sersic profiles and then calculates the
+## SNR by looping over different flux values for both objects at
+## a certain separation. 
 
 from __future__ import division
 from pandas import Series, DataFrame
@@ -24,7 +26,7 @@ flux_a = 0          # total counts on the image
 hlr_a = 1             # arcsec
 e1_a = 0.0
 e2_a = 0.0
-x0_a = -1
+x0_a = -3
 y0_a = 0
 n_a = 0.5
 
@@ -33,7 +35,7 @@ flux_b = flux_a          # total counts on the image
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
-x0_b = 1
+x0_b = 3
 y0_b = 0
 n_b = 0.5
 
@@ -66,7 +68,7 @@ fwhm_psf = 0.6
 
 data = {'Flux_tot':[],'SNR':[],'Frac_pix':[]}
 
-for i in xrange(0,20):
+for i in xrange(0,100):
     flux_a += (i+1)*1000
     flux_b = flux_a
     data['Flux_tot'].append(flux_a+flux_b)
@@ -83,6 +85,7 @@ for i in xrange(0,20):
     pix_count_masked_image = (mask > 0).sum()
     fractional_pix_count = pix_count_masked_image/pix_count_image 
     data['Frac_pix'].append(fractional_pix_count)
+    print flux_a+flux_b
     print nu
     print i                            
 
@@ -111,6 +114,14 @@ fig = noiseLibrary.plot(domain,data,figsize,pos,row,col,colors,markers,
                         legend=None,fontsize=fontsize,legend_fontsize=l_fontsize,t_fontsize=t_fontsize,
                         text_x=text_p[0],text_y=text_p[1],text_s='',text_fs=text_p[3],
                         suptitle=suptitle,x_label=x_label,x_lim=x_lim,y_lim=None,y_label=y_label)
-                                                                                             
-                                                                    
-                                                                    
+                        
+# Fit a polynomial to the data for SNR
+order = 5                        
+z = np.polyfit(data['SNR'],domain,order)
+flux_func = np.poly1d(z)
+x_new = np.linspace(0,50,100)
+y_new = flux_func(x_new)
+plt.figure()
+plt.plot(y_new,x_new)
+plt.show()
+                        
