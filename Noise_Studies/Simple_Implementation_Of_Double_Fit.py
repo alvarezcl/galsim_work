@@ -21,22 +21,22 @@ import matplotlib.gridspec as gridspec
 import scipy.interpolate
 
 # Parameters for object a
-flux_a = 50000          # total counts on the image
+flux_a = 1000000          # total counts on the image
 hlr_a = 1             # arcsec
-e1_a = 0.0
+e1_a = 0.5
 e2_a = 0.0
 x0_a = -3
 y0_a = 0
-n_a = 1
+n_a = 0.5
 
 # Parameters for object b
-flux_b = 50000          # total counts on the image
+flux_b = flux_a          # total counts on the image
 hlr_b = hlr_a         # arcsec
-e1_b = 0.0
+e1_b = 0.5
 e2_b = 0.0
 x0_b = 3
 y0_b = 0
-n_b = 1
+n_b = 0.5
 
 true_val = np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])
 
@@ -83,7 +83,7 @@ SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_
                                                         psf_flag,beta,fwhm_psf,
                                                         x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
                                                         False,sky_level,sbar,texp,
-                                                        1000,1000,10)
+                                                        100,1000,10)
                                             
 plt.figure()
 plt.scatter(snr_points,flux_pts,c='g')
@@ -91,7 +91,7 @@ snr_points = np.array(snr_points); flux_pts = np.array(flux_pts)
 cond = np.logical_and(snr_points > 0, snr_points < 15)
 flux_pts = flux_pts[cond]
 snr_points = snr_points[cond]
-plt.xlim([0,15])
+plt.xlim([0,15]); plt.ylim([0,1e5])
 SNR_to_flux = scipy.interpolate.interp1d(snr_points,flux_pts,kind='cubic')
 plt.plot(snr_points,SNR_to_flux(snr_points),c='g')                                             
                                                                     

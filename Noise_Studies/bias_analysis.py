@@ -84,12 +84,13 @@ snr_points = np.array(snr_points); flux_pts = np.array(flux_pts)
 cond = np.logical_and(snr_points > 0, snr_points < 150)
 flux_pts = flux_pts[cond]
 snr_points = snr_points[cond]
+plt.figure()
 plt.xlim([0,np.max(snr_points)]); plt.ylim([0,np.max(flux_pts)])
 SNR_to_flux = scipy.interpolate.interp1d(snr_points,flux_pts,kind='cubic')
 plt.plot(snr_points,SNR_to_flux(snr_points),c='g',linewidth=5)                                             
 
 # SNR range to loop through                                            
-SNR_range = [100,40,30,20,15,10]
+SNR_range = [100,40,30,20,15,10,5]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
@@ -120,7 +121,13 @@ for SNR in SNR_range:
                                                                                                
         # Obtain the covariance and correlation matrix.
         if result.covar is None:
-            raise ValueError("Covariance Matrix is Null")                                                                                       
+            print "Covariance Matrix is Null"
+            im_no_noise, im_noise, best_fit, result = noiseLibrary.run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+                                                                                                   flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                                                                                                   psf_flag,beta,fwhm_psf,
+                                                                                                   x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
+                                                                                                   add_noise_flag,sky_level)
+                                                                                       
         error_diag = (np.sqrt(np.diag(result.covar)))
         error_mat = np.outer(error_diag,error_diag)
         correlation_mat = result.covar/error_mat
@@ -165,6 +172,7 @@ Resid_SNR_30 = resid_matrix[2,:,:]
 Resid_SNR_20 = resid_matrix[3,:,:]
 Resid_SNR_15 = resid_matrix[4,:,:]
 Resid_SNR_10 = resid_matrix[5,:,:]
+Resid_SNR_5 = resid_matrix[6,:,:]
 
 gs = gridspec.GridSpec(2,2)
 data_pts = False
@@ -231,6 +239,13 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
+
 
 ax2 = fig.add_subplot(gs[0,1])
 col = 3
@@ -288,6 +303,12 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
 
 
 ax3 = fig.add_subplot(gs[1,0])
@@ -346,6 +367,12 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
 
 ax4 = fig.add_subplot(gs[1,1])
 col = 3 + 6
@@ -400,6 +427,13 @@ if data_pts:
 plt.scatter([10],np.mean(Resid_SNR_10[:,col]),marker='o',c='b',linewidth=mean_linewidth)
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),ecolor='b',elinewidth=bar_linewidth)
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
+
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
 
@@ -462,6 +496,12 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
 
 
 ax2 = fig.add_subplot(gs[0,1])
@@ -518,6 +558,13 @@ if data_pts:
 plt.scatter([10],np.mean(Resid_SNR_10[:,col]),marker='o',c='b',linewidth=mean_linewidth)
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),ecolor='b',elinewidth=bar_linewidth)
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
+
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
 
@@ -577,6 +624,13 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
+
 
 ax4 = fig.add_subplot(gs[1,1])
 col = 1 + 6
@@ -634,6 +688,12 @@ plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col]),
 plt.errorbar([10],np.mean(Resid_SNR_10[:,col]),yerr=np.std(Resid_SNR_10[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+if data_pts:
+    plt.scatter(5*np.ones(num_trials),Resid_SNR_10[:,col],marker=mark,c='g',alpha=alpha)
+plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),ecolor='b',elinewidth=bar_linewidth)
+plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
+plt.axhline(0,color='k',linestyle='--')
 
 plt.show()
 

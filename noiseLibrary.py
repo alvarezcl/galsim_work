@@ -34,7 +34,7 @@ def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_i
          e2 = -0.99
                   
     if np.sqrt(e1**2 + e2**2) > 1:
-         return create_galaxy(flux, hlr, e1*0.5, e2*0.5, galtype_gal=galtype_gal, sersic_index=sersic_index,
+         return create_galaxy(flux, hlr, e1*0.1, e2*0.1, galtype_gal=galtype_gal, sersic_index=sersic_index,
                               psf_flag=psf_flag, psf_type=psf_type, beta=beta, size_psf=size_psf, flux_psf=flux_psf,
                               x_len=x_len, y_len=y_len, scale=scale, method=method,seed=seed)
                   
@@ -243,20 +243,26 @@ def run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
     
     # Define some seed that's far from true values and insert into
     # lmfit object for galaxy one and two
+    lim = 1/np.sqrt(2)
     p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
                        flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])
     parameters = lmfit.Parameters()
     parameters.add('flux_a', value=p0[0])
-    parameters.add('hlr_a', value=p0[1], min=0.0)
-    parameters.add('e1_a', value=p0[2], min=-1.0, max=1.0)
-    parameters.add('e2_a', value=p0[3], min=-1.0, max=1.0)
+    parameters.add('hlr_a', value=p0[1])
+    #parameters.add('e1_a', value=p0[2],min=-0.99,max=0.99)
+    #parameters.add('mag',value=0.99,max=0.99,vary=True)
+    #parameters.add('e2_a',expr='sqrt(mag**2 - e1_a**2)')
+    parameters.add('e1_a',value=p0[2],min=-lim,max=lim)
+    parameters.add('e2_a',value=p0[3],min=-lim,max=lim)    
     parameters.add('x0_a',value=p0[4])
     parameters.add('y0_a',value=p0[5])
     
     parameters.add('flux_b', value=p0[6])
-    parameters.add('hlr_b', value=p0[7], min=0.0)
-    parameters.add('e1_b', value=p0[8], min=-1.0, max=1.0)
-    parameters.add('e2_b', value=p0[9], min=-1.0, max=1.0)
+    parameters.add('hlr_b', value=p0[7])
+    parameters.add('e1_b',value=p0[8],min=-lim,max=lim)
+    parameters.add('e2_b',value=p0[9],min=-lim,max=lim)
+    #parameters.add('e1_b', value=p0[2],min=-0.99,max=0.99)
+    #parameters.add('e2_b',expr='sqrt(mag**2 - e1_b**2)')
     parameters.add('x0_b',value=p0[10])
     parameters.add('y0_b',value=p0[11])
     
