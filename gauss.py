@@ -11,7 +11,6 @@ Created on Mon Jun 23 23:30:16 2014
 
 import numpy as np
 import gauss
-from scipy.stats import multivariate_normal
 
 # Function returns a scalar evaluated at x with gaussian function.
 def gauss_1d(x,mean,variance):

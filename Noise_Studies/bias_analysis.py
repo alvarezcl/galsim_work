@@ -78,22 +78,22 @@ SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_
                                                         1000,1000,10)
                                             
 plt.figure()
-plt.scatter(snr_points,flux_pts,c='g')
+plt.scatter(snr_points,flux_pts,c='b',alpha=0.5)
 plt.title('Flux vs SNR'); plt.xlabel('SNR'); plt.ylabel('Flux')
 snr_points = np.array(snr_points); flux_pts = np.array(flux_pts) 
 cond = np.logical_and(snr_points > 0, snr_points < 150)
 flux_pts = flux_pts[cond]
 snr_points = snr_points[cond]
-plt.xlim([0,100]); plt.ylim([0,5e5])
+plt.xlim([0,np.max(snr_points)]); plt.ylim([0,np.max(flux_pts)])
 SNR_to_flux = scipy.interpolate.interp1d(snr_points,flux_pts,kind='cubic')
-plt.plot(snr_points,SNR_to_flux(snr_points),c='g')                                             
+plt.plot(snr_points,SNR_to_flux(snr_points),c='g',linewidth=5)                                             
 
 # SNR range to loop through                                            
 SNR_range = [100,40,30,20,15,10]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
-num_trials = 100
+num_trials = 500
 
 # Data to keep track of
 resid_matrix = []
@@ -171,7 +171,7 @@ data_pts = False
 # Plotting for e1 and e2 for objects a and b
 fontsize = 13
 fig = plt.figure(figsize=(20,11))
-suptitle = 'Bias Anaylsis For Sersic Index: $%.2f$\n Sep: $%.2f arcs$; $\sigma_{sky}=%.2f$; Trials = $%.2f$'%(n_a,sep,sky_noise,num_trials)
+suptitle = 'Bias Anaylsis For Sersic Index: $%.2f$\n Sep: $%.2f\/arcs$; $S=%.2f $; $t_{exp}=%.2fsec$; Trials = $%.2f$'%(n_a,sep,sbar,texp,num_trials)
 plt.suptitle(suptitle,fontsize=fontsize)
 ax1 = fig.add_subplot(gs[0,0])
 
@@ -180,9 +180,12 @@ mark = 'x'
 alpha = 0.05
 mean_linewidth = 1
 bar_linewidth = 2
+lim_w = 2
 
 plt.title(title + ' of $e1$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e1_a$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -235,6 +238,8 @@ mark = 'x'
 
 plt.title(title + ' of $e2$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e2_a$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -291,8 +296,8 @@ mark = 'o'
 
 plt.title(title + ' of $e1$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e1_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
-
-plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -347,6 +352,8 @@ col = 3 + 6
 mark = 'x'
 plt.title(title + ' of $e2$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e2_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -405,6 +412,8 @@ col = 0
 mark = 'o'
 plt.title(title + ' of $Flux$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Flux_a$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -461,6 +470,8 @@ mark = 'x'
 
 plt.title(title + ' of $Hlr$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_a$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -516,6 +527,8 @@ mark = 'o'
 
 plt.title(title + ' of $Flux$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Flux_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -571,6 +584,8 @@ mark = 'x'
 
 plt.title(title + ' of $Hlr$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
+lim = np.std(Resid_SNR_10[:,col])
+plt.ylim([-lim/lim_w,lim/lim_w])
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)

@@ -492,7 +492,8 @@ def plot(domain, data, figsize, pos, row, col, colors, markers, legend=None, fon
 
 # Calculate the residuals of extracted parameters
 def calc_resid(result_params,true_val):
-    list = result_params.values()
+    list = [result_params['flux_a'].value,result_params['hlr_a'].value,result_params['e1_a'].value,result_params['e2_a'].value,result_params['x0_a'].value,result_params['y0_a'].value,
+            result_params['flux_b'].value,result_params['hlr_b'].value,result_params['e1_b'].value,result_params['e2_b'].value,result_params['x0_b'].value,result_params['y0_b'].value]
     list = np.array(list)
     return (list - true_val).tolist()
     
