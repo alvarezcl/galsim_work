@@ -27,7 +27,7 @@ flux_a = 0            # We will loop through this value later
 hlr_a = 1             # arcsec
 e1_a = 0.0
 e2_a = 0.0
-x0_a = -3
+x0_a = -1
 y0_a = 0
 n_a = 0.5
 
@@ -36,7 +36,7 @@ flux_b = 0            # We will loop through this value later
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
-x0_b = 3
+x0_b = 1
 y0_b = 0
 n_b = 0.5
 
@@ -93,7 +93,7 @@ SNR_range = [100,40,30,20,15,10]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
-num_trials = 500
+num_trials = 100
 
 # Data to keep track of
 resid_matrix = []

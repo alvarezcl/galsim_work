@@ -20,6 +20,24 @@ import matplotlib.gridspec as grid
 def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_index=0.5,
                   psf_flag=False, psf_type=galsim.Moffat, beta=5, size_psf=1, flux_psf=1,
                   x_len=100, y_len=100, scale=0.2, method='fft',seed=None):
+    if e1 > 1:
+         print "The e1 component of ellipticity is greater than 1."
+         e1 = 0.99
+    elif e1 < -1:
+         print "The e1 component of ellipticity is less than -1."
+         e1 = -0.99
+    if e2 > 1:
+         print "The e2 component of ellipticity is greater than 1."
+         e2 + 0.99
+    elif e2 < -1:
+         print "The e2 component of ellipticity is less than -1."
+         e2 = -0.99
+                  
+    if np.sqrt(e1**2 + e2**2) > 1:
+         return create_galaxy(flux, hlr, e1*0.5, e2*0.5, galtype_gal=galtype_gal, sersic_index=sersic_index,
+                              psf_flag=psf_flag, psf_type=psf_type, beta=beta, size_psf=size_psf, flux_psf=flux_psf,
+                              x_len=x_len, y_len=y_len, scale=scale, method=method,seed=seed)
+                  
     big_fft_params = galsim.GSParams(maximum_fft_size=1002400)
 
     print "\nPostage Stamp is", x_len, "by", y_len, "with\na scale of", scale,"\"/Pixel"    

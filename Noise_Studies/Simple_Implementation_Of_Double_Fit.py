@@ -27,7 +27,7 @@ e1_a = 0.0
 e2_a = 0.0
 x0_a = -3
 y0_a = 0
-n_a = 0.5
+n_a = 1
 
 # Parameters for object b
 flux_b = 50000          # total counts on the image
@@ -36,7 +36,7 @@ e1_b = 0.0
 e2_b = 0.0
 x0_b = 3
 y0_b = 0
-n_b = 0.5
+n_b = 1
 
 true_val = np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])
 
