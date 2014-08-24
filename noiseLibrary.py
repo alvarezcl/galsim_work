@@ -203,7 +203,7 @@ def residual_func_simple(param, data_image, sky_level, x_len, y_len, pixel_scale
         image = image_a + image_b
         
         if sky_level > 10:        
-            return (data_image-image).array.ravel()/np.sqrt(sky_level).ravel()
+            return (data_image-image).array.ravel()/np.sqrt(sky_level + image.array).ravel()
         else:
             return (data_image-image).array.ravel()
 
