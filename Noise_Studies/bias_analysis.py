@@ -65,14 +65,14 @@ sky_level = texp*sbar
 sky_noise = np.sqrt(sky_level)
 
 # psf properties
-psf_flag = False
+psf_flag = True
 beta = 3
 fwhm_psf = 0.6
 
 # Calc function for SNR --> flux
 SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
                                                         hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
-                                                        psf_flag,beta,fwhm_psf,
+                                                        False,beta,fwhm_psf,
                                                         x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
                                                         False,sky_level,sbar,texp,
                                                         1000,1000,10)
@@ -92,7 +92,7 @@ SNR_range = [100,40,30,20,15,10,5]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
-num_trials = 50
+num_trials = 10
 
 # Data to keep track of
 resid_matrix = []
@@ -197,7 +197,6 @@ max_std = np.max([np.std(Resid_SNR_100[:,col]),np.std(Resid_SNR_40[:,col]),np.st
 plt.ylim([min_pts-max_std,max_pts+max_std])
 
 plt.title(title + ' of $e1$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e1_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -266,7 +265,6 @@ plt.ylim([min_pts-max_std,max_pts+max_std])
 
 
 plt.title(title + ' of $e2$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e2_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -484,8 +482,6 @@ plt.ylim([min_pts-max_std,max_pts+max_std])
 
 
 plt.title(title + ' of $Flux$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Flux_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
-
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -557,7 +553,6 @@ plt.ylim([min_pts-max_std,max_pts+max_std])
 
 
 plt.title(title + ' of $Hlr$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -772,7 +767,6 @@ mean_linewidth = 1
 bar_linewidth = 2
 
 plt.title(title + ' of $e1$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e1_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
 
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
@@ -833,7 +827,7 @@ col = 3
 mark = 'x'
 
 plt.title(title + ' of $e2$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $e2_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
+
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
 min_pts = np.min([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
@@ -1015,7 +1009,7 @@ ax1 = fig.add_subplot(gs[0,0])
 col = 0
 mark = 'o'
 plt.title(title + ' of $Flux$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Flux_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
+
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
 min_pts = np.min([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
@@ -1075,7 +1069,7 @@ col = 1
 mark = 'x'
 
 plt.title(title + ' of $Hlr$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_a$',fontsize=fontsize)
-plt.xlabel('SNR',fontsize=fontsize)
+
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
 min_pts = np.min([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
