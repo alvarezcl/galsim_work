@@ -177,7 +177,7 @@ data_pts = False
 # Plotting for e1 and e2 for objects a and b
 fontsize = 13
 fig = plt.figure(figsize=(20,11))
-suptitle = 'Bias Anaylsis For Two Profiles With Sersic Index: $%.2f$\n Sep: $%.2f\/arcs$; $S=%.2f $; $t_{exp}=%.2fsec$; Trials = $%.2f$'%(n_a,sep,sbar,texp,num_trials)
+suptitle = 'Bias Anaylsis For Two Gaussian Profiles; Runs For Each $SNR$ Value: $%i$\n$Separation\/=\/%.1f\/arcseconds$; $Sky\/=\/%.1f\/counts/pixel$; $t_{exp}\/=\/%i\/seconds$'%(num_trials,sep,sbar,texp)
 plt.suptitle(suptitle,fontsize=fontsize)
 ax1 = fig.add_subplot(gs[0,0])
 
@@ -554,7 +554,7 @@ max_std = np.max([np.std(Resid_SNR_100[:,col]),np.std(Resid_SNR_40[:,col]),np.st
 plt.ylim([min_pts-max_std,max_pts+max_std])
 
 
-plt.title(title + ' of $Hlr$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_a$',fontsize=fontsize)
+plt.title(title + ' of $HLR$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $HLR_a$',fontsize=fontsize)
 
 if data_pts:
     plt.scatter(100*np.ones(num_trials),Resid_SNR_100[:,col],marker=mark,c='g',alpha=alpha)
@@ -687,7 +687,7 @@ ax4 = fig.add_subplot(gs[1,1])
 col = 1 + 6
 mark = 'x'
 
-plt.title(title + ' of $Hlr$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_b$',fontsize=fontsize)
+plt.title(title + ' of $HLR$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $HLR_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
 
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
@@ -1070,7 +1070,7 @@ ax2 = fig.add_subplot(gs[0,1])
 col = 1
 mark = 'x'
 
-plt.title(title + ' of $Hlr$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_a$',fontsize=fontsize)
+plt.title(title + ' of $HLR$ for Object a vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $HLR_a$',fontsize=fontsize)
 
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
@@ -1191,7 +1191,7 @@ ax4 = fig.add_subplot(gs[1,1])
 col = 1 + 6
 mark = 'x'
 
-plt.title(title + ' of $Hlr$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $Hlr_b$',fontsize=fontsize)
+plt.title(title + ' of $HLR$ for Object b vs SNR',fontsize=fontsize); plt.ylabel('Residuals of $HLR_b$',fontsize=fontsize)
 plt.xlabel('SNR',fontsize=fontsize)
 max_pts = np.max([np.mean(Resid_SNR_100[:,col]),np.mean(Resid_SNR_40[:,col]),np.mean(Resid_SNR_30[:,col]),
                   np.mean(Resid_SNR_20[:,col]),np.mean(Resid_SNR_15[:,col]),np.mean(Resid_SNR_10[:,col]),np.mean(Resid_SNR_5[:,col])])
