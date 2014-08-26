@@ -65,7 +65,7 @@ sky_level = texp*sbar
 sky_noise = np.sqrt(sky_level)
 
 # psf properties
-psf_flag = True
+psf_flag = False
 beta = 3
 fwhm_psf = 0.6
 
@@ -92,7 +92,7 @@ SNR_range = [100,40,30,20,15,10,5]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
-num_trials = 10
+num_trials = 2
 
 # Data to keep track of
 resid_matrix = []
@@ -1002,7 +1002,7 @@ plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_line
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.savefig('whole_image' + str(sep) + '_sep_e.png')
+plt.savefig('half_image' + str(sep) + '_sep_e.png')
 
 # Plotting for HLR and Flux for a and b----------------------------------------
 fig = plt.figure(figsize=(20,11))

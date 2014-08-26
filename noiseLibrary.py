@@ -40,7 +40,7 @@ def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_i
                   
     big_fft_params = galsim.GSParams(maximum_fft_size=1002400)
 
-    print "\nPostage Stamp is", x_len, "by", y_len, "with\na scale of", scale,"\"/Pixel"    
+    #print "\nPostage Stamp is", x_len, "by", y_len, "with\na scale of", scale,"\"/Pixel"    
         
     if galtype_gal is galsim.Sersic:
         assert sersic_index != 0
