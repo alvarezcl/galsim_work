@@ -21,20 +21,20 @@ import matplotlib.gridspec as gridspec
 import scipy.interpolate
 
 # Parameters for object a
-flux_a = 1000000          # total counts on the image
+flux_a = 100000*0.8          # total counts on the image
 hlr_a = 1             # arcsec
-e1_a = 0.5
-e2_a = 0.0
-x0_a = -3
+e1_a = 0.0
+e2_a = 0.5
+x0_a = -0.5
 y0_a = 0
 n_a = 0.5
 
 # Parameters for object b
 flux_b = flux_a          # total counts on the image
 hlr_b = hlr_a         # arcsec
-e1_b = 0.5
+e1_b = 0.2
 e2_b = 0.0
-x0_b = 3
+x0_b = 0.5
 y0_b = 0
 n_b = 0.5
 
@@ -53,7 +53,7 @@ seed_3 = galsim.BaseDeviate(0)
 
 # Image properties
 pixel_scale = 1/5     # arcsec / pixel
-x_len = y_len = 100            # pixel
+x_len = y_len = 50            # pixel
 
 # Use LSST defined sky noise for r-band
 add_noise_flag = True
@@ -63,7 +63,7 @@ sky_level = texp*sbar
 sky_noise = np.sqrt(sky_level)
 
 # psf properties
-psf_flag = False
+psf_flag = True
 beta = 3
 fwhm_psf = 0.6
 
@@ -83,7 +83,7 @@ SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_
                                                         psf_flag,beta,fwhm_psf,
                                                         x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
                                                         False,sky_level,sbar,texp,
-                                                        100,1000,10)
+                                                        1000,1000,10)
                                             
 plt.figure()
 plt.scatter(snr_points,flux_pts,c='g')
@@ -162,6 +162,6 @@ d = ax5.imshow(np.around(correlation_mat,decimals=2),interpolation='none',origin
 plt.colorbar(d,shrink=0.8)
 for (i,j), val in np.ndenumerate(correlation_mat):
     ax5.annotate('%0.2f'%(val), (j,i), ha='center', va='center',size=12)
-text = ax4.text(0,-1.5,'Separation: %.2f arcsec; Mixture SNR: %.2f'%(sep,nu),fontsize=15)
+text = ax4.text(0,-1.5,'Separation: %.2f arcsec; Mixture SNR: %.2f; Seeing: 0.6\"'%(sep,nu),fontsize=15)
 plt.show()
     

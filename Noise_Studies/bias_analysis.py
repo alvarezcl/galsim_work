@@ -27,7 +27,7 @@ flux_a = 0            # We will loop through this value later
 hlr_a = 1             # arcsec
 e1_a = 0.0
 e2_a = 0.0
-x0_a = -1
+x0_a = -3
 y0_a = 0
 n_a = 0.5
 
@@ -36,7 +36,7 @@ flux_b = 0            # We will loop through this value later
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
-x0_b = 1
+x0_b = 3
 y0_b = 0
 n_b = 0.5
 
@@ -49,9 +49,9 @@ sep = x0_b - x0_a
 sersic_func = galsim.Sersic
 
 # Set the RNG
-seed_1 = galsim.BaseDeviate(1)
-seed_2 = galsim.BaseDeviate(2)
-seed_3 = galsim.BaseDeviate(3)
+seed_1 = galsim.BaseDeviate(0)
+seed_2 = galsim.BaseDeviate(0)
+seed_3 = galsim.BaseDeviate(0)
 
 # Image properties
 pixel_scale = 1/5     # arcsec / pixel
@@ -75,7 +75,7 @@ SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_
                                                         False,beta,fwhm_psf,
                                                         x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
                                                         False,sky_level,sbar,texp,
-                                                        1000,1000,10)
+                                                        10000,1000,3)
                                             
 #plt.scatter(snr_points,flux_pts,c='b',alpha=0.5)
 #plt.title('Flux vs SNR'); plt.xlabel('SNR'); plt.ylabel('Flux')
@@ -462,6 +462,8 @@ plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),eco
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
+plt.savefig('whole_image' + str(sep) + '_sep_e.png')
+
 
 
 # Plotting for HLR and Flux for a and b----------------------------------------
@@ -752,7 +754,7 @@ plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),eco
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.show()
+plt.savefig('whole_image' + str(sep) + '_sep_FH.png')
 
 ######### Plotting for just the error on the mean -----------------------------
 
@@ -1000,7 +1002,7 @@ plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_line
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-
+plt.savefig('whole_image' + str(sep) + '_sep_e.png')
 
 # Plotting for HLR and Flux for a and b----------------------------------------
 fig = plt.figure(figsize=(20,11))
@@ -1243,3 +1245,7 @@ if data_pts:
 plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_linewidth)
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
+
+plt.savefig('half_image' + str(sep) + '_sep_FH.png')
+
+plt.show()

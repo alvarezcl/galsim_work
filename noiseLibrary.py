@@ -44,8 +44,8 @@ def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_i
         
     if galtype_gal is galsim.Sersic:
         assert sersic_index != 0
-        if sersic_index == 0.5:
-            print "\nThe object drawn is a gaussian with n = 0.5" 
+        #if sersic_index == 0.5:
+            #print "\nThe object drawn is a gaussian with n = 0.5" 
         gal = galtype_gal(n=sersic_index, half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
         gal = gal.shear(g1=e1, g2=e2)
         gal = gal.shift(x0,y0)
@@ -91,8 +91,8 @@ def draw_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
 def add_noise(image, noise_type=galsim.PoissonNoise, seed=None, sky_level=0):
     if sky_level == 0: 
         print "Adding Poisson noise without sky level."     
-    else: 
-        print "Adding Poisson noise with sky level = ", sky_level
+    #else: 
+        #print "Adding Poisson noise with sky level = ", sky_level
     if noise_type is galsim.PoissonNoise:    
         image.addNoise(noise_type(sky_level=sky_level,rng=seed))
         return image
@@ -152,7 +152,7 @@ def calc_SNR_to_flux(hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
 # Convolve an object with a PSF.
 def convolve_with_psf(gal, beta, size_psf, psf_type=galsim.Moffat, flux_psf=1):
     big_fft_params = galsim.GSParams(maximum_fft_size=1002400)
-    print "Using a psf with beta =", beta,"and size = ", size_psf," \"" 
+    #print "Using a psf with beta =", beta,"and size = ", size_psf," \"" 
     psf = psf_type(beta=beta, fwhm=size_psf, flux=flux_psf, gsparams=big_fft_params)
     psf_gal = galsim.Convolve([gal,psf])
     return psf_gal
