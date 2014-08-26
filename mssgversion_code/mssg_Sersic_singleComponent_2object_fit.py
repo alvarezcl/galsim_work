@@ -12,7 +12,8 @@ from __future__ import division
 # import pandas as pd
 import numpy as np
 import mssg_drawLibrary
-import mssg_noiseLibrary
+#import mssg_noiseLibrary as noiseLibrary
+import noiseLibrary 
 import galsim
 import lmfit
 import matplotlib.pyplot as plt
@@ -32,7 +33,7 @@ e1_a = 0.0
 e2_a = 0.0
 x0_a = -1
 y0_a = 0
-n_a = 4
+n_a = 1
 
 # Parameters for object b
 flux_b = flux_a       # total counts on the image
@@ -57,7 +58,7 @@ seed_3 = galsim.BaseDeviate(3)
 pixel_scale = 0.2     # arcsec / pixel
 imsize = 100            # pixels
 x_len = y_len = imsize
-sky_level = 11         # counts / pixel
+sky_level = 0         # counts / pixel
 add_noise_flag = True
 
 
@@ -100,38 +101,64 @@ for sep in sep_array:
     x0_b = sep*hlr_b   # We'll step gal B to the right in steps of 0.5*step_sep - mg
     y0_b = 0    
 
+    
     print " \n\n  Creating Galaxies.. \n\n "
-    galimg_a = mssg_noiseLibrary.create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype,sersic_index=n_a, x_len = imsize , y_len = imsize)
-    galimg_b = mssg_noiseLibrary.create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype,sersic_index=n_b, x_len = imsize , y_len = imsize)
+    galimg_a = noiseLibrary.create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype,sersic_index=n_a, x_len = imsize , y_len = imsize)
+    galimg_b = noiseLibrary.create_galaxy(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,galtype_gal=galtype,sersic_index=n_b, x_len = imsize , y_len = imsize)
     
     galimg = galimg_a + galimg_b
-    galimg.addNoise(galsim.PoissonNoise(sky_level=0) )
 
-    galimg_array = galimg.array
+#    galimg.addNoise(galsim.PoissonNoise(sky_level=0) )
+
+    
     
 
 ########################################################################################################################################
     
-    '''    
+
 # Obtain instantiation
-    img, best_fit, result = mssg_noiseLibrary.fit_2_galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
-                                                             flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
-                                                             psf_flag,beta,fwhm_psf,
-                                                             x_len,y_len,pixel_scale,galtype, galtype, seed_1,seed_2,seed_3,
-                                                         add_noise_flag,sky_level, galimg )
+
+
+#    galimg_withnoise, best_fit, result = noiseLibrary.run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+    galimg_nonoise, galimg_withnoise, best_fit, result = noiseLibrary.run_2_galaxy_full_params_simple(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+    flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+    psf_flag,beta,fwhm_psf,
+    x_len,y_len,pixel_scale,galtype, galtype, seed_1,seed_2,seed_3,
+    add_noise_flag,sky_level )
     
+    print " \n Have fit the 2 gal img \n"
+
+    '''  # Version using mssg_noiselib
+    galimg_withnoise, best_fit, result = noiseLibrary.fit_2_galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,n_a,
+                                                                     flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,n_b,
+                                                                     psf_flag,beta,fwhm_psf,
+                                                                     x_len,y_len,pixel_scale,galtype, galtype, seed_1,seed_2,seed_3,
+                                                                     add_noise_flag,sky_level, galimg )
+                                                                     
+                                                                     '''
+
+    galimg = galimg_withnoise
+# Make an img array, needed for plots
+    galimg_array = galimg.array
     
 # Get resid
-    resid = best_fit - img
+    resid = best_fit - galimg
     
 # Report errors
     lmfit.report_errors(result.params)
     
-    print " \n Have fit the 2 gal img \n"
     
-    '''
+
+    
+# Obtain the covariance and correlation matrix.
+    error_diag = np.sqrt(np.diag(result.covar))
+    error_mat = np.outer(error_diag,error_diag)
+    correlation_mat = result.covar/error_mat
+
+#    print " \n Got the corr mat, it = \n" ,   correlation_mat
 
 ########### Show the galaxies + fit
+    '''
     fig = plt.figure()
 
     galpropsStr_a = '[ ('+ str(x0_a) + ',' +str(y0_a) +'), ' + str(n_a) + ', ' + str(flux_a)+', '+str(hlr_a) + ', (0, 0) ]'
@@ -142,26 +169,41 @@ for sep in sep_array:
     fig.suptitle(titleStr, fontsize=12)
     
 #Plotting the mixture
-    ax1 = fig.add_subplot(131)
-    c1 = ax1.imshow(galimg_array, origin='lower')
-    ax1.set_title('Orig Gals Image')
+    sp1 = fig.add_subplot(131)
+    c1 = sp1.imshow(galimg_array, origin='lower')
+    sp1.set_title('Orig Gals Image')
     plt.colorbar(c1, shrink=.5)
 
-    '''    
-    ax2 = fig.add_subplot(132)
+    
+    sp2 = fig.add_subplot(132)
     c2 = plt.imshow(best_fit.array, origin='lower')
-    ax2.set_title('Best Fit Image')
+    sp2.set_title('Best Fit Image')
     plt.colorbar(c2, shrink=.5)
     
-    ax3 = fig.add_subplot(133)
+    sp3 = fig.add_subplot(133)
     c3 = plt.imshow(resid.array, origin='lower')
-    ax3.set_title('Resid Image')
+    sp3.set_title('Resid Image')
     plt.colorbar(c3, shrink=.5)
-   '''
- 
+    '''
+
+    fig2 = plt.figure()
+
+    fonts = 10
+    # Add the correlation matrix
+#    sp4 = fig.add_subplot(144)
+    plt.title('Correlation Coefficient Matrix \n Sep = ' + str(sep) + ' arcsec ',fontsize=fonts+8)
+    plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11],['$Flux_a$','$HLR_a$','$e1_a$','$e2_a$','$x0_a$','$y0_a$',
+                                            '$Flux_b$','$HLR_b$','$e1_b$','$e2_b$','$x0_b$','$y0_b$'],fontsize=15)
+    plt.yticks([0,1,2,3,4,5,6,7,8,9,10,11],['$Flux_a$','$HLR_a$','$e1_a$','$e2_a$','$x0_a$','$y0_a$',
+                                            '$Flux_b$','$HLR_b$','$e1_b$','$e2_b$','$x0_b$','$y0_b$'],fontsize=15)
+    d = plt.imshow(np.around(correlation_mat,decimals=2),interpolation='none',origin='lower',vmin=-1,vmax=1)
+    plt.colorbar(d,shrink=0.8)
+    for (i,j), val in np.ndenumerate(correlation_mat):
+        plt.annotate('%0.2f'%(val), (j,i), ha='center', va='center',size=12)
+
     plt.show()
     
-    '''
+    
     # Differences on measure and true for object one    
     diff_flux_a = result.params['flux_a'].value - flux_a
     diff_hlr_a = result.params['hlr_a'].value - hlr_a
@@ -185,7 +227,7 @@ for sep in sep_array:
 
     # Obtain the errors on each parameter
     errors.append(np.sqrt(np.diag(result.covar)))                           
-    '''
+    
 
     cur = time.time()
     print " At end of sep loop -- current-start time = ", cur-loopstarttime 
@@ -298,7 +340,7 @@ plt.show()
 sys.exit()
 ################################################################################################################
 
-im = img
+im = galimg
 
 # Provide the fontsize
 fonts = 10

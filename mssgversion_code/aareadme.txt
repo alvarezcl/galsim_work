@@ -1,5 +1,6 @@
-MSSG edits based on LCA file
-Cur: 7/31/2014
+MSSGversion_code dir
+Start: 7/31/2014
+Cur: 8/26/2014
 
 Repository contains code used with galsim toolset for the purposes of estimating bias in ellipticity measurements of blended objects.
 
@@ -8,18 +9,17 @@ Repository contains code used with galsim toolset for the purposes of estimating
 ------------- Utility codes:
 
 -------- drawLibrary.py
-Library containing sets of functions for drawing galaxies and residuals
-for usage with fitters.
+
+Library containing sets of functions for drawing galaxies and
+residuals for usage with fitters.
 
 -------- plotutils.py
+
+-------- noiseLibrary.py
 
 -------- gauss.py
 
 ---------------------------------- Under: mssgversion
-
-------- mssg_drawLibrary.py
-
-Supersedes the drawLibrary.py in Luis' dir, by instantiating functions needed to draw Sersic gals
 
 ------ mssg_galsim_Sersic_test.py --- early code that replaced the Gaussians
 in Luis' galsim_first_test with Sersic profiles (cur: 8/2/2014)
