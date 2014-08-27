@@ -22,11 +22,11 @@ import scipy.interpolate
 import os
 
 # Parameters for object a
-flux_a = 500000*0.8          # total counts on the image
+flux_a = 100000*0.9          # total counts on the image
 hlr_a = 1             # arcsec
 e1_a = 0.0
 e2_a = 0.0
-x0_a = -3
+x0_a = -1
 y0_a = 0
 n_a = 0.5
 
@@ -35,7 +35,7 @@ flux_b = flux_a          # total counts on the image
 hlr_b = hlr_a         # arcsec
 e1_b = 0.0
 e2_b = 0.0
-x0_b = 3
+x0_b = 1
 y0_b = 0
 n_b = 0.5
 
@@ -144,7 +144,7 @@ c = ax3.imshow((best_fit - im_noise).array,interpolation='none',origin='lower')
 plt.colorbar(c,shrink=1)
 # Add the column of pulls
 ax4 = fig.add_subplot(gs[:,3:4])
-plt.title('Pull Values',fontsize=fonts+8)
+plt.title(r'Residual/Error',fontsize=fonts+6)
 plt.yticks([0,1,2,3,4,5,6,7,8,9,10,11],['$Flux_a$','$HLR_a$','$e1_a$','$e2_a$','$x0_a$','$y0_a$',
            '$Flux_b$','$HLR_b$','$e1_b$','$e2_b$','$x0_b$','$y0_b$'],fontsize=15)
 plt.xticks([0],['']) 
@@ -163,7 +163,7 @@ d = ax5.imshow(np.around(correlation_mat,decimals=2),interpolation='none',origin
 plt.colorbar(d,shrink=0.8)
 for (i,j), val in np.ndenumerate(correlation_mat):
     ax5.annotate('%0.2f'%(val), (j,i), ha='center', va='center',size=12)
-text = ax4.text(0,-1.5,'Separation: %.2f arcsec; Mixture SNR: %.2f; Seeing: 0.6\"'%(sep,nu),fontsize=15)
+text = ax4.text(0,-1.5,'$Separation\/=\/%.1f$\"; $Mixture\/SNR=\/%i$; $PSF_{fwhm}\/=\/0.6$\"'%(sep,nu),fontsize=15)
 
 path = '/home/luis/Documents/SRC2014/galsim_work/Noise_Studies'
 filename = 'fig.png'
