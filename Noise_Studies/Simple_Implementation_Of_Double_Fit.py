@@ -19,22 +19,23 @@ import matplotlib.pyplot as plt
 import scipy.linalg as scla
 import matplotlib.gridspec as gridspec
 import scipy.interpolate
+import os
 
 # Parameters for object a
-flux_a = 100000*0.8          # total counts on the image
+flux_a = 500000*0.8          # total counts on the image
 hlr_a = 1             # arcsec
 e1_a = 0.0
-e2_a = 0.5
-x0_a = -0.5
+e2_a = 0.0
+x0_a = -3
 y0_a = 0
 n_a = 0.5
 
 # Parameters for object b
 flux_b = flux_a          # total counts on the image
 hlr_b = hlr_a         # arcsec
-e1_b = 0.2
+e1_b = 0.0
 e2_b = 0.0
-x0_b = 0.5
+x0_b = 3
 y0_b = 0
 n_b = 0.5
 
@@ -47,13 +48,13 @@ sep = x0_b - x0_a
 sersic_func = galsim.Sersic
 
 # Set the RNG
-seed_1 = galsim.BaseDeviate(0)
-seed_2 = galsim.BaseDeviate(0)
-seed_3 = galsim.BaseDeviate(0)
+seed_1 = galsim.BaseDeviate(1)
+seed_2 = galsim.BaseDeviate(2)
+seed_3 = galsim.BaseDeviate(3)
 
 # Image properties
 pixel_scale = 1/5     # arcsec / pixel
-x_len = y_len = 50            # pixel
+x_len = y_len = 100            # pixel
 
 # Use LSST defined sky noise for r-band
 add_noise_flag = True
@@ -63,7 +64,7 @@ sky_level = texp*sbar
 sky_noise = np.sqrt(sky_level)
 
 # psf properties
-psf_flag = True
+psf_flag = False
 beta = 3
 fwhm_psf = 0.6
 
@@ -83,7 +84,7 @@ SNR_to_flux, snr_points, flux_pts = noiseLibrary.calc_SNR_to_flux(hlr_a,e1_a,e2_
                                                         psf_flag,beta,fwhm_psf,
                                                         x_len,y_len,pixel_scale,sersic_func,sersic_func,seed_1,seed_2,seed_3,
                                                         False,sky_level,sbar,texp,
-                                                        1000,1000,10)
+                                                        10000,1000,10)
                                             
 plt.figure()
 plt.scatter(snr_points,flux_pts,c='g')
@@ -163,5 +164,8 @@ plt.colorbar(d,shrink=0.8)
 for (i,j), val in np.ndenumerate(correlation_mat):
     ax5.annotate('%0.2f'%(val), (j,i), ha='center', va='center',size=12)
 text = ax4.text(0,-1.5,'Separation: %.2f arcsec; Mixture SNR: %.2f; Seeing: 0.6\"'%(sep,nu),fontsize=15)
-plt.show()
-    
+
+path = '/home/luis/Documents/SRC2014/galsim_work/Noise_Studies'
+filename = 'fig.png'
+filename = os.path.join(path, filename)
+fig.savefig(filename)
