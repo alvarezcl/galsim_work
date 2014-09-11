@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import scipy.linalg as scla
 import matplotlib.gridspec as gridspec
 import scipy.interpolate
+import os
 
 # Parameters for object a
 flux_a = 0            # We will loop through this value later
@@ -92,7 +93,7 @@ SNR_range = [100,40,30,20,15,10,5]
 # Flux range to loop through
 Flux_range = [1e6,5e5,1e5,1e4,1e3,1e2]
 # number of trials
-num_trials = 2
+num_trials = 10
 
 # Data to keep track of
 resid_matrix = []
@@ -174,6 +175,9 @@ Resid_SNR_5 = resid_matrix[6,:,:]
 
 gs = gridspec.GridSpec(2,2)
 data_pts = False
+
+path = '/u/ki/alvarcl/SRC2014/galsim_work/Noise_Studies'
+
 # Plotting for e1 and e2 for objects a and b
 fontsize = 13
 fig = plt.figure(figsize=(20,11))
@@ -462,8 +466,9 @@ plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),eco
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.savefig('whole_image' + str(sep) + '_sep_e.png')
-
+filename = 'whole_image' + str(sep) + '_sep_e_' + str(num_trials) +'.png'
+filename = os.path.join(path, filename)
+fig.savefig(filename)
 
 
 # Plotting for HLR and Flux for a and b----------------------------------------
@@ -754,7 +759,9 @@ plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col]),eco
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.savefig('whole_image' + str(sep) + '_sep_FH.png')
+filename = 'whole_image' + str(sep) + '_sep_FH_' + str(num_trials) +'.png'
+filename = os.path.join(path, filename)
+fig.savefig(filename)
 
 ######### Plotting for just the error on the mean -----------------------------
 
@@ -1002,7 +1009,9 @@ plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_line
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.savefig('half_image' + str(sep) + '_sep_e.png')
+filename = 'half_image' + str(sep) + '_sep_e_' + str(num_trials) +'.png'
+filename = os.path.join(path, filename)
+fig.savefig(filename)
 
 # Plotting for HLR and Flux for a and b----------------------------------------
 fig = plt.figure(figsize=(20,11))
@@ -1246,6 +1255,6 @@ plt.scatter([5],np.mean(Resid_SNR_5[:,col]),marker='o',c='b',linewidth=mean_line
 plt.errorbar([5],np.mean(Resid_SNR_5[:,col]),yerr=np.std(Resid_SNR_5[:,col])/np.sqrt(num_trials),ecolor='k',elinewidth=bar_linewidth)
 plt.axhline(0,color='k',linestyle='--')
 
-plt.savefig('half_image' + str(sep) + '_sep_FH.png')
-
-plt.show()
+filename = 'half_image' + str(sep) + '_sep_FH_' + str(num_trials) +'.png'
+filename = os.path.join(path, filename)
+fig.savefig(filename)
