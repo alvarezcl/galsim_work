@@ -58,7 +58,7 @@ seed_3 = galsim.BaseDeviate(3)
 pixel_scale = 0.2     # arcsec / pixel
 imsize = 100            # pixels
 x_len = y_len = imsize
-sky_level = 0         # counts / pixel
+sky_level = 20         # counts / pixel
 add_noise_flag = True
 
 

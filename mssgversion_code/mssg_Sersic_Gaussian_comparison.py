@@ -7,7 +7,7 @@ from __future__ import division
 # from pandas import Series, DataFrame
 # import pandas as pd
 import numpy as np
-import mssg_drawLibrary
+import drawLibrary
 #import mssg_noiseLibrary as noiseLibrary
 import noiseLibrary 
 import galsim
@@ -40,7 +40,7 @@ e1_b = 0.0
 e2_b = 0.0
 x0_b = -x0_a
 y0_b = 0
-n_b = 4     # 1 = expl disk, 4 = bulge
+n_b = 1     # 1 = expl disk, 4 = bulge
 
 # Galsim function definitions
 sersic_func = galsim.Sersic
@@ -62,19 +62,28 @@ add_noise_flag = False
 cur= time.time()
 
 ############################ Plot analytic functions
+'''
 fig = plt.figure()
 
+
 x = np.arange(0,10.0, 0.2)
-gaus = x*(2/np.sqrt(np.pi))*np.exp(-(x**2))
-sers = x*np.exp(-x)  # Correct nzn for expl
-# sers = 1.2*np.exp(-x/4)  # Correct nzn for expl
-# sers = 1.15*np.exp(-x/4)  # Correct nzn for expl
-plt.plot(x, gaus)
-plt.plot(x, sers)
+
+if (n_b == 1 ):
+    plotlabel = 'Expl'
+    sers = x*np.exp(-x)  # Correct nzn for expl
+if (n_b == 4 ):
+    plotlabel = 'DeVauc'
+    sers = x*np.exp(-(x**0.25))  
+
+gaus = (2/np.sqrt(np.pi))*x*np.exp(-(x**2)) # --> integ to x=0.48  gives 0.504 as area under this curve
+plt.plot(x, gaus, label='Gaussian' )
+plt.plot(x, sers, label= plotlabel )
+plt.legend(loc='upper right')
 
 plt.show()
 
-# sys.exit()
+sys.exit()
+'''
 
 ############################ Make gals
 print " \n\n  Creating Galaxies.. \n\n "
@@ -91,20 +100,39 @@ galimg_b_array = galimg_b.array
 ############################ Pick slices
 fig = plt.figure() # Have to remake a new fig object
 
-slicerow  = 25  # 25 = center of img if size is 50 pixels on a side
+x_cen,y_cen,xx,yy,X,Y = drawLibrary.return_domain(galimg_a)
 
-slice_a = galimg_a.array[slicerow]
-slice_b = galimg_b.array[slicerow]
+slicerow  = 25  # 25 = center of img if size is 50 pixels on a side
+print " y_cen = ", y_cen 
+slice_a = galimg_a.array[y_cen] 
+slice_b = galimg_b.array[y_cen] 
+
+xr = xx-x_cen
+
+rad_a = galimg_a.array[slicerow] *xr
+rad_b = galimg_b.array[slicerow] *xr
+
 
 if (n_b == 1 ):
     plotlabel = 'Expl Slice'
 if (n_b == 4 ):
     plotlabel = 'DeVauc Slice'
 
+
+#ipdb.set_trace()
+
 # Plot slices
 sp1 = fig.add_subplot(121)
+'''
 sp1.bar(range(0,imsize), slice_a,alpha=0.5, label='Gaussian Slice' ,color='b')
 sp1.bar(range(0,imsize), slice_b,alpha=0.5, label=plotlabel, color='g')
+'''
+plt.plot(xr, slice_a, alpha=0.5, label='Gaussian Slice' ,color='b')
+plt.plot(xr, slice_a*xr, alpha=0.5, label='Gaussian Slice*xr' ,color='g')
+
+plt.plot(xr, slice_b, alpha=0.5, label='Expl Slice' ,color='r')
+plt.plot(xr, slice_b*xr, alpha=0.5, label='Expl Slice*xr' ,color='k')
+
 sp1.legend(loc='upper right')
 
 ############################ Make projections
@@ -112,10 +140,14 @@ sp1.legend(loc='upper right')
 proj_a = galimg_a_array.sum(axis=0)
 proj_b = galimg_b_array.sum(axis=0)
 
-# Plot slices
+# Plot projs
 sp2 = fig.add_subplot(122)
-sp2.bar(range(0,imsize), proj_a,alpha=0.5, label='Gaussian Proj ' ,color='b')
-sp2.bar(range(0,imsize), proj_b,alpha=0.5, label=plotlabel, color='g')
+#sp2.bar(range(0,imsize), proj_a,alpha=0.5, label='Gaussian Proj ' ,color='b')
+#sp2.bar(range(0,imsize), proj_b,alpha=0.5, label=plotlabel, color='g')
+
+sp2.bar(range(0,imsize), rad_a,alpha=0.5, label='Gaussian Proj ' ,color='b')
+sp2.bar(range(0,imsize), rad_b,alpha=0.5, label='Expl Proj', color='g')
+
 sp2.legend(loc='upper right')
 
 plt.show()
