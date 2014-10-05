@@ -5,12 +5,16 @@
 import numpy as np
 import galsim
 import lmfit
+import matplotlib.pyplot as plt
+import ipdb
 
+# Not used currently
 sky_level = 1.e6
 pixel_scale = 0.2
 sky_level_pixel = sky_level * pixel_scale**2  # This is the num of photons per pixel?
 
 random_seed = np.random.randint(2**62)  # Why give it such a large seed..?
+
 
 # Create the orig image
 def create_true_image(params):
@@ -23,7 +27,7 @@ def create_true_image(params):
 
     image = galsim.ImageF(32, 32, scale=pixel_scale)
     gal = galsim.Gaussian(half_light_radius=hlr).shear(e1=e1, e2=e2) * flux
-    psf = galsim.Moffat(beta=5, fwhm=0.7).shear(e1=0.01, e2=-0.03)
+    psf = galsim.Moffat(beta=5, fwhm=0.7).shear(e1=0.0, e2=-0.0)
     final = galsim.Convolve(gal,psf)
     final.drawImage(image=image)
     return image
@@ -42,18 +46,29 @@ def image_resid(params, noisy_image):
 
 # Main body
 if __name__ == "__main__":
+
+# Parse command line args
     from argparse import ArgumentParser
     parser = ArgumentParser()
 
-    parser.add_argument("--niter", default=10  , type=int, help="number of iterations")
-    parser.add_argument("--outfile", default="noise_bias.txt", help="output text filename")
-    parser.add_argument("--plot", action="store_true", help="Histogram output values and make plot")
+    parser.add_argument("--niter", default=5  , type=int, help="number of iterations")
+    parser.add_argument("--outfile", default="noise_bias", help="output text filename")
+    parser.add_argument("--plot", action="store_true", help="Histogram output values and make plot") # If turned on, this will plot stuff
     parser.add_argument("--snr", default=20, type=int, help="Signal-to-noise ratio")
+    parser.add_argument("--e1", default=0, type=float, help="e1 in")
+    parser.add_argument("--e2", default=0, type=float, help="e2 in")
+
     args = parser.parse_args()
 
-    e1val = 0.3
-    e2val = 0.0
+# The e1 and e2, SNR to use
+    e1val = args.e1
+    e2val = args.e2
+    snr = args.snr
+# Number of trials
+    niter = args.niter # How many iterations to run
+    num_trials = niter
 
+# The initial guesses to send to the LM fitter
     params = lmfit.Parameters()
     params.add('e1', value=e1val)
     params.add('e2', value=e2val)
@@ -64,11 +79,16 @@ if __name__ == "__main__":
 
     true_image = create_true_image(params)
 
-    snr = args.snr
+# Declare vecs we'll write to disk later
     e1vec = []
     e2vec = []
-    niter = args.niter
-    for i in range(niter):
+
+    HLRvec = []
+    fluxvec = []
+
+
+    # Now the num of trials
+    for i in range(num_trials):
         print " On iteration ", i
         udRandomSeed = galsim.UniformDeviate(random_seed+i)
         try:
@@ -84,34 +104,49 @@ if __name__ == "__main__":
             ml = lmfit.minimize(image_resid, fit_params, args=(noisy_image,))
             e1vec.append(ml.params['e1'].value)
             e2vec.append(ml.params['e2'].value)
+
+            HLRvec.append(ml.params['hlr'].value)
+            fluxvec.append(ml.params['flux'].value)
+                
         except:
             continue
-
-    with open(args.outfile, 'w') as f:
+            
+    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+".txt", 'w') as f:
         for e1 in e1vec:
             f.write("{}\n".format(e1))
-
+                    
+    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+".txt", 'w') as f:
+        for e2 in e2vec:
+            f.write("{}\n".format(e2))
+            
+# Just to see on screen
     print " np.mean(e1vec) = " , np.mean(e1vec)
     print  " np.std(e1vec) / np.sqrt(len(e1vec)) ", np.std(e1vec) / np.sqrt(len(e1vec))
 
+    print " np.mean(e2vec) = " , np.mean(e2vec)
+    print  " np.std(e2vec) / np.sqrt(len(e2vec)) ", np.std(e2vec) / np.sqrt(len(e2vec))
+
+# If plotting is chosen
     if args.plot:
-        import matplotlib.pyplot as plt
         fig = plt.figure()
-
+    
         fig.suptitle("SNR = " + str(snr))
-
+        
         binsfac = 3
-
-        ax = fig.add_subplot(121)
+        
+        ax = fig.add_subplot(221)
         ax.hist(np.array(e1vec), bins=binsfac * np.sqrt(len(e1vec))/2)
-        ax.set_xlabel(r"$e_1$")
+        ax.set_xlabel(r"$e_1$ ")
         ax.set_ylabel("#")
-        ax.set_title("e1 = "+str(e1val))
-
-        ax = fig.add_subplot(122)
+        ax.set_title("e1_in = "+str(e1val))
+        
+        ax = fig.add_subplot(222)
         ax.hist(np.array(e2vec), bins=binsfac * np.sqrt(len(e2vec))/2)
-        ax.set_xlabel(r"$e_2$")
+        ax.set_xlabel(r"$e_2$ ")
         ax.set_ylabel("#")
-        ax.set_title("e2 = "+str(e2val))
+        ax.set_title("e2_in = "+str(e2val))
 
+        ax = fig.add_subplot(212)
+        plt.scatter(100*np.ones(num_trials),resid_vector1)
+        
         plt.show()
