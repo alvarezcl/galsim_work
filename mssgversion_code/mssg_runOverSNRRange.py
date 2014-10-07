@@ -12,14 +12,18 @@ numtrials = 10
 
 # SNR_range = [100,40,30,20,15,10,5]
 
-SNR_range = [200,40,20]
+SNR_range = [200]
 
 e1in = 0.0
 e2in = 0.0
 
-for snr in SNR_range:
-    print " *********** We're doing SNR = " , snr
-    os.system('python mssg_singleObjectNoiseStudy.py  --niter ' +str(numtrials) + ' --snr ' + str(snr) + ' --e1 ' + str(e1in) + ' --e2 ' + str(e2in) )
+e1inRange = [-0.1, -0.05, 0, 0.07, 0.2]
+
+for e1in in e1inRange:
+
+    for snr in SNR_range:
+        print " *********** We're doing SNR = " , snr, "  e1in = ", e1in
+        os.system('python mssg_singleObjectNoiseStudy.py  --niter ' +str(numtrials) + ' --snr ' + str(snr) + ' --e1 ' + str(e1in) + ' --e2 ' + str(e2in) )
 
 ######################################################################################################
 

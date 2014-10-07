@@ -52,7 +52,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
 
     parser.add_argument("--niter", default=5  , type=int, help="number of iterations")
-    parser.add_argument("--outfile", default="noise_bias", help="output text filename")
+    parser.add_argument("--outfile", default="noisebiasoutput/noise_bias", help="output text filename")
     parser.add_argument("--plot", action="store_true", help="Histogram output values and make plot") # If turned on, this will plot stuff
     parser.add_argument("--snr", default=20, type=int, help="Signal-to-noise ratio")
     parser.add_argument("--e1", default=0, type=float, help="e1 in")
@@ -111,11 +111,11 @@ if __name__ == "__main__":
         except:
             continue
             
-    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+".txt", 'w') as f:
+    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+"e1out.txt", 'w') as f:
         for e1 in e1vec:
             f.write("{}\n".format(e1))
                     
-    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+".txt", 'w') as f:
+    with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+"e2out.txt", 'w') as f:
         for e2 in e2vec:
             f.write("{}\n".format(e2))
             
