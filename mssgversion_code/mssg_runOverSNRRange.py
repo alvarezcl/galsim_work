@@ -8,11 +8,11 @@ import noiseLibrary
 import  mssg_singleObjectNoiseStudy
 import numpy as np
 
-numtrials = 10
+numtrials = 100
 
 # SNR_range = [100,40,30,20,15,10,5]
 
-SNR_range = [200]
+SNR_range = [200,40,20]
 
 e1in = 0.0
 e2in = 0.0
@@ -23,7 +23,7 @@ for e1in in e1inRange:
 
     for snr in SNR_range:
         print " *********** We're doing SNR = " , snr, "  e1in = ", e1in
-        os.system('python mssg_singleObjectNoiseStudy.py  --niter ' +str(numtrials) + ' --snr ' + str(snr) + ' --e1 ' + str(e1in) + ' --e2 ' + str(e2in) )
+        os.system('python mssg_singleObjectNoiseStudy.py  --ntrials ' +str(numtrials) + ' --snr ' + str(snr) + ' --e1 ' + str(e1in) + ' --e2 ' + str(e2in) )
 
 ######################################################################################################
 
