@@ -16,9 +16,85 @@ import galsim
 import numpy as np
 import gauss
 import sys
+import ipdb
+
+# Version of 10/14/2014
+# Draw from a distribution and return a binned image object with one galaxy 
+def draw_1Comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed, fftORphotons = 'fft'):
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)    
+
+    print " *********************** Using MSSG version of drawLibrary"
+
+    if func is galsim.Gaussian:    
+        gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+
+    if func is galsim.Sersic:                       
+        deVauc_ix = 4 # deVauc bulge
+        expl_ix = 1   # expl disk
+        btodsize = 0.5
+        gal_HLR = hlr
+        gal_flux = flux
+        gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodsize) # bulge
+        gal += galsim.Sersic(n=expl_ix, flux=gal_flux,half_light_radius=gal_HLR)  # add in expl
+
+    # Same for either Sersic or Gaussian
+    gal = gal.shear(g1=e1, g2=e2)
+    gal = gal.shift(x0,y0)
+    image = galsim.ImageD(x_len, y_len, scale=scale)
+    
+    if fftORphotons == 'fft':
+        image = gal.drawImage(image=image)
+    else:
+        image = gal.drawImage(image=image, method='phot',rng=seed)
+    
+    # Send it back    
+    return image
+
+# Version of 10/14/2014
+# Draw from a distribution and return a binned image object with one galaxy 
+def draw_2Comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, seed, btodsize = 1, galtype = 'galsim.Gaussian', fftORphotons = 'fft', returnObjOrImg = 'img' ): # Default bulge radius = half disk radius
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)    
+
+    print " *********************** Using MSSG version of drawLibrary"
+    print " ** Making gal of type = " , galtype
+
+    if galtype == 'galsim.Gaussian':    
+        gal = galsim.Gaussian(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+
+    if galtype == 'galsim.Sersic':                       
+        deVauc_ix = 4 # deVauc bulge
+        expl_ix = 1   # expl disk
+
+        gal_HLR = hlr
+        gal_flux = flux
+        gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodsize) # bulge
+        gal += galsim.Sersic(n=expl_ix, flux=gal_flux,half_light_radius=gal_HLR)  # add in expl
+
+    # Same for either Sersic or Gaussian
+    gal = gal.shear(g1=e1, g2=e2)
+    gal = gal.shift(x0,y0)
+
+
+    print " returnObjOrImg = " , returnObjOrImg 
+
+    if returnObjOrImg == 'obj':
+        return gal
+    else:
+        image = galsim.ImageD(x_len, y_len, scale=scale)
+        if fftORphotons == 'fft':
+            image = gal.drawImage(image=image)
+        else:
+            image = gal.drawImage(image=image, method='phot',rng=seed)
+
+            # Send it back    
+        return image
+
+
+
+########################################## Older
 
 # Draw from a distribution and return a binned image object with one galaxy 
-# Shoots photons, see last line before it returns image -mg
+# Shoots photons, see last line before it returns image -- that's only dif from FFT version -mg
 def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed):
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)    
 
@@ -31,6 +107,33 @@ def drawShoot_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed)
         deVauc_ix = 4 # deVauc bulge
         expl_ix = 1   # expl disk
         btodsize = 0.5
+        gal_HLR = hlr
+        gal_flux = flux
+        gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodsize) # bulge
+        gal += galsim.Sersic(n=expl_ix, flux=gal_flux,half_light_radius=gal_HLR)  # add in expl
+
+    # Same for either Sersic or Gaussian
+    gal = gal.shear(g1=e1, g2=e2)
+    gal = gal.shift(x0,y0)
+    image = galsim.ImageD(x_len, y_len, scale=scale)
+    image = gal.drawImage(image=image, method='phot',rng=seed)
+
+    return image
+
+# Draw from a distribution and return a binned image object with one galaxy 
+# Shoots photons, see last line before it returns image -mg
+def drawShoot_2comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func, seed, btodsize = 0.5): # Default bulge radius = half disk radius
+    big_fft_params = galsim.GSParams(maximum_fft_size=10024000)    
+
+    print " *********************** Using MSSG version of drawLibrary"
+
+    if func is galsim.Gaussian:    
+        gal = func(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+
+    if func is galsim.Sersic:                       
+        deVauc_ix = 4 # deVauc bulge
+        expl_ix = 1   # expl disk
+
         gal_HLR = hlr
         gal_flux = flux
         gal  = galsim.Sersic(n=deVauc_ix, flux=gal_flux,half_light_radius=gal_HLR*btodsize) # bulge
@@ -60,7 +163,7 @@ def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype):
         gal = galsim.Sersic(n=deVauc_ix, flux=gal_flux, half_light_radius=gal_HLR*btodsize) # bulge
         gal += galsim.Sersic(n=expl_ix, flux=gal_flux, half_light_radius=gal_HLR)  # add in expl
 
-    # Same for either
+    # Same for either Sersic or Gaussian
     gal = gal.shear(g1=e1, g2=e2)
     gal = gal.shift(x0,y0)
     image = galsim.ImageD(x_len, y_len, scale=scale)
@@ -77,6 +180,11 @@ def resid_1obj(param, target_image, x_len, y_len, scale, galtype):
     e2 = param['e2_a'].value
     x0 = param['x0_a'].value
     y0 = param['y0_a'].value
+
+#    ipdb.set_trace()
+
+#    print " e1_a = ", e1_a 
+
     image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale, galtype)
     return (image-target_image).array.ravel()
 

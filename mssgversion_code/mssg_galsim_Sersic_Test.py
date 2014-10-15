@@ -45,7 +45,7 @@ galaxy += galsim.Sersic(n=expl_ix, flux=gal_flux*2.0,half_light_radius=gal_HLR)
 
 
 # Create secondary galaxy and shift
-fluxratio = 100 #  Primary to Secondary ratio
+fluxratio = 2 #  Primary to Secondary ratio
 offset_B = 10 
 galaxy_B = galsim.Gaussian(flux=gal_flux/fluxratio,half_light_radius=gal_HLR/2)
 galaxy_B = galaxy_B.shift((offset_B ,offset_B )) # Shift by this many arcsec in a direction

@@ -8,8 +8,8 @@ from __future__ import division
 # import pandas as pd
 import numpy as np
 import drawLibrary
-#import mssg_noiseLibrary as noiseLibrary
-import noiseLibrary 
+import mssg_noiseLibrary as noiseLibrary
+# import noiseLibrary 
 import galsim
 import lmfit
 import matplotlib.pyplot as plt
@@ -189,6 +189,8 @@ sp3.set_title('A-B Image')
 plt.colorbar(c3, shrink=.5)
 
 plt.show()
+
+####################################################################################################
 
 '''
 #### 1D case -- Beginning from an analytic expression, plot histogram

@@ -1,3 +1,6 @@
+# MSSG , based on code from LCA
+# July 2014
+
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jul  9 19:21:46 2014
@@ -115,4 +118,4 @@ ax.set_xlabel('$x$'); ax.set_ylabel('$y$'); ax.set_zlabel('$Frequency$')
 ax.text2D(0.05,0.95,'3D Histogram of Point Density',transform=ax.transAxes)
 plt.show()
 
-ipdb.set_trace()
+

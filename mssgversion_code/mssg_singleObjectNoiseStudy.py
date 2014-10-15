@@ -7,6 +7,8 @@ import galsim
 import lmfit
 import matplotlib.pyplot as plt
 import ipdb
+import mssg_noiseLibrary
+import mssg_drawLibrary
 
 # Define some params
 sky_level = 1.e6
@@ -17,7 +19,8 @@ random_seed = np.random.randint(2**62)  # Why give it such a large seed..?
 
 
 # Create the orig true image w/o noise
-def create_true_image(params):
+def create_true_image(params, galtype = 'galsim.Gaussian'):
+    print " ** In SingleObjNoiseStudy: Making gal of type = " , galtype
     e1=params['e1'].value
     e2=params['e2'].value
     hlr=params['hlr'].value
@@ -26,11 +29,56 @@ def create_true_image(params):
     flux=params['flux'].value
 
     image = galsim.ImageF(32, 32, scale=pixel_scale)
-    gal = galsim.Gaussian(half_light_radius=hlr).shear(e1=e1, e2=e2) * flux
-    psf = galsim.Moffat(beta=3, fwhm=2.85).shear(e1=0.0, e2=-0.0)
-    final = galsim.Convolve(gal,psf)
-    final.drawImage(image=image)
-    return image
+
+    # Parameters for object a
+    flux_a = 5e4          # total counts on the image
+    hlr_a = 1         # arcsec -- code will segfault without telling you why, if you accidentally set this negative
+    e1_a = 0.0
+    e2_a = 0.0
+    x0_a = 0
+    y0_a = 0
+    n_a = 0.5   # 0.5 = Gaussian
+
+    imsize = 32            # pixels
+
+    # Random Seed
+    # Putting in a zero in the arg means it will vary from plot to plot, *not* exactly same each time - mg
+    dev_1 = galsim.BaseDeviate(0) 
+
+#    if  galtype == 'galsim.Sersic':
+    btodsize = 1 # Only needs defining for Sersic gals, but we'll just go with it since it's used in the call to create the gal below
+
+    # Now create the noiseless gal
+    gal = mssg_drawLibrary.draw_2Comp_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
+                                             imsize,imsize,pixel_scale,dev_1, btodsize = btodsize ,  galtype = galtype, fftORphotons = 'fft' , returnObjOrImg = 'obj')
+
+#    galimg_a = mssg_noiseLibrary.create_galaxy(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,galtype_gal=galtype,sersic_index=n_a, x_len = imsize , y_len = imsize)
+########################
+
+# Orig
+#    gal = galsim.Gaussian(half_light_radius=hlr).shear(e1=e1, e2=e2) * flux
+
+    psfshr = 0.05
+    psf = galsim.Moffat(beta=3, fwhm=2.85).shear(e1=psfshr,  e2=-0.0)
+
+    final = gal ;
+    final = galsim.Convolve([gal,psf])
+#    (final.array).drawImage(image=image)
+
+ # To show the fig
+    y_len = x_len = 32
+    scale = 1
+    img = galsim.ImageD(x_len, y_len, scale=scale)
+    img = final.drawImage(image=img, method='fft')
+    fig = plt.figure();    
+    plt.imshow( img.array , origin='lower');    
+    plt.show()
+
+#    ipdb.set_trace()
+
+    return final
+
+
 
 # Create an image with noise in it
 def create_noisy_image(image, gal_signal_to_noise, udRandomSeed):
@@ -45,7 +93,7 @@ def image_resid(params, noisy_image):
     return (model-noisy_image).array.ravel()
 
 
-################################# Main body
+################################################################# Main body
 if __name__ == "__main__":
 
 # Parse command line args
@@ -74,19 +122,21 @@ if __name__ == "__main__":
     params.add('e1', value=e1val)
     params.add('e2', value=e2val)
     params.add('flux', value=1.0)
-    params.add('x', value=0.2)
-    params.add('y', value=0.1)
+    params.add('x', value=0)
+    params.add('y', value=0)
     params.add('hlr', value=0.43)
 
-# Make the true image first w/o noise
-    true_image = create_true_image(params)
+
+
+
+##### Make the true image first w/o noise
+    galtype = 'galsim.Sersic'
+    galtype = 'galsim.Gaussian'
+    true_image = create_true_image(params, galtype)
 
 # Declare vecs we'll write to disk later
-    e1vec = []
-    e2vec = []
-
-    HLRvec = []
-    fluxvec = []
+    e1vec = [];    e2vec = []
+    HLRvec = [];   fluxvec = []
 
 ################################### Now iterate over the num of trials
     for i in range(num_trials):
@@ -96,24 +146,35 @@ if __name__ == "__main__":
             fit_params = lmfit.Parameters()
             fit_params.add('e1', value=0.3)
             fit_params.add('e2', value=0.0)
-            fit_params.add('flux', value=1.)
-            fit_params.add('x', value=0.2)
-            fit_params.add('y', value=0.1)
+            fit_params.add('flux', value=1.0)
+            fit_params.add('x', value=0)
+            fit_params.add('y', value=0)
             fit_params.add('hlr', value=0.43)
+
+            # Create noisy img
             noisy_image = create_noisy_image(true_image, snr, udRandomSeed) # Send this function the true img, and it will add noise
             fit_params['flux'].value = np.sum(noisy_image.array)            # The true sum is the sum of values of all pixels
             print " Actual flux ", flux
 
-            ml = lmfit.minimize(image_resid, fit_params, args=(noisy_image,)) # Do the fit
+            # Run the fit
+            ml = lmfit.minimize(image_resid, fit_params, args=(noisy_image,)) 
             e1vec.append(ml.params['e1'].value)  # Get out e1 val from fit
             e2vec.append(ml.params['e2'].value)  # Get out e2 val
+
+            print "e1 = ", e1
 
             HLRvec.append(ml.params['hlr'].value)
             fluxvec.append(ml.params['flux'].value)
                 
         except:
+            print "Fit failed, on to next"
             continue
-            
+    
+    
+#    print " np.mean(e1vec) = " , np.mean(e1vec)
+
+    ipdb.set_trace()
+
 ######################################### End of noise trials
 
     with open(args.outfile+"_SNRof_"+str(snr)+"_e1In_"+str(e1val)+"_e2In_"+str(e2val)+"e1out.txt", 'w') as f:
@@ -140,7 +201,7 @@ if __name__ == "__main__":
         binsfac = 3
         
         ax = fig.add_subplot(221)
-        ax.hist(np.array(e1vec), bins=binsfac * np.sqrt(len(e1vec))/2)
+        ax.hist(np.array(e1vec), bins=binsfac * np.sqrt(len(e1vec))/2) 
         ax.set_xlabel(r"$e_1$ ")
         ax.set_ylabel("#")
         ax.set_title("e1_in = "+str(e1val))

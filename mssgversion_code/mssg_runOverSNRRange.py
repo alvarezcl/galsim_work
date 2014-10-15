@@ -5,22 +5,26 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import noiseLibrary
-import  mssg_singleObjectNoiseStudy
 import numpy as np
+import ipdb
 
-numtrials = 100
+numtrials = 10
 
 # SNR_range = [100,40,30,20,15,10,5]
 
 SNR_range = [200,40,20]
 
+SNR_range = [200]
+
 e1in = 0.0
 e2in = 0.0
 
-e1inRange = [-0.1, -0.05, 0, 0.07, 0.2]
+# e1inRange = [-0.1, -0.05, 0, 0.07, 0.2]
+
+e1inRange = [0.3]
 
 for e1in in e1inRange:
-
+    
     for snr in SNR_range:
         print " *********** We're doing SNR = " , snr, "  e1in = ", e1in
         os.system('python mssg_singleObjectNoiseStudy.py  --ntrials ' +str(numtrials) + ' --snr ' + str(snr) + ' --e1 ' + str(e1in) + ' --e2 ' + str(e2in) )

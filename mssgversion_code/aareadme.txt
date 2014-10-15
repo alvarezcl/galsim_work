@@ -1,8 +1,99 @@
 MSSGversion_code dir
 Start: 7/31/2014
-Cur: 8/26/2014
+Cur: 10/6/2014
 
-Repository contains code used with galsim toolset for the purposes of estimating bias in ellipticity measurements of blended objects.
+Repository contains code used with galsim toolset for the purposes of
+estimating bias in ellipticity measurements of blended objects.
+
+
+----------------------------------------------------------------------- MG code
+
+---------------------------------- Under: mssgversion
+
+------ mssg_galsim_Sersic_test.py --- early code that replaced the
+Gaussians in Luis' galsim_first_test with Sersic profiles -- creates a
+gal with 2 components, adds them, and writes out a FITS file too (cur:
+8/2/2014 ) (Didn't trace through in great detail -- 10/9/2014)
+
+------ mssg_2D_Gaussian_Estimate.py:
+
+This file draws from a bivariate gaussian distribution and attempts to
+find the parameters drawn from using curve fit. Plots the resultant
+gaussian contours on the drawn points and plots 2D histogram.  Lego
+plots also.  (Didn't trace through in great detail -- 10/9/2014)
+
+
+
+-------- mssg_Sersic_Gaussian_comparison.py (8/2014)
+
+Calls mssg_noiseLibrary to create ind gals of Sersic and Gaussian type w/ or w/o
+psf convln, then compares slices and proj's of the two to one another
+(Didn't trace through in great detail -- 10/9/2014)
+
+
+------ mssg_single_Sersic_fit.py  (8/2014)
+
+Simplified code to fit a single comp Sersic profile (Didn't trace
+through in great detail -- 10/9/2014) 
+
+------ mssg_double_Sersic_fit.py
+
+Code building up from the single Sersic one to fit 2 Sersic's, or a
+Sersic + Gaussian. (Didn't trace through in great detail -- 10/9/2014)
+
+
+
+------ mssg_2D_Sersic_vary_distance.py 
+
+Code that replaced the Gaussians in Luis'
+2D_lmfit_study_same_params_vary_distance.py with Sersic profiles (cur:
+8/3/2014)
+
+This is throwing an error currently -- 10/9/2014.
+
+
+------- mssg_Sersic_singleComponent_2object_fit.py
+
+Nice and extensive code that varies distance btwn 2 objects and shows
+the corr mat, then finally plots the various properties vs. one
+another. (Didn't trace through in great detail -- 10/9/2014)
+
+
+
+   -----------------------------------------------
+
+-------- mssg_runOverSNRRange.py (9/2014)
+
+Basically shell code to loop over ellips and SNR and call
+mssg_singleObjectNoiseStudy.py which will run the fit over multiple
+noise rzns (10/2014)
+
+-------- mssg_singleObjectNoiseStudy.py
+
+Main body: 
+
+ - set  e1 and e2,   num_trials , SNR to use 
+ - create the 'true' image with the input params
+ - Then loop through the num of trials and create a noise image using the above, with dif noise rzns
+    - And fit this using the image resid, and the params
+    - Extract results of the fit and append resp to 4 vecs: e1, e2, HLR, flux
+ - Write out the results of the e1 and e2 vecs to a file that has input e1 and e2 and SNR in its name
+ - If plot flag is set, show the results
+
+
+
+ (10/2014)
+
+-------- mssg_makeNoiseBiasStudyPlots.py
+
+-------- mssg_plotSlopeVsSNR.py
+
+
+
+
+
+
+----------------------------------------------------------------------- Luis code
 
 ---------------------------------- Under main:
 
@@ -18,24 +109,6 @@ residuals for usage with fitters.
 -------- noiseLibrary.py
 
 -------- gauss.py
-
----------------------------------- Under: mssgversion
-
------- mssg_galsim_Sersic_test.py --- early code that replaced the Gaussians
-in Luis' galsim_first_test with Sersic profiles (cur: 8/2/2014)
-
------- mssg_2D_Sersic_vary_distance.py --- code that replaced the
-Gaussians in Luis' 2D_lmfit_study_same_params_vary_distance.py with
-Sersic profiles (cur: 8/3/2014)
-
------- mssg_single_Sersic_fit.py
-
-Simplified code from the vary distance one to only fit one Sersic gal
-
------- mssg_double_Sersic_fit.py
-
-Code building up from the single Sersic one to fit 2 Sersic's, or a
-Sersic + Gaussian.
 
 ---------------------------------- Under: galsim_fitting  (mostly from early July 2014)
 

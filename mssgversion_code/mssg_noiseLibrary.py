@@ -35,7 +35,7 @@ def create_galaxy(flux, hlr, e1, e2, x0, y0, galtype_gal=galsim.Sersic, sersic_i
         assert sersic_index != 0
         if sersic_index == 0.5:
             print "\nThe object drawn is a gaussian with n = 0.5" 
-        gal = galtype_gal(n=sersic_index, half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
+        gal = galtype_gal(n=sersic_index, half_light_radius=hlr, flux=flux, gsparams=big_fft_params) # This uses built-in galsim functions for creating a gal of type galsim.Sersic:
         gal = gal.shear(g1=e1, g2=e2)
         gal = gal.shift(x0,y0)
         image = galsim.ImageD(x_len, y_len, scale=scale)
