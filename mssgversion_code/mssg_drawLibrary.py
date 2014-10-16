@@ -14,7 +14,7 @@ Created on Wed Jul 16 14:50:00 2014
 
 import galsim
 import numpy as np
-import gauss
+import mssg_gauss
 import sys
 import ipdb
 
@@ -149,7 +149,7 @@ def drawShoot_2comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func,
 
 # Use the analytic definition of an image profile for one galaxy 
 # Uses FFT,  see last line before it returns image and compare to drawshoot_galaxy above  -mg
-def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype):
+def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype, dopsfconvln = 'n'):
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
     if galtype is galsim.Gaussian:        
         gal = galtype(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
@@ -166,14 +166,21 @@ def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype):
     # Same for either Sersic or Gaussian
     gal = gal.shear(g1=e1, g2=e2)
     gal = gal.shift(x0,y0)
-    image = galsim.ImageD(x_len, y_len, scale=scale)
-    image = gal.drawImage(image=image)
+
+    if dopsfconvln == 'y':
+        psfshr = 0.00
+        psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1=psfshr,  e2=-0.0)
+
+        gal = galsim.Convolve(gal,psf)
+
+    protoimage = galsim.ImageD(x_len, y_len, scale=scale)
+    image = gal.drawImage(image=protoimage)
     
     return image
 
 # The difference of the data and the model for one galaxy
 # that is to be reduced.
-def resid_1obj(param, target_image, x_len, y_len, scale, galtype):
+def resid_1obj(param, target_image, x_len, y_len, scale, galtype, dopsfconvln = 'n'):
     flux = param['flux_a'].value
     hlr = param['hlr_a'].value
     e1 = param['e1_a'].value
@@ -185,7 +192,7 @@ def resid_1obj(param, target_image, x_len, y_len, scale, galtype):
 
 #    print " e1_a = ", e1_a 
 
-    image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale, galtype)
+    image = draw_galaxy_1(flux,hlr,e1,e2,x0,y0,x_len,y_len,scale, galtype, dopsfconvln)
     return (image-target_image).array.ravel()
 
 # Draw from two distributions and return a binned image object with two 
