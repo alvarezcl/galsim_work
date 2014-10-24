@@ -1,6 +1,6 @@
-# MSSG, based on JEM and LCA code
-# 10/15/2014
-
+# MSSG
+# Copied over orig JEM code
+# 10/20/2014
 
 # Implement the D. Lang et al. LSST AHM slides deblending algorithm
 # Don't include sky noise for now, since that seems complicated and
@@ -10,10 +10,11 @@
 import numpy as np
 
 def deblend(image, peaks):
+    work_image = image+1.e-20
     templates = []
     # Step 1: Make symmetric templates
     for peak in peaks:
-        templates.append(np.fmin(image, rotate(image, peak)))
+        templates.append(np.fmin(work_image, rotate(work_image, peak)))
     # Step 2: Calculate relative contribution of each template
     template_sum = reduce(lambda x,y: x+y, templates, 0)
     template_fractions = []
@@ -37,7 +38,7 @@ def rotate(image, peak):
                       image_center[1] + peak[1])
     rot_width = 2.0*min(rot_pix_center[0], image_width-rot_pix_center[0])
     rot_height = 2.0*min(rot_pix_center[1], image_height-rot_pix_center[1])
-    rot_bounds = [0,image_width-1,0,image_height-1] # xmin, xmax, ymin, ymax
+    rot_bounds = [0,image_width,0,image_height] # xmin, xmax, ymin, ymax
     if rot_pix_center[0] <= image_center[0]:
         rot_bounds[1] = rot_pix_center[0] + rot_width/2
     else:
@@ -48,5 +49,45 @@ def rotate(image, peak):
         rot_bounds[2] = rot_pix_center[1] - rot_height/2
     xmin, xmax, ymin, ymax = rot_bounds
     newimage = np.zeros_like(image)
-    newimage[ymin:ymax-1, xmin:xmax-1] = image[ymax-1:ymin:-1, xmax-1:xmin:-1]
+    newimage[ymin:ymax, xmin:xmax] = (image[ymin:ymax, xmin:xmax])[::-1,::-1]
     return newimage
+
+
+if __name__ == '__main__':
+    # test rotater
+    array = np.zeros((5,5),dtype=np.float)
+    array[1,1]=11
+    array[1,2]=12
+    array[2,2]=22
+    array[3,3]=33
+    array[4,4]=44
+    rot = rotate(array, (1,1))
+    print "array"
+    print array
+    print "rotated about (1,1) wrt center"
+    print rot
+    print
+    rot = rotate(array, (-1,-1))
+    print "array"
+    print array
+    print "rotated about (-1,-1)) wrt center"
+    print rot
+    print
+    rot = rotate(array, (0.5,0.5))
+    print "array"
+    print array
+    print "rotated about (0.5,0.5)) wrt center"
+    print rot
+    array = array[0:4,0:4]
+    print
+    rot = rotate(array, (0.5,0.5))
+    print "array"
+    print array
+    print "rotated about (0.5,0.5)) wrt center"
+    print rot
+    print
+    rot = rotate(array, (0.0,0.0))
+    print "array"
+    print array
+    print "rotated about (0,0)) wrt center"
+    print rot
