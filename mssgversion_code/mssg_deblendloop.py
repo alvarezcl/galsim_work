@@ -4,7 +4,6 @@
 import matplotlib.pyplot as plt
 import sys
 import os
-import noiseLibrary
 import numpy as np
 import ipdb
 

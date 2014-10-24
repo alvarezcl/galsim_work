@@ -5,7 +5,7 @@
 import matplotlib.pyplot as plt
 import sys
 import os
-import noiseLibrary
+# import noiseLibrary
 import  mssg_singleObjectNoiseStudy
 import numpy as np
 import scipy.optimize as opt

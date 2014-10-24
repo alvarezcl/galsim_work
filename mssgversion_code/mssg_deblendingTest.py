@@ -156,7 +156,7 @@ if __name__ == '__main__':
     e1a_debl = e1_a ; e2a_debl = e2_a 
 
 # Report the parameters to the interpreter screen                        
-#    lmfit.report_errors(mlresult.params)
+    lmfit.report_errors(mlresult.params)
 
 ## Obj b        
     origimg = unblends[1]    
