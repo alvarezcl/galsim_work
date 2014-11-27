@@ -6,7 +6,7 @@ Repository contains code used with galsim toolset for the purposes of
 estimating bias in ellipticity measurements of blended objects.
 
 
------------------------------------------------------------------------ MG code
+----------------------------------------------------------------------- MSSG code
 
 ---------------------------------- Under: mssgversion
 
@@ -88,10 +88,15 @@ Main body:
 
 -------- mssg_plotSlopeVsSNR.py
 
+---------------- Deblending  (11/2014)
 
+ mssg_deblendloop.py calls
+    mssg_deblendingTest.py calls
+       mssg_deblend.py
 
+Separately after run:
 
-
+-  mssg_makeDeblendingStudyPlots.py -- will plot the files on disk
 
 ----------------------------------------------------------------------- Luis code
 
