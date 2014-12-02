@@ -147,7 +147,7 @@ if __name__ == '__main__':
     plotflag = args.plotflag
 
 # Centroids
-    peak_a = (-1,0);   peak_b = (1,0)  # Horiz sep
+    peak_a = (-1.05,0);   peak_b = (1.05,0)  # Horiz sep
 #    peak_a = (0,1);   peak_b = (0,-1)  # Vert sep
 
 # Convert peak to pixels
@@ -160,13 +160,18 @@ if __name__ == '__main__':
 
     fitdat = []
 
-    e1a_range = [0.5, 0.25, 0, -0.25, -0.5]
-    e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
+#    e1a_range = [0.5, 0.25, 0, -0.25, -0.5]
+#    e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
+
+    e1a_range = [0.5,  0, -0.5]
+    e1b_range = [0.5,  0, -0.5]
 
     e2ain = 0
     e2bin = 0
 
-    for filenum in xrange(0,5):
+    numfiles = 50
+
+    for filenum in xrange(0,numfiles):
 ### Run over ellips
         for e1bin in e1b_range:
             for e1ain in e1a_range:
@@ -176,7 +181,7 @@ if __name__ == '__main__':
 # Create the blended object using funct above 
 #   blend = single image where we've added both
 #   unblends = vector of 2 imgs, each of the ind ones
-                blend, unblends = create_blend(peak_a, peak_b, e1a = e1a_in,  e2a = e2a_in, e1b = e1b_in ,e2b = e2b_in)
+                blend, unblends = create_blend(peak_a, peak_b, e1a = e1ain,  e2a = e2ain, e1b = e1bin ,e2b = e2bin)
 
                 if plotflag > presetval:
                     plt.title(" Img blended obj - (a+b) ")
@@ -451,6 +456,6 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-    np.savetxt('deblendingTests_5runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl   e1a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl")
+    np.savetxt('deblendingTests_50runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl   e1a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl")
 
 
