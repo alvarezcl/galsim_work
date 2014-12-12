@@ -147,14 +147,30 @@ if __name__ == '__main__':
     plotflag = args.plotflag
 
 # Centroids
-    peak_a = (-1.05,0);   peak_b = (1.05,0)  # Horiz sep
+#    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
+#    peak_a = (-1.001,0);   peak_b = (1.001,0)  # Horiz sep- move centers to -eps and +eps
+#    peak_a = (-0.999,0);   peak_b = (1.001,0)  # Horiz sep- move centers to +eps and +eps
+#    peak_a = (-0.999,0);   peak_b = (0.999,0)  # Horiz sep- move centers to +eps and -eps
+
+#    peak_a = (-1.05,0);   peak_b = (0.95,0)  # Horiz sep- move centers both to left quarter pixel
+#    peak_a = (-1.05,0);   peak_b = (1.05,0)  # Horiz sep - move centers apart quarter pixel
+#    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
+
 #    peak_a = (0,1);   peak_b = (0,-1)  # Vert sep
 
 # Convert peak to pixels
-    peaks_pix = [[p1/0.2 for p1 in peak_a],
-                 [p2/0.2 for p2 in peak_b]]
+#    peak_a = (-0.999,0);   peak_b = (0.999,0)  # Horiz sep- move centers to +eps and -eps
 
-    print peaks_pix 
+# Vertical shifts
+    peak_a = (0,-1.0);   peak_b = (0,1.0)    # Horiz sep - 0, and vertical shift by 2.0"
+#   peak_a = (-1.0,-1.0);   peak_b = (1.0,1.0)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift by 2.0"
+
+
+####### Convert to pixels
+#    peaks_pix = [[p1/0.2 for p1 in peak_a],
+#                 [p2/0.2 for p2 in peak_b]]
+
+#    print peaks_pix 
 
 ################################################## Start loops
 
@@ -169,14 +185,65 @@ if __name__ == '__main__':
     e2ain = 0
     e2bin = 0
 
-    numfiles = 50
+    xavec =[] ;     xbvec =[]
 
+
+# Set size of partial pixels
+    qrtrpixel = 0.25
+    halfpixel = 0.5
+
+    print " \n\n\n peak_a = ",  peak_a 
+
+    '''
+# Random number test loop   
     for filenum in xrange(0,numfiles):
+        
+        xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+        xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+#        print "xashift = ", xashift
+        
+        xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+        xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+
+        xavec.append(xashift) ;         xbvec.append(xbshift)
+        
+        xav = np.array(xavec) ;     xbv = np.array(xbvec)
+
+    print " mean(xashift) = ", xav.mean() 
+    print " std(xashift) = ", xav.std() 
+    '''
+     
+#    sys.exit()
+    
+    numfiles = 50  # Number of runs
+    for filenum in xrange(0,numfiles):
+
 ### Run over ellips
         for e1bin in e1b_range:
             for e1ain in e1a_range:
 
                 print " ************************************************ We're doing e1a_in = " , e1ain, "  e2a_in = ", e2ain, " e1b_in = ", e1bin, " e2b_in = ", e2bin
+
+#                xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+#                xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+
+                xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+                xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+
+                yashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+                ybshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+
+#                xbshift = 0
+                xaoff = xashift/5 ; xboff = xbshift/5  # Converts to arcsec, by div by 5
+                yaoff = yashift/5 ; yboff = ybshift/5  # Converts to arcsec, by div by 5
+#                peak_a = (-1.0 + xaoff,-1.0 + yaoff);   peak_b = (1.0 + xboff,1.0 + yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
+#                peak_a = (-1.0 , yaoff);   peak_b = (1.0 , yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
+                peak_a = (0 , -1.0 + yaoff);   peak_b = (0 , 1.0 + yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
+                peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in peak_b]]
+                
+                print " Arcsec: peaks = " , peak_a, peak_b 
+                print " Pixels: peaks_pix = " ,  peaks_pix 
 
 # Create the blended object using funct above 
 #   blend = single image where we've added both
@@ -456,6 +523,6 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-    np.savetxt('deblendingTests_50runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl   e1a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl")
+    np.savetxt('deblendingTestsvert_50runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl   e1a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl")
 
 
