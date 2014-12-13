@@ -195,15 +195,13 @@ if __name__ == '__main__':
     print " \n\n\n peak_a = ",  peak_a 
 
     '''
-# Random number test loop   
+    # Random number test loop   
+    numfiles = 50  # Number of runs
     for filenum in xrange(0,numfiles):
-        
-        xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
-        xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
-#        print "xashift = ", xashift
         
         xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
         xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+        print "xashift = ", xashift
 
         xavec.append(xashift) ;         xbvec.append(xbshift)
         
@@ -211,11 +209,15 @@ if __name__ == '__main__':
 
     print " mean(xashift) = ", xav.mean() 
     print " std(xashift) = ", xav.std() 
+  
+    sys.exit()
     '''
-     
-#    sys.exit()
     
     numfiles = 50  # Number of runs
+#    origpeak_a = (-1, 0) ; origpeak_b = (1, 0)  # horiz offset, A is L, and B is R
+    origpeak_a = (0, -1) ; origpeak_b = (0, 1)  # vert offset, A is below, and B above
+
+
     for filenum in xrange(0,numfiles):
 
 ### Run over ellips
@@ -236,13 +238,20 @@ if __name__ == '__main__':
 #                xbshift = 0
                 xaoff = xashift/5 ; xboff = xbshift/5  # Converts to arcsec, by div by 5
                 yaoff = yashift/5 ; yboff = ybshift/5  # Converts to arcsec, by div by 5
-#                peak_a = (-1.0 + xaoff,-1.0 + yaoff);   peak_b = (1.0 + xboff,1.0 + yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
-#                peak_a = (-1.0 , yaoff);   peak_b = (1.0 , yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
-                peak_a = (0 , -1.0 + yaoff);   peak_b = (0 , 1.0 + yboff)  # Horiz sep- move centers by the random offsets, in arcsec,  Vert sep- also move centers by the random offsets, in arcsec
+
+                xashift = (xaoff, 0) ;                xbshift = (xboff, 0) # horizshift
+                yashift = (0 , yaoff) ;                ybshift = (0 , yboff) # vertshift
+
+# Horiz sep- move centers by the random offsets, in arcsec
+#                peak_a =  np.array(origpeak_a) + np.array(xashift);                peak_b =  np.array(origpeak_b) + np.array(xbshift )  
+#  Vert sep- move centers by the random offsets, in arcsec
+                peak_a =  np.array(origpeak_a) + np.array(yashift);                peak_b =  np.array(origpeak_b) + np.array(ybshift )  
+
                 peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
                              [p2/0.2 for p2 in peak_b]]
                 
-                print " Arcsec: peaks = " , peak_a, peak_b 
+                print " Arcsec: peaks_A = " , peak_a
+                print " Arcsec: peaks_B = " , peak_b
                 print " Pixels: peaks_pix = " ,  peaks_pix 
 
 # Create the blended object using funct above 
@@ -514,7 +523,7 @@ if __name__ == '__main__':
                     plt.show()
 
     ################### Result vec for this fit
-                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl, e1a_debl,   e1bin, e2bin, e1b_unbl, e1b_debl]
+                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl]
                 fitdat.append(fitresults)
                 print 'len(fitdat) = ', len(fitdat)
 
@@ -523,6 +532,6 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-    np.savetxt('deblendingTestsvert_50runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl   e1a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl")
+    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl ")
 
 

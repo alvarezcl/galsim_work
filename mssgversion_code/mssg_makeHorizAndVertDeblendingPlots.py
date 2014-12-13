@@ -20,49 +20,15 @@ fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
 #fname = args.subdir + 'offsetBoth0.005PixelRight_deblendingTests_50runs.txt'
 
 
-   # Horiz sep- move centers to -eps and -eps
-#fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
-
-   # Horiz sep- move centers to -eps and +eps
-#fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
-
-   # Horiz sep- move centers to +eps and -eps
-#fname = args.subdir + 'offsetLeftOne200thPixelRightRightOne200thPixelLeft_deblendingTests_50runs.txt' 
-
-   # Horiz sep- move centers to +eps and +eps
-#fname = args.subdir + 'offsetBothOne200thPixelRight_deblendingTests_50runs.txt' 
-
-   # Random qrtr pixel offset for both
-# fname = args.subdir + 'offsetBothRandomQrtrPixelLorR_deblendingTests_50runs.txt'
-
-   # Random half pixel offset for both
-#fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
-# fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_10runs.txt'
-
-   # Random qrtr pixel offset left, right one fixed
-#fname = args.subdir + 'offsetLeftOneQrtrPixelLorRRightOneFixed_deblendingTests_50runs.txt'
-
-
-   # Horiz sep- exact 0 sep and on points; and vert sep- exact 2" sep and on points
-#fname = args.subdir + 'offsetEachVerticallyUpAndDownOneArcsecFromCenterAndNoHorizSep_deblendingTests_10runs.txt'
-
-   # Horiz sep- exact 2" sep and on points; and vert sep- exact 2" sep and on points
-#fname = args.subdir + 'offsetEachVerticallyUpAndDownOneArcsecFromCenterAndHorizSep2arcsec_deblendingTests_10runs.txt'
-
-# fname = args.subdir + 'offsetEachVerticallyUpRandomHalfPixelFromCenterAndHorizRandomHalfPixelFromCenter_deblendingTests_50runs.txt'
-
-
-
-#fname = args.subdir + 'offsetEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep2arcsec_deblendingTests_50runs.txt'
-
-fname = args.subdir + 'offsetVertSep2arcsecAndEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep0arcsec_deblendingTests_50runs.txt'
-
-   # Horiz sep- Random half pixel offset for both; and vert sep- also random half pixel offset for both
 
 #################################### Load up data
+# Horiz sep- Random half pixel offset for both
+fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+
 fitdat = np.loadtxt(fname)
 
-fnumvec = fitdat[:,0]
+# File num
+fnum =  fitdat[:,0]
 
 # Initze all a vecs
 e1a_in = fitdat[:,1]
@@ -73,6 +39,8 @@ e2a_unbl = fitdat[:,5]
 e2a_debl = fitdat[:,6] 
 e1a_unblresid =  e1a_unbl - e1a_in 
 e1a_deblresid =  e1a_debl - e1a_in 
+e2a_unblresid =  e2a_unbl - e2a_in 
+e2a_deblresid =  e2a_debl - e2a_in 
 
 e1b_in = fitdat[:,7]
 e2b_in = fitdat[:,8]
@@ -82,8 +50,35 @@ e2b_unbl = fitdat[:,11]
 e2b_debl = fitdat[:,12]
 e1b_unblresid =  e1b_unbl - e1b_in 
 e1b_deblresid =  e1b_debl - e1b_in 
+e2b_unblresid =  e2b_unbl - e2b_in 
+e2b_deblresid =  e2b_debl - e2b_in 
 
-fnum =  fitdat[:,0]
+#################################### Load up data 2
+vertfname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+
+fitdat = np.loadtxt(vertfname)
+
+# File num
+vertfnum =  fitdat[:,0]
+
+# Initze all a vecs
+verte1a_in = fitdat[:,1]
+verte2a_in = fitdat[:,2]
+verte1a_unbl = fitdat[:,3] 
+verte1a_debl = fitdat[:,4] 
+verte2a_unbl = fitdat[:,5] 
+verte2a_debl = fitdat[:,6] 
+verte1a_unblresid =  e1a_unbl - e1a_in 
+verte1a_deblresid =  e1a_debl - e1a_in 
+
+verte1b_in = fitdat[:,7]
+verte2b_in = fitdat[:,8]
+verte1b_unbl = fitdat[:,9] 
+verte1b_debl = fitdat[:,10]
+verte2b_unbl = fitdat[:,11] 
+verte2b_debl = fitdat[:,12]
+verte1b_unblresid =  e1b_unbl - e1b_in 
+verte1b_deblresid =  e1b_debl - e1b_in 
 
 print 'fnum = ', fnum 
 print 'e1a_in = ' ,e1a_in 
@@ -105,9 +100,12 @@ e1a_range = [0.5,  0,  -0.5]
 e1b_range = [0.5,  0,  -0.5]
 
 xshift = [0.01, 0.01, 0.01]
+xshiftL = [-0.01, -0.01, -0.01]
 
 e1shifted = np.array(e1a_range) + np.array(xshift)
+e1Lshifted = np.array(e1a_range) + np.array(xshiftL)
 nbins = 10 # Set num of bins for histo
+
 ############################################################ e1 a plots
 for e1bin in e1b_range:
     e1bstr = str(e1bin)
@@ -119,6 +117,14 @@ for e1bin in e1b_range:
     vece1a_deblresid = []  
     vece1a_unblerr = []  
     vece1a_deblerr = []  
+
+    vece2a_in = []  
+    vece2a_unbl = []
+    vece2a_debl = []
+    vece2a_unblresid = []  
+    vece2a_deblresid = []  
+    vece2a_unblerr = []  
+    vece2a_deblerr = []  
 
     # Run over all e1a fits
     for e1ain in e1a_range:
@@ -134,6 +140,14 @@ for e1bin in e1b_range:
         vece1a_deblresid.append (e1a_deblresid[i].mean() )
         vece1a_unblerr.append( e1a_unbl[i].std()  )
         vece1a_deblerr.append( e1a_debl[i].std() ) 
+
+        vece2a_in.append( e2a_in[i].mean() )
+        vece2a_unbl.append( e2a_unbl[i].mean() )
+        vece2a_debl.append( e2a_debl[i].mean() )
+        vece2a_unblresid.append (e2a_unblresid[i].mean()  )
+        vece2a_deblresid.append (e2a_deblresid[i].mean() )
+        vece2a_unblerr.append( e2a_unbl[i].std()  )
+        vece2a_deblerr.append( e2a_debl[i].std() ) 
 
         '''
         #  Make histo of e1a fit vals
@@ -163,6 +177,11 @@ for e1bin in e1b_range:
     bline = plt.errorbar(e1a_range, vece1a_deblresid, vece1a_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1a" , linewidth= 4.0)
     rline = plt.errorbar(e1a_range, vece1a_deblresid, vece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
+#### Deblended e2a fit plots
+    plt.scatter( e1Lshifted, vece2a_deblresid, color = 'c' , s=50.0  )
+    bline = plt.errorbar(e1Lshifted, vece2a_deblresid, vece2a_deblerr,  ecolor='c',linestyle=' ', label = "Resid for deblended fit for e2a" , linewidth= 4.0)
+    rline = plt.errorbar(e1Lshifted, vece2a_deblresid, vece2a_deblerr/np.sqrt(numfiles),  ecolor='m',linestyle=' ', label = "Resid for deblended e2a fit, error/sqrt(N)" , linewidth= 8.0 )
+
     plt.title("Resids for fits with e1bin = " +e1bstr )
     plt.legend() # (handles=[gline,bline])
     plt.xlabel('$e_{1a in}$',fontsize=18)
@@ -170,10 +189,7 @@ for e1bin in e1b_range:
     plt.axhline( 0,color='k',linestyle='-', linewidth= 2)     
     plt.show()
 
-
-
-
-#    plt.savefig("resid_e1aBlended-e1aUnbl_vs_e1aIn_e1b_" + e1bstr + ".png")
+    plt.savefig("resid_e1aBlended-e1aUnbl_vs_e1aIn_e1b_" + e1bstr + ".png")
 
 ############################################################ e1 b plots
 for e1ain in e1a_range:
