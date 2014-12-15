@@ -55,9 +55,13 @@ fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
 
 #fname = args.subdir + 'offsetEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep2arcsec_deblendingTests_50runs.txt'
 
-fname = args.subdir + 'offsetVertSep2arcsecAndEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep0arcsec_deblendingTests_50runs.txt'
+# fname = args.subdir + 'offsetVertSep2arcsecAndEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep0arcsec_deblendingTests_50runs.txt'
 
    # Horiz sep- Random half pixel offset for both; and vert sep- also random half pixel offset for both
+
+
+fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
