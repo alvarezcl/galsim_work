@@ -13,7 +13,7 @@ parser.add_argument("--subdir", default="deblendsOutput/", help="output text fil
 args = parser.parse_args()
 
 ############ Read in file
-fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
+# fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
 # fname = args.subdir + 'offsetEachQuarterPixelAwayFromCenter_deblendingTests_50runs.txt'
 #fname = args.subdir + 'offsetBothQuarterPixelLeft_deblendingTests_50runs.txt'
 #fname = args.subdir + 'offsetBoth0.005PixelLeft_deblendingTests_50runs.txt'     # 
@@ -21,7 +21,7 @@ fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
 
 
    # Horiz sep- move centers to -eps and -eps
-#fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
+# fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
 
    # Horiz sep- move centers to -eps and +eps
 #fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
@@ -36,7 +36,7 @@ fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
 # fname = args.subdir + 'offsetBothRandomQrtrPixelLorR_deblendingTests_50runs.txt'
 
    # Random half pixel offset for both
-#fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
+# fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 # fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_10runs.txt'
 
    # Random qrtr pixel offset left, right one fixed
@@ -49,47 +49,77 @@ fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
    # Horiz sep- exact 2" sep and on points; and vert sep- exact 2" sep and on points
 #fname = args.subdir + 'offsetEachVerticallyUpAndDownOneArcsecFromCenterAndHorizSep2arcsec_deblendingTests_10runs.txt'
 
-# fname = args.subdir + 'offsetEachVerticallyUpRandomHalfPixelFromCenterAndHorizRandomHalfPixelFromCenter_deblendingTests_50runs.txt'
+   # Vert sep
+#fname =  args.subdir + 'offsetEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep2arcsec_deblendingTests_50runs.txt'
+#fname = args.subdir + 'offsetEachVerticallyUpRandomHalfPixelFromCenterAndHorizRandomHalfPixelFromCenter_deblendingTests_50runs.txt'
 
+   # Horiz sep- exact 2" sep and on points; and vert displacement: +eps for both
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0.001)__peak_B_(1.0, 0.001)_5_runs.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0.001)__peak_B_(1.0, 0.001)_50_runs.txt'
 
-
-#fname = args.subdir + 'offsetEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep2arcsec_deblendingTests_50runs.txt'
+  # Horiz sep- exact 2" sep and on points; and vert displacement: -eps for both
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.001)_5_runs.txt'
+fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.001)_50_runs.txt'
 
 # fname = args.subdir + 'offsetVertSep2arcsecAndEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep0arcsec_deblendingTests_50runs.txt'
 
    # Horiz sep- Random half pixel offset for both; and vert sep- also random half pixel offset for both
 
 
-fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
-fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
+# fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+# fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
 
 fnumvec = fitdat[:,0]
+fnum =  fnumvec
 
-# Initze all a vecs
-e1a_in = fitdat[:,1]
-e2a_in = fitdat[:,2]
-e1a_unbl = fitdat[:,3] 
-e1a_debl = fitdat[:,4] 
-e2a_unbl = fitdat[:,5] 
-e2a_debl = fitdat[:,6] 
-e1a_unblresid =  e1a_unbl - e1a_in 
-e1a_deblresid =  e1a_debl - e1a_in 
+try:
 
-e1b_in = fitdat[:,7]
-e2b_in = fitdat[:,8]
-e1b_unbl = fitdat[:,9] 
-e1b_debl = fitdat[:,10]
-e2b_unbl = fitdat[:,11] 
-e2b_debl = fitdat[:,12]
-e1b_unblresid =  e1b_unbl - e1b_in 
-e1b_deblresid =  e1b_debl - e1b_in 
+    print "*********************** Has e2 in output file"
+    # Initze all a vecs
+    e1a_in = fitdat[:,1]
+    e2a_in = fitdat[:,2]
+    e1a_unbl = fitdat[:,3] 
+    e1a_debl = fitdat[:,4] 
+    e2a_unbl = fitdat[:,5] 
+    e2a_debl = fitdat[:,6] 
+    e1a_unblresid =  e1a_unbl - e1a_in 
+    e1a_deblresid =  e1a_debl - e1a_in 
+    
+    e1b_in = fitdat[:,7]
+    e2b_in = fitdat[:,8]
+    e1b_unbl = fitdat[:,9] 
+    e1b_debl = fitdat[:,10]
+    e2b_unbl = fitdat[:,11] 
+    e2b_debl = fitdat[:,12]
+    e1b_unblresid =  e1b_unbl - e1b_in 
+    e1b_deblresid =  e1b_debl - e1b_in 
 
-fnum =  fitdat[:,0]
+except:
 
-print 'fnum = ', fnum 
+    print "*********************** No e2 in output file, reading just the orig files"
+    e1a_in = fitdat[:,1]
+    e2a_in = fitdat[:,2]
+    e1a_unbl = fitdat[:,3] 
+    e1a_debl = fitdat[:,4] 
+    e1a_unblresid =  e1a_unbl - e1a_in 
+    e1a_deblresid =  e1a_debl - e1a_in 
+
+    e1b_in = fitdat[:,5]
+    e2b_in = fitdat[:,6]
+    e1b_unbl = fitdat[:,7] 
+    e1b_debl = fitdat[:,8]
+    e1b_unblresid =  e1b_unbl - e1b_in 
+    e1b_deblresid =  e1b_debl - e1b_in 
+
+
+
+# print 'fnum = ', fnum 
+
+# Taking out the print statements for now
+'''
 print 'e1a_in = ' ,e1a_in 
 print 'e1a_unbl  = ' ,e1a_unbl 
 print 'e1a_debl = ', e1a_debl
@@ -99,6 +129,7 @@ print 'e1b_in = ' ,e1b_in
 print 'e1b_unbl  = ' ,e1b_unbl 
 print 'e1b_debl = ', e1b_debl
 print 'e1b_unblresid = ',e1b_unblresid
+'''
 
 numfiles = 50
 
@@ -128,8 +159,8 @@ for e1bin in e1b_range:
     for e1ain in e1a_range:
         e1astr = str(e1ain)
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
-        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
-        print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
+#        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
+ #       print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
 
         vece1a_in.append( e1a_in[i].mean() )
         vece1a_unbl.append( e1a_unbl[i].mean() )
@@ -193,8 +224,8 @@ for e1ain in e1a_range:
 
     for e1bin in e1b_range:
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
-        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
-        print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
+#        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
+ #       print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
 
         vece1b_in.append( e1b_in[i].mean() )
         vece1b_unbl.append( e1b_unbl[i].mean() )

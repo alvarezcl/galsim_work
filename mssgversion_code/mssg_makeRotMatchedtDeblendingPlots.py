@@ -14,14 +14,72 @@ args = parser.parse_args()
 
 ############ Read in file
 fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
+
+
 # fname = args.subdir + 'offsetEachQuarterPixelAwayFromCenter_deblendingTests_50runs.txt'
 #fname = args.subdir + 'offsetBothQuarterPixelLeft_deblendingTests_50runs.txt'
 #fname = args.subdir + 'offsetBoth0.005PixelLeft_deblendingTests_50runs.txt'     # 
 #fname = args.subdir + 'offsetBoth0.005PixelRight_deblendingTests_50runs.txt'
 
 
+#################################### Load up orig data
+#fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_5_runs.txt' # Orig
+fname = args.subdir + 'deblendingTests_50runs.txt' # Orig
+   # Horiz sep- move centers to -eps and +eps
+#fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
 
-#################################### Load up data
+   # Horiz sep- move centers to +eps and -eps
+# fname = args.subdir + 'offsetLeftOne200thPixelRightRightOne200thPixelLeft_deblendingTests_50runs.txt' 
+
+# Load file
+fitdat = np.loadtxt(fname)
+
+# File num
+fnum =  fitdat[:,0]
+
+try:
+# Initze all a vecs
+    orige1a_in = fitdat[:,1]
+    orige2a_in = fitdat[:,2]
+    orige1a_unbl = fitdat[:,3] 
+    orige1a_debl = fitdat[:,4] 
+    orige2a_unbl = fitdat[:,5] 
+    orige2a_debl = fitdat[:,6] 
+    orige1a_unblresid =  orige1a_unbl - orige1a_in 
+    orige1a_deblresid =  orige1a_debl - orige1a_in 
+    orige2a_unblresid =  orige2a_unbl - orige2a_in 
+    orige2a_deblresid =  orige2a_debl - orige2a_in 
+    
+    orige1b_in = fitdat[:,7]
+    orige2b_in = fitdat[:,8]
+    orige1b_unbl = fitdat[:,9] 
+    orige1b_debl = fitdat[:,10]
+    orige2b_unbl = fitdat[:,11] 
+    orige2b_debl = fitdat[:,12]
+    orige1b_unblresid =  orige1b_unbl - orige1b_in 
+    orige1b_deblresid =  orige1b_debl - orige1b_in 
+    orige2b_unblresid =  orige2b_unbl - orige2b_in 
+    orige2b_deblresid =  orige2b_debl - orige2b_in 
+
+except:
+
+    print "*********************** No e2 in output file, reading just the orig files"
+    orige1a_in = fitdat[:,1]
+    orige2a_in = fitdat[:,2]
+    orige1a_unbl = fitdat[:,3] 
+    orige1a_debl = fitdat[:,4] 
+    orige1a_unblresid =  orige1a_unbl - orige1a_in 
+    orige1a_deblresid =  orige1a_debl - orige1a_in 
+
+    orige1b_in = fitdat[:,5]
+    orige2b_in = fitdat[:,6]
+    orige1b_unbl = fitdat[:,7] 
+    orige1b_debl = fitdat[:,8]
+    orige1b_unblresid =  orige1b_unbl - orige1b_in 
+    orige1b_deblresid =  orige1b_debl - orige1b_in 
+
+
+#################################### Load up nonrot data
 # Horiz sep- Random half pixel offset for both
 fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
 
@@ -84,6 +142,8 @@ rote1b_deblresid =  rote1b_debl - rote1b_in
 rote2b_unblresid =  rote2b_unbl - rote2b_in 
 rote2b_deblresid =  rote2b_debl - rote2b_in 
 
+# For printing
+'''
 print 'rotfnum = ', rotfnum 
 print 'rote1a_in = ' ,rote1a_in 
 print 'rote1a_unbl  = ' ,rote1a_unbl 
@@ -94,6 +154,7 @@ print 'rote1b_in = ' ,rote1b_in
 print 'rote1b_unbl  = ' ,rote1b_unbl 
 print 'rote1b_debl = ', rote1b_debl
 print 'rote1b_unblresid = ',rote1b_unblresid
+'''
 
 ################### Now declare some needed  stuff
 numfiles = 50
@@ -106,10 +167,12 @@ e1b_range = [0.5,  0,  -0.5]
 xshift = [0.01, 0.01, 0.01]
 xshiftL = [-0.01, -0.01, -0.01]
 xshiftLL = [-0.02, -0.02, -0.02]
+xshiftRR = [+0.02, 0.02, 0.02]
 
 e1shifted = np.array(e1a_range) + np.array(xshift)
 e1Lshifted = np.array(e1a_range) + np.array(xshiftL)
 e1LLshifted = np.array(e1a_range) + np.array(xshiftLL)
+e1RRshifted = np.array(e1a_range) + np.array(xshiftRR)
 
 ## If we're drawing histos we need this
 nbins = 10 # Set num of bins for histo
@@ -118,7 +181,7 @@ nbins = 10 # Set num of bins for histo
 for e1bin in e1b_range:
     e1bstr = str(e1bin)
 
-    # Declare vecs for first file
+    # Declare vecs for nonrot file
     vece1a_in = []  
     vece1a_unbl = []
     vece1a_debl = []
@@ -152,18 +215,38 @@ for e1bin in e1b_range:
     rotvece2a_unblerr = []  
     rotvece2a_deblerr = []  
 
-    # Run over all e1a fits
+    # Declare vecs for orig file
+    origvece1a_in = []  
+    origvece1a_unbl = []
+    origvece1a_debl = []
+    origvece1a_unblresid = []  
+    origvece1a_deblresid = []  
+    origvece1a_unblerr = []  
+    origvece1a_deblerr = []  
+
+    origvece2a_in = []  
+    origvece2a_unbl = []
+    origvece2a_debl = []
+    origvece2a_unblresid = []  
+    origvece2a_deblresid = []  
+    origvece2a_unblerr = []  
+    origvece2a_deblerr = []  
+
+    #################### Run over all e1a fits
     for e1ain in e1a_range:
         e1astr = str(e1ain)
-        # Get indices for all runs that match the inputs for the first file
+        # Get indices for all runs that match the inputs for the nonrot file
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
-        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
-        print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
+#        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
+ #       print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
 
-        # Get indices for all runs that match the inputs for the first file for the rotated file
+        # Get indices for all runs that match the inputs for the nonrot file for the rotated file
         j = np.where(np.logical_and(rote1a_in == -e1ain, rote1b_in == -e1bin))  # When we rotate by 90 deg the sign of e1 flips
 
-        # Take avg and stddev for all vecs from first file (these vecs will be just number of e1ain vals long -- i.e. 3 for [-0.5, 0, 0.5])
+        # Get indices for all runs that match the inputs for the nonrot file for the orig file
+        k = np.where(np.logical_and(orige1a_in == e1ain, orige1b_in == e1bin))  
+
+        # Take avg and stddev for all vecs from nonrot file (these vecs will be just number of e1ain vals long -- i.e. 3 for [-0.5, 0, 0.5])
         vece1a_in.append( e1a_in[i].mean() )
         vece1a_unbl.append( e1a_unbl[i].mean() )
         vece1a_debl.append( e1a_debl[i].mean() )
@@ -197,6 +280,23 @@ for e1bin in e1b_range:
         rotvece2a_unblerr.append( rote2a_unbl[j].std()  )
         rotvece2a_deblerr.append( rote2a_debl[j].std() ) 
 
+        # Take avg and stddev for all vecs from orig file (these vecs will be just number of e1ain vals long -- i.e. 3 for [-0.5, 0, 0.5])
+        origvece1a_in.append( orige1a_in[k].mean() )
+        origvece1a_unbl.append( orige1a_unbl[k].mean() )
+        origvece1a_debl.append( orige1a_debl[k].mean() )
+        origvece1a_unblresid.append (e1a_unblresid[k].mean()  )
+        origvece1a_deblresid.append (e1a_deblresid[k].mean() )
+        origvece1a_unblerr.append( orige1a_unbl[k].std()  )
+        origvece1a_deblerr.append( orige1a_debl[k].std() ) 
+
+        origvece2a_in.append( orige2a_in[k].mean() )
+        origvece2a_unbl.append( orige2a_unbl[k].mean() )
+        origvece2a_debl.append( orige2a_debl[k].mean() )
+        origvece2a_unblresid.append (e2a_unblresid[k].mean()  )
+        origvece2a_deblresid.append (e2a_deblresid[k].mean() )
+        origvece2a_unblerr.append( orige2a_unbl[k].std()  )
+        origvece2a_deblerr.append( orige2a_debl[k].std() ) 
+
         '''
         #  Make histo of e1a fit vals
         plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
@@ -229,6 +329,11 @@ for e1bin in e1b_range:
     plt.scatter( e1Lshifted, rotvece1a_deblresid, color = 'm' , s=50.0  )
     bline = plt.errorbar(e1Lshifted, rotvece1a_deblresid, rotvece1a_deblerr,  ecolor='c',linestyle=' ', label = "Resid for deblended fit for rotvece1a" , linewidth= 4.0)
     rline = plt.errorbar(e1Lshifted, rotvece1a_deblresid, rotvece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit for rotvece1a, error/sqrt(N)" , linewidth= 8.0 )
+
+#### Deblended fit orig plots
+    plt.scatter( e1RRshifted, origvece1a_deblresid, color = 'y' , s=50.0  )
+    oline = plt.errorbar(e1RRshifted, origvece1a_deblresid, origvece1a_deblerr,  ecolor='y',linestyle=' ', label = "Resid for deblended fit for origvece1a" , linewidth= 4.0)
+    ooline = plt.errorbar(e1RRshifted, origvece1a_deblresid, origvece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit for origvece1a, error/sqrt(N)" , linewidth= 8.0 )
 
 
 #### Deblended fit e1a - rote1a plots
@@ -272,7 +377,7 @@ for e1bin in e1b_range:
 for e1ain in e1a_range:
     e1astr = str(e1ain)
 
-    # Declare vecs for first file
+    # Declare vecs for nonrot file
     vece1b_in = []  
     vece1b_unbl = []
     vece1b_debl = []
@@ -291,15 +396,15 @@ for e1ain in e1a_range:
     rotvece1b_deblerr = []  
 
     for e1bin in e1b_range:
-        # Get indices for all runs that match the inputs for the first file
+        # Get indices for all runs that match the inputs for the nonrot file
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
-        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
-        print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
+#        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
+ #       print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
 
-        # Get indices for all runs that match the inputs for the first file for the rotated file
+        # Get indices for all runs that match the inputs for the nonrot file for the rotated file
         j = np.where(np.logical_and(rote1a_in == -e1ain, rote1b_in == -e1bin))  # When we rotate by 90 deg the sign of e1 flips
 
-        # Take avg and stddev for all vecs from first file (these vecs will be just number of e1ain vals long -- i.e. 3 for [-0.5, 0, 0.5])
+        # Take avg and stddev for all vecs from nonrot file (these vecs will be just number of e1ain vals long -- i.e. 3 for [-0.5, 0, 0.5])
         vece1b_in.append( e1b_in[i].mean() )
         vece1b_unbl.append( e1b_unbl[i].mean() )
         vece1b_debl.append( e1b_debl[i].mean() )

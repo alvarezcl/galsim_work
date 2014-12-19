@@ -16,7 +16,7 @@ import random
 #### Level to do printing at (setting it lower will print more stuff)
 presetval = 1
 
-bd=galsim.BaseDeviate(0) # Random num seed
+bd=galsim.BaseDeviate(0) # Random num seed -- when set to zero, uses machine time
 
 ############## Function to draw and return simple single gal img
 def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbeta=3.0 , psffwhm= 0.85):
@@ -161,9 +161,14 @@ if __name__ == '__main__':
 # Convert peak to pixels
 #    peak_a = (-0.999,0);   peak_b = (0.999,0)  # Horiz sep- move centers to +eps and -eps
 
+# Horiz shifts
+#    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
+
 # Vertical shifts
-    peak_a = (0,-1.0);   peak_b = (0,1.0)    # Horiz sep - 0, and vertical shift by 2.0"
+#    peak_a = (0,-1.0);   peak_b = (0,1.0)    # Horiz sep - 0, and vertical shift by 2.0"
 #   peak_a = (-1.0,-1.0);   peak_b = (1.0,1.0)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift by 2.0"
+#    peak_a = (-1.0,+0.001);   peak_b = (1.0,+0.001)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift up on each by +eps
+    peak_a = (-1.0,-0.001);   peak_b = (1.0,-0.001)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift up on each by -eps
 
 
 ####### Convert to pixels
@@ -214,8 +219,9 @@ if __name__ == '__main__':
     '''
     
     numfiles = 50  # Number of runs
-#    origpeak_a = (-1, 0) ; origpeak_b = (1, 0)  # horiz offset, A is L, and B is R
-    origpeak_a = (0, -1) ; origpeak_b = (0, 1)  # vert offset, A is below, and B above
+    origpeak_a = peak_a ; origpeak_b = peak_b
+# origpeak_a = (-1, 0) ; origpeak_b = (1, 0)  # horiz offset, A is L, and B is R
+#    origpeak_a = (0, -1) ; origpeak_b = (0, 1)  # vert offset, A is below, and B above
 
 
     for filenum in xrange(0,numfiles):
@@ -226,24 +232,34 @@ if __name__ == '__main__':
 
                 print " ************************************************ We're doing e1a_in = " , e1ain, "  e2a_in = ", e2ain, " e1b_in = ", e1bin, " e2b_in = ", e2bin
 
-#                xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
-#                xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
 
+                xashift = 0 ;                 xbshift = 0 
+                yashift = 0 ;                 ybshift = 0 
+
+#### If you want random offsets of the centroid, comment the following in
+                '''
+                ## Qrtr pixel offsets
+                #                xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+                #                xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
                 xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
                 xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
 
                 yashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
                 ybshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
 
-#                xbshift = 0
+                #                xbshift = 0
                 xaoff = xashift/5 ; xboff = xbshift/5  # Converts to arcsec, by div by 5
                 yaoff = yashift/5 ; yboff = ybshift/5  # Converts to arcsec, by div by 5
 
                 xashift = (xaoff, 0) ;                xbshift = (xboff, 0) # horizshift
                 yashift = (0 , yaoff) ;                ybshift = (0 , yboff) # vertshift
+                '''
+#### End of  random offsets section
+
 
 # Horiz sep- move centers by the random offsets, in arcsec
 #                peak_a =  np.array(origpeak_a) + np.array(xashift);                peak_b =  np.array(origpeak_b) + np.array(xbshift )  
+
 #  Vert sep- move centers by the random offsets, in arcsec
                 peak_a =  np.array(origpeak_a) + np.array(yashift);                peak_b =  np.array(origpeak_b) + np.array(ybshift )  
 
