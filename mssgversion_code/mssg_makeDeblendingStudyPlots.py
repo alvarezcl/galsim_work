@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 
    # Horiz sep- move centers to -eps and -eps
-fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
+# fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
 
    # Horiz sep- move centers to -eps and +eps
 #fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
@@ -39,7 +39,7 @@ fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt'
 # fname = args.subdir + 'offsetBothRandomQrtrPixelLorR_deblendingTests_50runs.txt'
 
    # Random half pixel offset for both
-# fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
+#fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 # fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_10runs.txt'
 
    # Random qrtr pixel offset left, right one fixed
@@ -69,14 +69,17 @@ fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt'
    # Horiz sep- Random half pixel offset for both; and vert sep- also random half pixel offset for both
 
 
-# fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
 # fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
 
 
 ############################## Using arb point rotation (JEM new deblender, Jan 2015)
-fname = args.subdir + 'deblendingTests_peak_A_(-1.001, 0)__peak_B_(0.999, 0)_50_runs.InterpFlagTrue.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.001, 0)__peak_B_(0.999, 0)_50_runs.InterpFlagTrue.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.001, 0)__peak_B_(0.999, 0)_50_runs.InterpFlagTrue.txt'
 
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.InterpFlagTrueANDForceInterpTrue.txt'
 
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.InterpFlagFalse.txt'
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -158,6 +161,10 @@ gs = gridspec.GridSpec(2,3)
 totfig = plt.figure(figsize=(15,12))
 figindex = 0
 
+################################### Print to screen (or ipy nb file)
+print " Using file ", fname
+
+
 ############################################################ e1 a plots
 for e1bin in e1b_range:
     e1bstr = str(e1bin)
@@ -197,8 +204,6 @@ for e1bin in e1b_range:
 
 ######## e1 a plots
     print 'vece1a_unbl = ', vece1a_unbl
-    print " Using file ", fname
-
     xlimit = 0.6;    ylimit = 0.15
 #    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
 
