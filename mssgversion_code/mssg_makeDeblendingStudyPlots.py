@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import sys
 import numpy as np
 from argparse import ArgumentParser
+import matplotlib.gridspec as gridspec
+
+########### Start the input arg parsing
 
 parser = ArgumentParser()
 parser.add_argument("--subdir", default="deblendsOutput/", help="output text filename")
@@ -21,7 +24,7 @@ args = parser.parse_args()
 
 
    # Horiz sep- move centers to -eps and -eps
-# fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
+fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
 
    # Horiz sep- move centers to -eps and +eps
 #fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
@@ -59,7 +62,7 @@ args = parser.parse_args()
 
   # Horiz sep- exact 2" sep and on points; and vert displacement: -eps for both
 #fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.001)_5_runs.txt'
-fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.001)_50_runs.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.001)_50_runs.txt'
 
 # fname = args.subdir + 'offsetVertSep2arcsecAndEachVerticallyUpAndDownRandomHalfPixelFromCenterAndHorizSep0arcsec_deblendingTests_50runs.txt'
 
@@ -68,6 +71,12 @@ fname = args.subdir + 'deblendingTests_peak_A_(-1.0, -0.001)__peak_B_(1.0, -0.00
 
 # fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
 # fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
+
+
+############################## Using arb point rotation (JEM new deblender, Jan 2015)
+fname = args.subdir + 'deblendingTests_peak_A_(-1.001, 0)__peak_B_(0.999, 0)_50_runs.InterpFlagTrue.txt'
+
+
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -143,6 +152,12 @@ xshift = [0.01, 0.01, 0.01]
 
 e1shifted = np.array(e1a_range) + np.array(xshift)
 nbins = 10 # Set num of bins for histo
+
+################################### Initialize the geometry of the grid for the fig
+gs = gridspec.GridSpec(2,3)
+totfig = plt.figure(figsize=(15,12))
+figindex = 0
+
 ############################################################ e1 a plots
 for e1bin in e1b_range:
     e1bstr = str(e1bin)
@@ -179,13 +194,16 @@ for e1bin in e1b_range:
 
 #    sys.exit()
 
+
 ######## e1 a plots
     print 'vece1a_unbl = ', vece1a_unbl
-
     print " Using file ", fname
-    plt.figure(figsize=(15,12))
+
     xlimit = 0.6;    ylimit = 0.15
 #    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
+
+############ Plot it in this fig slot for this pass
+    thisfig = totfig.add_subplot(gs[0,figindex])
 
 #### Unblended fit plots
 # (Note we are horizontally offsetting these points by xshift, as defined above)
@@ -199,16 +217,17 @@ for e1bin in e1b_range:
     rline = plt.errorbar(e1a_range, vece1a_deblresid, vece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
     plt.title("Resids for fits with e1bin = " +e1bstr )
-    plt.legend() # (handles=[gline,bline])
+    plt.legend(loc=4,prop={'size':9}) # This loc is the lower right corner, and this is good font size for the box
     plt.xlabel('$e_{1a in}$',fontsize=18)
     plt.ylabel('$e_{1a fit}-e_{1a in}$',fontsize=18)
     plt.axhline( 0,color='k',linestyle='-', linewidth= 2)     
-    plt.show()
-
-
-
+    
+    figindex += 1
 
 #    plt.savefig("resid_e1aBlended-e1aUnbl_vs_e1aIn_e1b_" + e1bstr + ".png")
+
+#################### Reset FigIndex
+figindex = 0
 
 ############################################################ e1 b plots
 for e1ain in e1a_range:
@@ -244,23 +263,32 @@ for e1ain in e1a_range:
 
 ######## e1 b plots
     print 'vece1b_unbl = ', vece1b_unbl
-    plt.figure(figsize=(15,12))
+ #   plt.figure(figsize=(15,12))
     xlimit = 0.6;    ylimit = 0.15
 #    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
-   
+  
+############ Plot it in this fig slot for this pass
+    thisfig = totfig.add_subplot(gs[1,figindex])
+
+#### Unblended fit plots
+# (Note we are horizontally offsetting these points by xshift, as defined above)
     plt.scatter( e1shifted , vece1b_unblresid, color = 'g' , s=50.0  )
     gline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1b" , linewidth=4.0)
     yline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
+#### Deblended fit plots
     plt.scatter( e1b_range, vece1b_deblresid, color = 'b' , s=50.0  )
     bline = plt.errorbar(e1b_range, vece1b_deblresid, vece1b_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1b" , linewidth= 4.0)
     rline = plt.errorbar(e1b_range, vece1b_deblresid, vece1b_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
     plt.title("Resids for fits with e1ain = " +e1astr )
-    plt.legend()
+    plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
     plt.xlabel('$e_{1b in}$',fontsize=18)
     plt.ylabel('$e_{1b fit}-e_{1b in}$',fontsize=18)
     plt.axhline( 0,color='k',linestyle='-', linewidth= 2)     
-    plt.show()
+
+    figindex += 1
+
+plt.show()
 
 sys.exit()

@@ -147,7 +147,7 @@ if __name__ == '__main__':
     plotflag = args.plotflag
 
 # Centroids
-#    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
+    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
 #    peak_a = (-1.001,0);   peak_b = (1.001,0)  # Horiz sep- move centers to -eps and +eps
 #    peak_a = (-0.999,0);   peak_b = (1.001,0)  # Horiz sep- move centers to +eps and +eps
 #    peak_a = (-0.999,0);   peak_b = (0.999,0)  # Horiz sep- move centers to +eps and -eps
@@ -168,7 +168,7 @@ if __name__ == '__main__':
 #    peak_a = (0,-1.0);   peak_b = (0,1.0)    # Horiz sep - 0, and vertical shift by 2.0"
 #   peak_a = (-1.0,-1.0);   peak_b = (1.0,1.0)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift by 2.0"
 #    peak_a = (-1.0,+0.001);   peak_b = (1.0,+0.001)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift up on each by +eps
-    peak_a = (-1.0,-0.001);   peak_b = (1.0,-0.001)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift up on each by -eps
+#    peak_a = (-1.0,-0.001);   peak_b = (1.0,-0.001)    # Horiz sep - centers separated by 2", EXACTLY, and vertical shift up on each by -eps
 
 
 ####### Convert to pixels
@@ -286,7 +286,7 @@ if __name__ == '__main__':
 #    templates = for each img
 #    template_fractions
 #    children = vector of 2 imgs, best estimates from deblending code
-                templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix)
+                templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=True, force_interpolate = True)
 
                 if plotflag > presetval:
                     plt.title(" Template obj a ")
