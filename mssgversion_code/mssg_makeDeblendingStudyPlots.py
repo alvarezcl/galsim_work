@@ -23,8 +23,8 @@ args = parser.parse_args()
 #fname = args.subdir + 'offsetBoth0.005PixelRight_deblendingTests_50runs.txt'
 
 
-   # Horiz sep- move centers to -eps and -eps
-# fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
+ # Horiz sep- move centers to -eps and -eps
+#fname = args.subdir + 'offsetBothOne200thPixelLeft_deblendingTests_50runs.txt' 
 
    # Horiz sep- move centers to -eps and +eps
 #fname = args.subdir + 'offsetLeftOne200thPixelLeftRightOne200thPixelRight_deblendingTests_50runs.txt' 
@@ -39,7 +39,7 @@ args = parser.parse_args()
 # fname = args.subdir + 'offsetBothRandomQrtrPixelLorR_deblendingTests_50runs.txt'
 
    # Random half pixel offset for both
-#fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
+fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 # fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_10runs.txt'
 
    # Random qrtr pixel offset left, right one fixed
@@ -69,7 +69,7 @@ args = parser.parse_args()
    # Horiz sep- Random half pixel offset for both; and vert sep- also random half pixel offset for both
 
 
-fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndRandomOffsetHalfPixelEach.txt'
 # fname = args.subdir + 'deblendingTests_peak_A_(0, -1)__peak_B_(0, 1)_50_runsAndRandomOffsetHalfPixelEach.txt'
 
 
@@ -79,7 +79,7 @@ fname = args.subdir + 'deblendingTests_peak_A_(-1, 0)__peak_B_(1, 0)_50_runsAndR
 
 #fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.InterpFlagTrueANDForceInterpTrue.txt'
 
-#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.InterpFlagFalse.txt'
+#fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.InterpFlagFalse.txt' # StandardCenters
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -89,7 +89,6 @@ fnum =  fnumvec
 
 try:
 
-    print "*********************** Has e2 in output file"
     # Initze all a vecs
     e1a_in = fitdat[:,1]
     e2a_in = fitdat[:,2]
@@ -108,6 +107,7 @@ try:
     e2b_debl = fitdat[:,12]
     e1b_unblresid =  e1b_unbl - e1b_in 
     e1b_deblresid =  e1b_debl - e1b_in 
+    print "*********************** Has e2 in output file"
 
 except:
 
@@ -203,7 +203,7 @@ for e1bin in e1b_range:
 
 
 ######## e1 a plots
-    print 'vece1a_unbl = ', vece1a_unbl
+#    print 'vece1a_unbl = ', vece1a_unbl
     xlimit = 0.6;    ylimit = 0.15
 #    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
 
@@ -267,7 +267,7 @@ for e1ain in e1a_range:
         '''
 
 ######## e1 b plots
-    print 'vece1b_unbl = ', vece1b_unbl
+#    print 'vece1b_unbl = ', vece1b_unbl
  #   plt.figure(figsize=(15,12))
     xlimit = 0.6;    ylimit = 0.15
 #    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
