@@ -148,7 +148,8 @@ if __name__ == '__main__':
 
 
 ######### Horiz shifts
-    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
+#    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
+    peak_a = (-0.8,0);   peak_b = (0.8,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
 #    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
 #    peak_a = (-1.001,0);   peak_b = (1.001,0)  # Horiz sep- move centers to -eps and +eps
 #    peak_a = (-0.999,0);   peak_b = (1.001,0)  # Horiz sep- move centers to +eps and +eps
@@ -180,8 +181,13 @@ if __name__ == '__main__':
 #    e1a_range = [0.5, 0.25, 0, -0.25, -0.5]
 #    e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
 
-    e1a_range = [0.5,  0, -0.5]
-    e1b_range = [0.5,  0, -0.5]
+#### Normal range i've been using
+#    e1a_range = [0.5,  0, -0.5]
+#    e1b_range = [0.5,  0, -0.5]
+
+#### To do just round ones, 2/1/2015
+    e1a_range = [ 0]
+    e1b_range = [ 0]
 
     e2ain = 0
     e2bin = 0
@@ -396,6 +402,12 @@ if __name__ == '__main__':
                 e1a_unbl = e1_a ; e2a_unbl = e2_a 
                 e1a_unblerr = e1err ; e2a_unblerr = e2err 
 
+                # x and y posn
+                x0_a = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+                y0_a = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+
+                x0a_unbl = x0_a ;  y0a_unbl = y0_a
+
     ################# Unbl obj a plots
                 if plotflag > (presetval-1):
                     plt.title(" Unblended fit results for a")
@@ -436,6 +448,12 @@ if __name__ == '__main__':
                 e1a_debl = e1_a ; e2a_debl = e2_a 
                 e1a_deblerr = e1err ; e2a_deblerr = e2err 
 
+                # x and y posn
+                x0_a = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+                y0_a = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+                x0a_debl = x0_a ;  y0a_debl = y0_a
+
+
     # Report the parameters to the interpreter screen                        
     #    lmfit.report_errors(mlresult.params)
 
@@ -474,6 +492,11 @@ if __name__ == '__main__':
 
                 e1b_unbl = e1_b ; e2b_unbl = e2_b 
                 e1b_unblerr = e1err ; e2b_unblerr = e2err 
+
+                # x and y posn
+                x0_b = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+                y0_b = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+                x0b_unbl = x0_b ;  y0b_unbl = y0_b
 
     ################# Unbl obj b plots
                 if plotflag > (presetval-1):
@@ -515,6 +538,11 @@ if __name__ == '__main__':
                 e1b_debl  = e1_b ; e2b_debl  = e2_b 
                 e1b_deblerr = e1err ; e2b_deblerr = e2err 
 
+                # x and y posn
+                x0_b = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+                y0_b = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+                x0b_debl = x0_b ;  y0b_debl = y0_b
+
     ################# Debl obj b plots
                 if plotflag > (presetval-1):
                     plt.title(" Deblended fit results for b")
@@ -535,7 +563,7 @@ if __name__ == '__main__':
                     plt.show()
 
     ################### Result vec for this fit
-                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl]
+                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ]
                 fitdat.append(fitresults)
                 print 'len(fitdat) = ', len(fitdat)
 
@@ -544,6 +572,5 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl ")
-
+    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl ")
 
