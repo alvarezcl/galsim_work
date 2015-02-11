@@ -194,7 +194,6 @@ if __name__ == '__main__':
 
     xavec =[] ;     xbvec =[]
 
-
 # Set size of partial pixels
     qrtrpixel = 0.25
     halfpixel = 0.5
@@ -220,7 +219,7 @@ if __name__ == '__main__':
     sys.exit()
     '''
     
-    numfiles = 50  # Number of runs
+    numfiles = 5  # Number of runs
     origpeak_a = peak_a ; origpeak_b = peak_b
 # origpeak_a = (-1, 0) ; origpeak_b = (1, 0)  # horiz offset, A is L, and B is R
 #    origpeak_a = (0, -1) ; origpeak_b = (0, 1)  # vert offset, A is below, and B above
@@ -235,19 +234,22 @@ if __name__ == '__main__':
                 print " ************************************************ We're doing e1a_in = " , e1ain, "  e2a_in = ", e2ain, " e1b_in = ", e1bin, " e2b_in = ", e2bin
 
 
+### Initze all shifts to zero
                 xashift = 0 ;                 xbshift = 0 
                 yashift = 0 ;                 ybshift = 0 
 
-#### If you want random offsets of the centroid, comment the following in
-                '''
+#### For random offsets of the centroid, comment the following in
                 ## Qrtr pixel offsets
                 #                xashift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
                 #                xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
+
+                ## Half pixel offsets - horiz
                 xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
                 xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
 
-                yashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
-                ybshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+                ## Half pixel offsets - vert
+#                yashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+ #               ybshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
 
                 #                xbshift = 0
                 xaoff = xashift/5 ; xboff = xbshift/5  # Converts to arcsec, by div by 5
@@ -255,16 +257,17 @@ if __name__ == '__main__':
 
                 xashift = (xaoff, 0) ;                xbshift = (xboff, 0) # horizshift
                 yashift = (0 , yaoff) ;                ybshift = (0 , yboff) # vertshift
-                '''
+
 #### End of  random offsets section
 
 
 # Horiz sep- move centers by the random offsets, in arcsec
-#                peak_a =  np.array(origpeak_a) + np.array(xashift);                peak_b =  np.array(origpeak_b) + np.array(xbshift )  
+                peak_a =  np.array(origpeak_a) + np.array(xashift);                peak_b =  np.array(origpeak_b) + np.array(xbshift )  
 
 #  Vert sep- move centers by the random offsets, in arcsec
                 peak_a =  np.array(origpeak_a) + np.array(yashift);                peak_b =  np.array(origpeak_b) + np.array(ybshift )  
 
+#  Convert peaks_piz to pixels
                 peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
                              [p2/0.2 for p2 in peak_b]]
                 
@@ -564,7 +567,11 @@ if __name__ == '__main__':
 
     ################### Result vec for this fit
                 fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ]
+                fitresults.extend(peak_a)
+                fitresults.extend(peak_b)
+
                 fitdat.append(fitresults)
+
                 print 'len(fitdat) = ', len(fitdat)
 
     ################################## End of all loops
@@ -572,5 +579,5 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl ")
+    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl  x0_a y0_a  x0_b y0_b")
 
