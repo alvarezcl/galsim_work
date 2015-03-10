@@ -8,6 +8,7 @@ import sys
 import numpy as np
 from argparse import ArgumentParser
 import matplotlib.gridspec as gridspec
+import triangle
 
 nonRoundObjs = False  # Boolean if we are plotting results of fits on more than a single type of obj (e.g. more than round ones)
 
@@ -72,7 +73,6 @@ except:
 
 
 
-
 ################################ To do just round ones, 2/1/2015
 e1a_range = [ 0]
 e1b_range = [ 0]
@@ -121,11 +121,18 @@ for e1bin in e1b_range:
 	totfig = plt.figure(figsize=(20,12))
 
         #  Make histo of e1a fit vals
+        avg_e1a_unbl = round(np.mean(e1a_unbl),4)
+        avg_e1a_debl = round(np.mean(e1a_debl),4) 
         thisfig = totfig.add_subplot(gs[0,0])
-        plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
-        plt.hist(e1a_debl[i],bins= nbins)
-        e1adebl_avg = 	 np.mean(e1a_debl)
-        print "Mean of e1a_debl ", np.mean(e1a_debl)
+        plt.title("e1a unbl & debl fit for e1ain = " +e1astr + ", e1bin = " +e1bstr )
+        xleft = -0.06
+        xwidth = 0.12
+        xright = xleft + xwidth
+        plt.hist(e1a_unbl[i],range = [xleft,xright], bins= nbins,  alpha=0.5, label = "e1a unblended fit; avg = " + str(avg_e1a_unbl) )
+        plt.hist(e1a_debl[i],range = [xleft,xright], bins= nbins,   alpha=0.5, label = "e1a deblended fit; avg = " + str(avg_e1a_debl) , color = 'g')
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box     
+        print "Mean of e1a_unbl ",  avg_e1a_unbl
+        print "Mean of e1a_debl ",  avg_e1a_debl
 
 #        plt.show()
 
@@ -134,9 +141,9 @@ for e1bin in e1b_range:
         avg_x0a_unbl = round(np.mean(x0a_unbl),4)
         avg_x0a_debl = round(np.mean(x0a_debl),4) 
         thisfig = totfig.add_subplot(gs[0,1])
-        plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
-        xleft = -0.81 
-        xwidth = 0.02
+        plt.title("x0a unbl & debl fit for x0ain = -0.8 " )
+        xleft = -0.95 
+        xwidth = 0.25
         xright = xleft + xwidth
         plt.hist(x0a_unbl[i],range = [xleft,xright], bins= nbins,  alpha=0.5, label = "x0a unblended fit; avg = " + str(avg_x0a_unbl) )
         plt.hist(x0a_debl[i],range = [xleft,xright], bins= nbins, color = 'g',  alpha=0.5 , label = "x0a deblended fit; avg = " + str(avg_x0a_debl) )
@@ -149,9 +156,12 @@ for e1bin in e1b_range:
         avg_y0a_unbl = round(np.mean(y0a_unbl),4)
         avg_y0a_debl = round(np.mean(y0a_debl),4) 
         thisfig = totfig.add_subplot(gs[0,2])
-        plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
-        plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a unblended fit; avg = " + str(avg_y0a_unbl) )
-        plt.hist(y0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a deblended fit; avg = " + str(avg_y0a_debl) )
+        plt.title("y0a unbl  & debl fit dist for y0ain = 0 " )
+        yleft = -0.008 
+        ywidth = 0.016
+        yright = yleft + ywidth
+        plt.hist(y0a_unbl[i],range = [yleft,yright],bins= nbins,  alpha=0.5 , label = "y0a unblended fit; avg = " + str(avg_y0a_unbl) )
+        plt.hist(y0a_debl[i],range = [yleft,yright],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a deblended fit; avg = " + str(avg_y0a_debl) )
         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
 	print "\n Mean of y0a_unbl ", np.mean(y0a_unbl)
 	print "Mean of y0a_debl ", np.mean(y0a_debl)
@@ -186,19 +196,30 @@ for e1ain in e1a_range:
 
 ############## Histos of dists        
         #  Make histo of e1b fit vals
+        avg_e1b_unbl = round(np.mean(e1b_unbl),4)
+        avg_e1b_debl = round(np.mean(e1b_debl),4) 
         thisfig = totfig.add_subplot(gs[1,0])
-        plt.title("Histo of e1b debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
-        plt.hist(e1b_debl[i],bins= nbins)
-	print "Mean of e1b_debl ", np.mean(e1b_debl)
+        plt.title("e1b unbl & debl fit dist for e1ain = " +e1astr + ", e1bin = " +e1bstr )
+        xleft = -0.06
+        xwidth = 0.12
+        xright = xleft + xwidth
+        plt.hist(e1b_unbl[i],range = [xleft,xright], bins= nbins,  alpha=0.5, label = "e1b unblended fit; avg = " + str(avg_e1b_unbl) )
+        plt.hist(e1b_debl[i], range = [xleft,xright], bins= nbins,   alpha=0.5, label = "e1b deblended fit; avg = " + str(avg_e1b_debl) , color = 'g')
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box     
+        print "Mean of e1b_unbl ",  avg_e1b_unbl
+        print "Mean of e1b_debl ",  avg_e1b_debl
+
 #        plt.show()
 
         #  Make histo of x0b fit vals
-        xleft = -xright
-        xright = xleft + xwidth
+        xright = +0.95
+        xwidth = 0.25
+        xleft = xright - xwidth
+
         avg_x0b_unbl = round(np.mean(x0b_unbl),4)
         avg_x0b_debl = round(np.mean(x0b_debl),4) 
         thisfig = totfig.add_subplot(gs[1,1])
-        plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
+        plt.title("x0a unbl  & debl fit dist for x0ain = -0.8 " )
         plt.hist(x0b_unbl[i],range = [xleft,xright], bins= nbins,  alpha=0.5, label = "x0a unblended fit; avg = " + str(avg_x0b_unbl) )
         plt.hist(x0b_debl[i],range = [xleft,xright], bins= nbins, color = 'g',  alpha=0.5 , label = "x0a deblended fit; avg = " + str(avg_x0b_debl) )
         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
@@ -210,9 +231,9 @@ for e1ain in e1a_range:
         avg_y0b_unbl = round(np.mean(y0b_unbl),4)
         avg_y0b_debl = round(np.mean(y0b_debl),4) 
         thisfig = totfig.add_subplot(gs[1,2])
-        plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
-        plt.hist(y0b_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a unblended fit; avg = " + str(avg_y0b_unbl) )
-        plt.hist(y0b_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a deblended fit; avg = " + str(avg_y0b_debl) )
+        plt.title("y0a unbl  & debl fit dist for y0ain = 0 " )
+        plt.hist(y0b_unbl[i],bins= nbins,range = [yleft,yright],  alpha=0.5 , label = "y0a unblended fit; avg = " + str(avg_y0b_unbl) )
+        plt.hist(y0b_debl[i],bins= nbins,range = [yleft,yright], color = 'g',  alpha=0.5 , label = "y0a deblended fit; avg = " + str(avg_y0b_debl) )
         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
         avg_y0b_unbl = np.mean(y0b_unbl)
         avg_y0b_debl = np.mean(y0b_debl)
@@ -221,4 +242,10 @@ for e1ain in e1a_range:
 
 # Show all the histos
         plt.show()
+
         
+        y = [x0a_debl.tolist(),x0b_debl.tolist(), y0a_debl.tolist(), y0b_debl.tolist() ]
+        z = np.array(y)
+        fig = triangle.corner(z.T)
+        plt.show()
+

@@ -1,5 +1,6 @@
 # MSSG, based on JEM and LCA code
-# 10/15/2014
+# 3/10/2015
+
 
 import galsim
 import numpy as np
@@ -272,7 +273,7 @@ if __name__ == '__main__':
 #  Vert sep- move centers by the random offsets, in arcsec
 #                peak_a =  np.array(origpeak_a) + np.array(yashift);                peak_b =  np.array(origpeak_b) + np.array(ybshift )  
 
-#  Convert peaks_piz to pixels
+#  Convert peaks_pix to pixels
                 peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
                              [p2/0.2 for p2 in peak_b]]
                 
@@ -440,6 +441,10 @@ if __name__ == '__main__':
         #    lmfit.report_errors(mlresult.params)
 
     ############ Deblended Obj a
+                origimg = children[0]    
+                mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
+
+
                 origimg = children[0]    
                 mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
 

@@ -98,8 +98,21 @@ Separately after run:
 
 -  mssg_makeDeblendingStudyPlots.py -- will plot the files on disk
 
------------------------------------------------------------------------ Luis code
 
+
+
+mssg_makeDeblendingHistos.py
+
+mssg_makeDeblendingStudyPlots.py
+
+mssg_deblendingTest.py
+
+mssg_makeRotMatchedtDeblendingPlots.py
+
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------- Luis code
+----------------------------------------------------------------------------------
 ---------------------------------- Under main:
 
 ------------- Utility codes:
