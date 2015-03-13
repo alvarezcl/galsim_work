@@ -1,24 +1,27 @@
 # MSSG, based on JEM and LCA code
-# 3/10/2015
+# Start: 3/10/2015
 
-
-import galsim
-import numpy as np
-import mssg_deblend
-import mssg_drawLibrary
+### Generic imports
 import lmfit
 import ipdb
 import sys
-from argparse import ArgumentParser
-import matplotlib.pyplot as plt
 import random
 import triangle
+from argparse import ArgumentParser
+import matplotlib.pyplot as plt
+import numpy as np
+
+### Specific imports
+import galsim
+import mssg_deblend
+import mssg_drawLibrary
+
 
 
 ################### Initze
 
 #### Level to do printing at (setting it lower will print more stuff)
-presetval = 1
+presetval = 0
 
 bd=galsim.BaseDeviate(0) # Random num seed -- when set to zero, uses machine time
 
@@ -153,7 +156,7 @@ if __name__ == '__main__':
 
 ######### Horiz shifts
 #    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
-    peak_a = (-0.8,0);   peak_b = (0.8,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
+#    peak_a = (-0.8,0);   peak_b = (0.8,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
 #    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
 #    peak_a = (-1.001,0);   peak_b = (1.001,0)  # Horiz sep- move centers to -eps and +eps
 #    peak_a = (-0.999,0);   peak_b = (1.001,0)  # Horiz sep- move centers to +eps and +eps
@@ -163,6 +166,7 @@ if __name__ == '__main__':
 #    peak_a = (-1.05,0);   peak_b = (1.05,0)  # Horiz sep - move centers apart quarter pixel
 #    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
 
+    peak_a = (-2,0);   peak_b = (2,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
 
 
 ######### Vertical shifts
@@ -295,6 +299,70 @@ if __name__ == '__main__':
                     plt.colorbar()
                     plt.show()
 
+
+######################################################### Sim Fit
+# Parameters for object a
+                flux_a = 5e6          # total counts on the image
+                HLR_a = 3.            # arcsec
+                e1_a = 0.0
+                e2_a = 0.0
+                x0_a = peak_a[0]
+                y0_a = peak_a[1]
+                
+            # Parameters for object b
+                flux_b = flux_a       # total counts on the image
+                HLR_b = HLR_a         # arcsec
+                e1_b = 0.0
+                e2_b = 0.0
+                x0_b = peak_b[0]
+                y0_b = peak_b[1]
+                
+            # Define some seed that's far from true values and insert into
+    # lmfit object for galaxy one and two
+                p0 = 1.0*np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a,
+                                   flux_b,HLR_b,e1_b,e2_b,x0_b,y0_b]) # These are all pre-defined nums from above - mg
+                params = lmfit.Parameters()
+            # Shouldn't these really be all called _a and then _b vs. 1 and 2..?  Maybe they're just name labels though..?  -mg
+                params.add('flux_a', value=p0[0])   
+                params.add('hlr_a', value=p0[1], min=0.0)
+                params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
+                params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
+                params.add('x0_a',value=p0[4])
+                params.add('y0_a',value=p0[5])
+                
+                params.add('flux_b', value=p0[6])
+                params.add('hlr_b', value=p0[7], min=0.0)
+                params.add('e1_b', value=p0[8], min=-1.0, max=1.0)
+                params.add('e2_b', value=p0[9], min=-1.0, max=1.0)
+                params.add('x0_b',value=p0[4])
+                params.add('y0_b',value=p0[5])
+            
+                galtype = galsim.Gaussian
+                imsize = 49
+                pixel_scale = 0.2
+
+
+                print " ************** About to fit"
+
+                result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=(blend, imsize,imsize,pixel_scale, galtype, galtype ))
+
+                ipdb.set_trace()
+            
+            # Report the parameters to the interpreter screen                        
+                lmfit.report_errors(result.params)
+            
+                sys.exit()
+
+
+
+
+
+
+
+
+
+
+######################################################### Deblend
 # Use deblending code to separate them
 #    templates = for each img
 #    template_fractions
