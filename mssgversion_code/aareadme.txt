@@ -110,6 +110,12 @@ mssg_deblendingTest.py
 mssg_makeRotMatchedtDeblendingPlots.py
 
 
+-------------------------------------------- Mar 2015
+
+- mssg_simultaneousFitAndDeblend.py -- to feed a simfit centroid values into deblend code
+
+- mssg_simpleSingleGalaxyFit.py  -- stripped down code to just clarify for myself how to do fits
+
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------- Luis code
 ----------------------------------------------------------------------------------
