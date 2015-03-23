@@ -181,7 +181,7 @@ if __name__ == '__main__':
 
     print " ************** About to fit"
 
-
+    
     ############################################## Obj a+b
     params = lmfit.Parameters()
     params.add('flux_a', value=p0[0])   
@@ -197,14 +197,20 @@ if __name__ == '__main__':
     params.add('e2_b', value=p0[9], min=-1.0, max=1.0)
     params.add('x0_b',value=p0[10])
     params.add('y0_b',value=p0[11])
-    
-    result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=(unblends[0]+unblends[1], imsize,imsize,pixel_scale, galtype, galtype ))
+
+#
+
+    tot =  unblends[0]+unblends[1]
+    #ipdb.set_trace()
+
+    result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=( tot , imsize,imsize,pixel_scale, galtype, galtype ))
 
 # Report the parameters to the interpreter screen                        
     lmfit.report_errors(result.params)
 
     sys.exit()
-        
+    
+    
     ############################################## Obj a
     params = lmfit.Parameters()
     params.add('flux_a', value=p0[0])   

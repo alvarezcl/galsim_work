@@ -263,6 +263,7 @@ def draw_2galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
 # The difference of the data and the model for a pair of galaxies
 # that is to be minimized by fitter - mg
 def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
+    ipdb.set_trace()
     flux_a = param['flux_a'].value
     hlr_a = param['hlr_a'].value
     e1_a = param['e1_a'].value
@@ -284,9 +285,9 @@ def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
     # Put just sum of one galaxy instead
     
     # Create error array
-    error = np.sqrt(target_image.array.ravel())
+#    error = np.sqrt(target_image.array.ravel())
     # Set the errors equal to 1 where 0 is.
-    error[error==0] = 1
+#    error[error==0] = 1
     return (image-target_image).array.ravel()
     
     
