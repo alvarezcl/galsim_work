@@ -17,6 +17,8 @@ import numpy as np
 import mssg_gauss
 import sys
 import ipdb
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
 
 # Version of 10/14/2014
 # Draw from a distribution and return a binned image object with one galaxy 
@@ -150,6 +152,10 @@ def drawShoot_2comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func,
 # Use the analytic definition of an image profile for one galaxy 
 # Uses FFT,  see last line before it returns image and compare to drawshoot_galaxy above  -mg
 def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype, dopsfconvln = 'n'):
+    print " e1, e2 = ", e1,e2
+    print " flux, hlr = ", flux, hlr 
+    if e1 < -0.95:
+        ipdb.set_trace()
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)
     if galtype is galsim.Gaussian:        
         gal = galtype(half_light_radius=hlr, flux=flux, gsparams=big_fft_params)
@@ -169,9 +175,9 @@ def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype, dopsf
 
     if dopsfconvln == 'y':
         psfshr = 0.00
-        psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1=psfshr,  e2=-0.0)
+        psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1=psfshr,  e2 = -psfshr)
 
-        gal = galsim.Convolve(gal,psf)
+        gal = galsim.Convolve([gal,psf])
 
     protoimage = galsim.ImageD(x_len, y_len, scale=scale)
     image = gal.drawImage(image=protoimage)
@@ -263,7 +269,7 @@ def draw_2galaxies(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
 # The difference of the data and the model for a pair of galaxies
 # that is to be minimized by fitter - mg
 def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
-    ipdb.set_trace()
+#    ipdb.set_trace()
     flux_a = param['flux_a'].value
     hlr_a = param['hlr_a'].value
     e1_a = param['e1_a'].value
@@ -277,9 +283,11 @@ def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
     e2_b = param['e2_b'].value
     x0_b = param['x0_b'].value
     y0_b = param['y0_b'].value
+
+    dopsfconvln = 'y'
     
-    image1 = draw_galaxy_1(flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,x_len,y_len,scale,func_a)
-    image2 = draw_galaxy_1(flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b,x_len,y_len,scale,func_b)
+    image1 = draw_galaxy_1(flux_a, hlr_a, e1_a, e2_a, x0_a, y0_a, x_len, y_len, scale, func_a, dopsfconvln)
+    image2 = draw_galaxy_1(flux_b, hlr_b, e1_b, e2_b, x0_b, y0_b, x_len, y_len, scale, func_b, dopsfconvln)
     image = image1 + image2
 
     # Put just sum of one galaxy instead
@@ -288,6 +296,58 @@ def resid_2obj(param, target_image, x_len, y_len, scale, func_a, func_b):
 #    error = np.sqrt(target_image.array.ravel())
     # Set the errors equal to 1 where 0 is.
 #    error[error==0] = 1
+
+    '''
+    # Initialize the geometry of the grid
+    gs = gridspec.GridSpec(1,3)
+    fig = plt.figure(figsize=(10,5))
+
+    # Plot the target data img
+    f1 = fig.add_subplot(gs[0,0])
+    plt.title('obj a')
+    fig1 = f1.imshow(image1.array,interpolation='none',origin='lower')
+    plt.colorbar(fig1, shrink=0.5) 
+
+    # Plot the best fit img
+    f2 = fig.add_subplot(gs[0,1])
+    plt.title('obj b')
+    fig2 = f2.imshow(image2.array,interpolation='none')
+    plt.colorbar(fig2, shrink=0.5)
+
+    # Plot the Resid between them
+    f3 = fig.add_subplot(gs[0,2])
+    plt.title('Resid')
+    fig3 = f3.imshow( (image - target_image).array,interpolation='none')
+    plt.colorbar(fig3, shrink=0.5)
+    plt.show()
+
+
+
+    # Initialize the geometry of the grid
+    gs = gridspec.GridSpec(1,3)
+    fig = plt.figure(figsize=(10,5))
+
+    # Plot the target data img
+    f1 = fig.add_subplot(gs[0,0])
+    plt.title('Target')
+    fig1 = f1.imshow(target_image.array,interpolation='none',origin='lower')
+    plt.colorbar(fig1, shrink=0.5) 
+
+    # Plot the best fit img
+    f2 = fig.add_subplot(gs[0,1])
+    plt.title('Best Fit')
+    fig2 = f2.imshow(image.array,interpolation='none')
+    plt.colorbar(fig2, shrink=0.5)
+
+    # Plot the Resid between them
+    f3 = fig.add_subplot(gs[0,2])
+    plt.title('Resid')
+    fig3 = f3.imshow( (image - target_image).array,interpolation='none')
+    plt.colorbar(fig3, shrink=0.5)
+    plt.show()
+    '''
+
+#    ipdb.set_trace()
     return (image-target_image).array.ravel()
     
     

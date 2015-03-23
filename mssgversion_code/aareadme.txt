@@ -116,6 +116,8 @@ mssg_makeRotMatchedtDeblendingPlots.py
 
 - mssg_simpleSingleGalaxyFit.py  -- stripped down code to just clarify for myself how to do fits
 
+- mssg_simpleSimultaneousFitAndDeblend.py -- adding in stuff steadily to make this stripped down code work to fit then deblend
+
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------- Luis code
 ----------------------------------------------------------------------------------

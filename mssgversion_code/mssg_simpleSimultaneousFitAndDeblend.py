@@ -23,10 +23,17 @@ import mssg_drawLibrary
 #### Level to do printing at (setting it lower will print more stuff)
 presetval = 0
 
-randnum=galsim.BaseDeviate(0) # Random num seed -- when set to zero, uses machine time
+randnum=galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machine time
 
 
-
+#################################################### Function to draw gal figs
+def makeplot(pltname, pltcontent, location = 'lower'):
+          plt.title(pltname)
+          print " >>>>>> Plotting ", pltname          
+          plt.imshow( pltcontent , origin=location );    
+          plt.colorbar()
+          plt.show()
+    
 #################################################### Function to draw and return simple single gal img
 def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbeta=3.0 , psffwhm= 0.85):
     # Create gaussian gal objs, sheared in various directions
@@ -48,12 +55,14 @@ def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbe
 ###################################################### Function to create the blended img
 def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0):
     # Create gaussian gal objs, sheared in various directions
-    gal1 = galsim.Gaussian(fwhm=1.0, flux=100000.0).shear(g1=e1a, g2= e2a).shift(peak_a)
-    gal2 = galsim.Gaussian(fwhm=1.0, flux=100000.0).shear(g1=e1b, g2= e2b).shift(peak_b)
+    hlr_in = 1.0
+    flux_in = 5e6
+    gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
+    gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1b, g2= e2b).shift(peak_b)
     
     # Add psf 
     psfshr = 0.00
-    psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1=psfshr,  e2=-0.0)
+    psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1 = psfshr,  e2 = -psfshr)
 
     convgal1 = galsim.Convolve([gal1,psf])
     convgal2 = galsim.Convolve([gal2,psf])
@@ -106,7 +115,6 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0):
 ############################################################################# Main
 if __name__ == '__main__':
 
-
 # Parse command line args
     parser = ArgumentParser()
     parser.add_argument("--outfile", default="deblendsOutput/deblendingTests", help="output text filename")
@@ -153,7 +161,7 @@ if __name__ == '__main__':
 ######################################################### Sim Fit
 # Parameters for object a
     flux_a = 5e6          # total counts on the image
-    hlr_a = 3.            # arcsec
+    hlr_a = 1.0            # arcsec
     e1_a = 0.0
     e2_a = 0.0
     x0_a = peak_a[0]
@@ -177,38 +185,11 @@ if __name__ == '__main__':
     galtype = galsim.Gaussian
     imsize = 49
     pixel_scale = 0.2
-    dopsfconvln='n'
+    dopsfconvln='y'
 
     print " ************** About to fit"
 
     
-    ############################################## Obj a+b
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[0])   
-    params.add('hlr_a', value=p0[1], min=0.0)
-    params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[4])
-    params.add('y0_a',value=p0[5])
-    
-    params.add('flux_b', value=p0[6])
-    params.add('hlr_b', value=p0[7], min=0.0)
-    params.add('e1_b', value=p0[8], min=-1.0, max=1.0)
-    params.add('e2_b', value=p0[9], min=-1.0, max=1.0)
-    params.add('x0_b',value=p0[10])
-    params.add('y0_b',value=p0[11])
-
-#
-
-    tot =  unblends[0]+unblends[1]
-    #ipdb.set_trace()
-
-    result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=( tot , imsize,imsize,pixel_scale, galtype, galtype ))
-
-# Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result.params)
-
-    sys.exit()
     
     
     ############################################## Obj a
@@ -242,7 +223,44 @@ if __name__ == '__main__':
 # Report the parameters to the interpreter screen                        
     lmfit.report_errors(result_b.params)
 
-#    sys.exit()
+
+
+
+        ############################################## Obj a+b
+    params = lmfit.Parameters()
+    params.add('flux_a', value=p0[0], min=0.0)   
+    params.add('hlr_a', value=p0[1], min=0.0)
+    params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
+    params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
+    params.add('x0_a',value=p0[4])
+    params.add('y0_a',value=p0[5])
+    
+    params.add('flux_b', value=p0[6], min=0.0)
+    params.add('hlr_b', value=p0[7], min=0.0)
+    params.add('e1_b', value=p0[8], min=-1.0, max=1.0)
+    params.add('e2_b', value=p0[9], min=-1.0, max=1.0)
+    params.add('x0_b',value=p0[10])
+    params.add('y0_b',value=p0[11])
+
+    tot =  unblends[0]+unblends[1]
+    #ipdb.set_trace()
+
+    result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=( tot , imsize,imsize,pixel_scale, galtype, galtype ))
+
+    # Report the parameters to the interpreter screen                        
+    lmfit.report_errors(result.params)
+
+    #################### Extract the centers
+    x0_a_guess = result.params['x0_a'].value
+    y0_a_guess = result.params['y0_a'].value
+
+    x0_b_guess = result.params['x0_b'].value
+    y0_b_guess = result.params['y0_b'].value
+
+    print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
+    print " x0_b_guess ,  y0_b_guess = ", x0_b_guess ,  y0_b_guess
+        
+    #    sys.exit()
     
 #    ipdb.set_trace()
 
@@ -254,4 +272,39 @@ if __name__ == '__main__':
 #    template_fractions
 #    children = vector of 2 imgs, best estimates from deblending code
 
+    templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
+    sys.exit()
+
+    if plotflag > presetval:
+        pltname = " Template obj a "
+        pltcontent = template_fractions[0] 
+        makeplot(pltname, pltcontent)
+    
+
+                    
+        '''
+    ######### Plot children
+                if plotflag > presetval:
+                    print " >>>>>> Plotting Unblended img a "
+                    plt.title(" Unblended img a ")
+                    plt.imshow( unblends[0].array , origin='lower');            plt.colorbar();        plt.show()
+                    print " >>>>>> Plotting Deblended child a "
+                    plt.title(" Deblended child a ")
+                    plt.imshow( children[0] , origin='lower');            plt.colorbar();        plt.show()
+                    print " >>>>>> Plotting Resid of: (Deblended child a - Unblended img a) "
+                    plt.title("Resid of: (Deblended child a - Unblended img a)  ")
+                    plt.imshow( children[0] - unblends[0].array , origin='lower');            plt.colorbar();        plt.show()
+
+                    print " >>>>>> Plotting Unblended img b "
+                    plt.title(" Unblended img b ")
+                    plt.imshow( unblends[1].array , origin='lower');            plt.colorbar();        plt.show()
+                    print " >>>>>> Plotting Deblended child b "
+                    plt.title(" Deblended child b ")
+                    plt.imshow( children[1] , origin='lower');            plt.colorbar();        plt.show()
+                    print " >>>>>> Plotting Resid of: (Deblended child b - Unblended img b) "
+                    plt.title("Resid of: (Deblended child b - Unblended img b)  ")
+                    plt.imshow( children[1] - unblends[1].array , origin='lower');            plt.colorbar();        plt.show()
+
+                    
 # ....................
+        '''
