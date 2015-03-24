@@ -21,7 +21,7 @@ import mssg_drawLibrary
 ################### Initze
 
 #### Level to do printing at (setting it lower will print more stuff)
-presetval = 0
+presetval = 1
 
 randnum=galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machine time
 
@@ -30,6 +30,10 @@ randnum=galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machin
 def makeplot(pltname, pltcontent, location = 'lower'):
           plt.title(pltname)
           print " >>>>>> Plotting ", pltname          
+          dummyarr = np.array([1, 2, 3])
+          if type(pltcontent) != type(dummyarr):
+              print pltcontent, " is not a numpy array, will convert"
+              pltcontent = pltcontent.array 
           plt.imshow( pltcontent , origin=location );    
           plt.colorbar()
           plt.show()
@@ -134,8 +138,15 @@ if __name__ == '__main__':
     e2bin = args.e2b
 
     plotflag = args.plotflag
-    origpeak_a = (-2,0);   origpeak_b = (2,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
 
+
+    # ************************************************************************ 4 arcsec sep
+    origpeak_a = (-2,0);   origpeak_b = (2,0)    
+
+    # ************************************************************************ 2 arcsec sep
+    origpeak_a = (-1,0);   origpeak_b = (1,0)    
+
+    ################### Initze
     fitdat = []
 
     peak_a =  np.array(origpeak_a) ; peak_b =  np.array(origpeak_b) 
@@ -265,6 +276,7 @@ if __name__ == '__main__':
 #    ipdb.set_trace()
 
 
+
          
 ######################################################### Deblend
 # Use deblending code to separate them
@@ -273,38 +285,180 @@ if __name__ == '__main__':
 #    children = vector of 2 imgs, best estimates from deblending code
 
     templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
-    sys.exit()
-
+    
+    ########## Plot template
     if plotflag > presetval:
         pltname = " Template obj a "
         pltcontent = template_fractions[0] 
         makeplot(pltname, pltcontent)
-    
-
-                    
-        '''
+                                
     ######### Plot children
-                if plotflag > presetval:
-                    print " >>>>>> Plotting Unblended img a "
-                    plt.title(" Unblended img a ")
-                    plt.imshow( unblends[0].array , origin='lower');            plt.colorbar();        plt.show()
-                    print " >>>>>> Plotting Deblended child a "
-                    plt.title(" Deblended child a ")
-                    plt.imshow( children[0] , origin='lower');            plt.colorbar();        plt.show()
-                    print " >>>>>> Plotting Resid of: (Deblended child a - Unblended img a) "
-                    plt.title("Resid of: (Deblended child a - Unblended img a)  ")
-                    plt.imshow( children[0] - unblends[0].array , origin='lower');            plt.colorbar();        plt.show()
+### Obj a
+        pltname = " Unblended img a ";        pltcontent = unblends[0]
+        makeplot(pltname, pltcontent)
 
-                    print " >>>>>> Plotting Unblended img b "
-                    plt.title(" Unblended img b ")
-                    plt.imshow( unblends[1].array , origin='lower');            plt.colorbar();        plt.show()
-                    print " >>>>>> Plotting Deblended child b "
-                    plt.title(" Deblended child b ")
-                    plt.imshow( children[1] , origin='lower');            plt.colorbar();        plt.show()
-                    print " >>>>>> Plotting Resid of: (Deblended child b - Unblended img b) "
-                    plt.title("Resid of: (Deblended child b - Unblended img b)  ")
-                    plt.imshow( children[1] - unblends[1].array , origin='lower');            plt.colorbar();        plt.show()
+        pltname = " Deblended img a ";        pltcontent = children[0]
+        makeplot(pltname, pltcontent)
 
-                    
+        pltname = " Resid of: (Deblended child a - Unblended img a) ";        pltcontent = children[0] - unblends[0].array 
+        makeplot(pltname, pltcontent)
+
+### Obj b
+        pltname = " Unblended img b ";        pltcontent = unblends[1]
+        makeplot(pltname, pltcontent)
+
+        pltname = " Deblended img b ";        pltcontent = children[1]
+        makeplot(pltname, pltcontent)
+
+        pltname = " Resid of: (Deblended child b - Unblended img b) ";        pltcontent = children[1] - unblends[1].array 
+        makeplot(pltname, pltcontent)
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+    ###################################################### Run deblended fits
+    print " ***** Now about to run lmfit "
+    # Common params to all
+
+    ########################### Using guesses as center
+    curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
+
+    ############### Using actual peaks, to compare
+    curpeak_a = origpeak_a ;   curpeak_b = origpeak_b    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
+
+    peak_a =  np.array(curpeak_a) ; peak_b =  np.array(curpeak_b) 
+#    print " \n\n\n peak_a = ",  peak_a 
+
+#  Convert peaks_pix to pixels
+    peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in peak_b]]
+ 
+    print " \n\n\n  ************************* Post deblending "   
+    print " Arcsec: peaks_A = " , peak_a
+    print " Arcsec: peaks_B = " , peak_b
+    print " Pixels: peaks_pix = " ,  peaks_pix 
+
+   # The below are just initial guesses for the fitter
+    minmaxval = 0.7 # Temporary limit for the fitter till i fix it better by doing value in quadrature
+    fit_params = lmfit.Parameters()  
+    fit_params.add('e1_a', value=0.0, min= -minmaxval, max=minmaxval)
+    fit_params.add('e2_a', value=0.0, min= -minmaxval, max=minmaxval)
+    fit_params.add('flux_a', value=2000.0)
+    fit_params.add('x0_a', value=0)
+    fit_params.add('y0_a', value=0)
+    fit_params.add('hlr_a', value=0.43)
+
+####### Whether to convolve with PSF
+    dopsfconvln = 'y'
+
+     ###################################### Obj a
+     ############# Unbl Obj a        
+    origimg = unblends[0]    
+    mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype , dopsfconvln) ) 
+
+    # Extract vals
+    e1_a = mlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+    e2_a = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
+    e1err = np.sqrt(np.diag(mlresult.covar)[0])
+    e2err = np.sqrt(np.diag(mlresult.covar)[1])
+    
+    print "\n\n ********************* Unbl Obj a "
+    print "e1_a = ", e1_a, " ,  e1err = ", e1err
+    print "e2_a = ", e2_a, " ,  e2err = ", e2err
+    
+    e1a_unbl = e1_a ; e2a_unbl = e2_a 
+    e1a_unblerr = e1err ; e2a_unblerr = e2err 
+    
+            # x and y posn
+    x0_a = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+    y0_a = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+    
+    x0a_unbl = x0_a ;  y0a_unbl = y0_a
+
+    
+    ############ Deblended Obj a
+    origimg = children[0]    
+    mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
+
+
+    origimg = children[0]    
+    mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
+
+    # Extract vals
+    e1_a = mlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+    e2_a = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
+    e1err = np.sqrt(np.diag(mlresult.covar)[0])
+    e2err = np.sqrt(np.diag(mlresult.covar)[1])
+
+    print "\n *********  Deblended Obj a "
+    print "e1_a = ", e1_a, " ,  e1err = ", e1err
+    print "e2_a = ", e2_a, " ,  e2err = ", e2err
+
+    e1a_debl = e1_a ; e2a_debl = e2_a 
+    e1a_deblerr = e1err ; e2a_deblerr = e2err 
+
+    # x and y posn
+    x0_a = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+    y0_a = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+    x0a_debl = x0_a ;  y0a_debl = y0_a
+
+
+    ########### Unbl Obj b        
+    origimg = unblends[1]    
+    mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) )  
+
+    # Extract vals
+    e1_b = mlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+    e2_b = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
+    e1err = np.sqrt(np.diag(mlresult.covar)[0])
+    e2err = np.sqrt(np.diag(mlresult.covar)[1])
+
+    print "\n\n *********************  Unbl Obj b "
+    print "e1_b = ", e1_b, " ,  e1err = ", e1err
+    print "e2_b = ", e2_b, " ,  e2err = ", e2err
+
+    e1b_unbl = e1_b ; e2b_unbl = e2_b 
+    e1b_unblerr = e1err ; e2b_unblerr = e2err 
+
+    # x and y posn
+    x0_b = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+    y0_b = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+    x0b_unbl = x0_b ;  y0b_unbl = y0_b
+
+    ######## Deblended Obj b
+    origimg = children[1]    
+    mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) )  
+
+   # Extract vals  -- note that calling below: mlresult.params['e1_a']  is correct because the '_a' name is defined that way inside the fitter
+    e1_b = mlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+    e2_b = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
+    e1err = np.sqrt(np.diag(mlresult.covar)[0])
+    e2err = np.sqrt(np.diag(mlresult.covar)[1])
+
+    print "\n **********  Deblended Obj b "
+    print "e1_b = ", e1_b, " ,  e1err = ", e1err
+    print "e2_b = ", e2_b, " ,  e2err = ", e2err
+
+    e1b_debl  = e1_b ; e2b_debl  = e2_b 
+    e1b_deblerr = e1err ; e2b_deblerr = e2err 
+
+    # x and y posn
+    x0_b = mlresult.params['x0_a'].value  # Get out x0 val of obj a from fit
+    y0_b = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
+    x0b_debl = x0_b ;  y0b_debl = y0_b
+
+
+# Report the parameters to the interpreter screen                        
+#    lmfit.report_errors(mlresult.params)
+
 # ....................
-        '''
+        
