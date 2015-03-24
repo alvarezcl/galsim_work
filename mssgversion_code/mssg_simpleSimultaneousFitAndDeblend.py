@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-# Get ellips from cmd line
+    ########## Get ellips from cmd line
     e1ain = args.e1a
     e2ain = args.e2a
 
@@ -141,7 +141,7 @@ if __name__ == '__main__':
 
 
     # ************************************************************************ 4 arcsec sep
-    origpeak_a = (-2,0);   origpeak_b = (2,0)    
+    # origpeak_a = (-2,0);   origpeak_b = (2,0)    
 
     # ************************************************************************ 2 arcsec sep
     origpeak_a = (-1,0);   origpeak_b = (1,0)    
@@ -152,7 +152,7 @@ if __name__ == '__main__':
     peak_a =  np.array(origpeak_a) ; peak_b =  np.array(origpeak_b) 
     print " \n\n\n peak_a = ",  peak_a 
 
-#  Convert peaks_pix to pixels
+    ########  Convert peaks_pix to pixels
     peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
                              [p2/0.2 for p2 in peak_b]]
     
@@ -333,7 +333,7 @@ if __name__ == '__main__':
     curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
 
     ############### Using actual peaks, to compare
-    curpeak_a = origpeak_a ;   curpeak_b = origpeak_b    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
+    # curpeak_a = origpeak_a ;   curpeak_b = origpeak_b
 
     peak_a =  np.array(curpeak_a) ; peak_b =  np.array(curpeak_b) 
 #    print " \n\n\n peak_a = ",  peak_a 
