@@ -88,26 +88,21 @@ Main body:
 
 -------- mssg_plotSlopeVsSNR.py
 
----------------- Deblending  (11/2014)
+--------------------------------------- Deblending  (11/2014)
 
  mssg_deblendloop.py calls
     mssg_deblendingTest.py calls
        mssg_deblend.py
 
-Separately after run:
 
--  mssg_makeDeblendingStudyPlots.py -- will plot the files on disk
-
-
-
-
-mssg_makeDeblendingHistos.py
-
-mssg_makeDeblendingStudyPlots.py
 
 mssg_deblendingTest.py
 
-mssg_makeRotMatchedtDeblendingPlots.py
+-  mssg_makeDeblendingStudyPlots.py -- will plot the files on disk
+
+mssg_makeDeblendingHistos.py
+
+mssg_makeRotMatchedDeblendingPlots.py
 
 
 -------------------------------------------- Mar 2015
