@@ -149,8 +149,8 @@ if __name__ == '__main__':
 
 
 ######### Horiz shifts
-#    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
-    peak_a = (-0.8,0);   peak_b = (0.8,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
+    peak_a = (-1.0,0);   peak_b = (1.0,0)    # Horiz sep - centers separated by 2", EXACTLY
+#    peak_a = (-0.8,0);   peak_b = (0.8,0)    # Horiz sep - centers separated by 1.6", to match with Luis, EXACTLY
 #    peak_a = (-1.001,0);   peak_b = (0.999,0)  # Horiz sep- move centers to -eps and -eps
 #    peak_a = (-1.001,0);   peak_b = (1.001,0)  # Horiz sep- move centers to -eps and +eps
 #    peak_a = (-0.999,0);   peak_b = (1.001,0)  # Horiz sep- move centers to +eps and +eps
@@ -183,12 +183,12 @@ if __name__ == '__main__':
 #    e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
 
 #### Normal range i've been using
-#    e1a_range = [0.5,  0, -0.5]
-#    e1b_range = [0.5,  0, -0.5]
+    e1a_range = [0.5,  0, -0.5]
+    e1b_range = [0.5,  0, -0.5]
 
 #### To do just round ones, 2/1/2015
-    e1a_range = [ 0]
-    e1b_range = [ 0]
+#    e1a_range = [ 0]
+#    e1b_range = [ 0]
 
     e2ain = 0
     e2bin = 0
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     sys.exit()
     '''
     
-    numfiles = 500  # Number of runs
+    numfiles = 50  # Number of runs
     origpeak_a = peak_a ; origpeak_b = peak_b
 # origpeak_a = (-1, 0) ; origpeak_b = (1, 0)  # horiz offset, A is L, and B is R
 #    origpeak_a = (0, -1) ; origpeak_b = (0, 1)  # vert offset, A is below, and B above
@@ -245,14 +245,22 @@ if __name__ == '__main__':
                 #                xbshift = (random.random() / 2 ) - qrtrpixel # -0.25 to 0.25 flat dist
 
                 ## Half pixel offsets - horiz
-                xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
-                xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+                # xashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+                # xbshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
+
+                ## Half pixel offsets just to the right
+                # xashift = (random.random() / 2 )  # 0 to 0.5 flat dist
+                # xbshift = (random.random() / 2 )  # 0 to 0.5 flat dist
+
+                ## Qrtr pixel offsets just to the right
+                xashift = (random.random() / 4 )  # 0 to 0.25 flat dist
+                xbshift = (random.random() / 4 )  #  0 to 0.25 flat dist 
 
                 ## Half pixel offsets - vert
 #                yashift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
  #               ybshift = (random.random() ) - halfpixel # -0.5 to 0.5 flat dist
 
-                #                xbshift = 0
+
                 xaoff = xashift/5 ; xboff = xbshift/5  # Converts to arcsec, by div by 5
                 yaoff = yashift/5 ; yboff = ybshift/5  # Converts to arcsec, by div by 5
 
