@@ -127,6 +127,7 @@ if __name__ == '__main__':
     parser.add_argument("--e1b", default=0, type=float, help="e1b in")
     parser.add_argument("--e2b", default=0, type=float, help="e2b in")
     parser.add_argument("--plotflag", default=0, type=int, help="Set to 1 to make plots")
+    parser.add_argument("--centers", default=1, type=int, help="Set to 1 to use exact centers, 2 to use centers from simfit")
 
     args = parser.parse_args()
 
@@ -138,6 +139,8 @@ if __name__ == '__main__':
     e2bin = args.e2b
 
     plotflag = args.plotflag
+
+    centers = args.centers  # Whether to use exact centers or to use centers from simfit when deblending
 
 
     # ************************************************************************ 4 arcsec sep
@@ -203,37 +206,36 @@ if __name__ == '__main__':
     
     
     
-    ############################################## Obj a
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[0])   
-    params.add('hlr_a', value=p0[1], min=0.0)
-    params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[4])
-    params.add('y0_a',value=p0[5])
+#     ############################################## Obj a
+#     params = lmfit.Parameters()
+#     params.add('flux_a', value=p0[0])   
+#     params.add('hlr_a', value=p0[1], min=0.0)
+#     params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
+#     params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
+#     params.add('x0_a',value=p0[4])
+#     params.add('y0_a',value=p0[5])
     
-    params_a = params
-    result_a = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_a,   args=(unblends[0], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
+#     params_a = params
+#     result_a = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_a,   args=(unblends[0], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
 
-# Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result_a.params)
+# # Report the parameters to the interpreter screen                        
+#     lmfit.report_errors(result_a.params)
 
     
-    ############################################## Obj b
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[6])
-    params.add('hlr_a', value=p0[7], min=0.0)
-    params.add('e1_a', value=p0[8], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[9], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[10])
-    params.add('y0_a',value=p0[11])
+#     ############################################## Obj b
+#     params = lmfit.Parameters()
+#     params.add('flux_a', value=p0[6])
+#     params.add('hlr_a', value=p0[7], min=0.0)
+#     params.add('e1_a', value=p0[8], min=-1.0, max=1.0)
+#     params.add('e2_a', value=p0[9], min=-1.0, max=1.0)
+#     params.add('x0_a',value=p0[10])
+#     params.add('y0_a',value=p0[11])
     
-    params_b = params
-    result_b = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_b,   args=(unblends[1], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
+#     params_b = params
+#     result_b = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_b,   args=(unblends[1], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
 
-# Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result_b.params)
-
+# # Report the parameters to the interpreter screen                        
+#     lmfit.report_errors(result_b.params)
 
 
 
