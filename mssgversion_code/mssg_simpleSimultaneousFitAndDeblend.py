@@ -60,7 +60,7 @@ def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbe
 def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0):
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
-    flux_in = 5e6
+    flux_in = 5e2
     gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
     gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1b, g2= e2b).shift(peak_b)
     
@@ -127,6 +127,7 @@ if __name__ == '__main__':
     parser.add_argument("--e1b", default=0, type=float, help="e1b in")
     parser.add_argument("--e2b", default=0, type=float, help="e2b in")
     parser.add_argument("--plotflag", default=0, type=int, help="Set to 1 to make plots")
+    parser.add_argument("--centers", default=1, type=int, help="Set to 1 to use exact centers, 2 to use centers from simfit")
 
     args = parser.parse_args()
 
@@ -139,6 +140,7 @@ if __name__ == '__main__':
 
     plotflag = args.plotflag
 
+    centers = args.centers
 
     # ************************************************************************ 4 arcsec sep
     # origpeak_a = (-2,0);   origpeak_b = (2,0)    
@@ -171,7 +173,7 @@ if __name__ == '__main__':
 
 ######################################################### Sim Fit
 # Parameters for object a
-    flux_a = 5e6          # total counts on the image
+    flux_a = 5e2          # total counts on the image
     hlr_a = 1.0            # arcsec
     e1_a = 0.0
     e2_a = 0.0
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     # lmfit object for galaxy one and two
 
     p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
-                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b]) # These are all pre-defined nums from above - mg
+                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b]) # These are just the init guesses for the fit (all pre-defined nums from above)
 
     #################### Common
     galtype = galsim.Gaussian
@@ -284,6 +286,30 @@ if __name__ == '__main__':
 #    template_fractions
 #    children = vector of 2 imgs, best estimates from deblending code
 
+    ########################### Using simfit peaks as centers
+    if centers == 2:
+        curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
+
+    ########################## Using actual known peaks, to compare
+    if centers == 1:
+        curpeak_a = origpeak_a ;   curpeak_b = origpeak_b
+
+#    ipdb.set_trace()
+
+    #  Convert peaks_pix to pixels
+    peaks_pix = [[p1/0.2 for p1 in curpeak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in curpeak_b]]
+ 
+    print " \n\n\n  ************************* About to deblend with these centers: "   
+    print " Arcsec: peaks_A = " , peak_a
+    print " Arcsec: peaks_B = " , peak_b
+    print " Pixels: peaks_pix = " ,  peaks_pix 
+
+    ################################################################# Assign to actual peak variable
+    peak_a =  np.array(curpeak_a) ; peak_b =  np.array(curpeak_b) 
+    peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in peak_b]]
+
     templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
     
     ########## Plot template
@@ -293,7 +319,7 @@ if __name__ == '__main__':
         makeplot(pltname, pltcontent)
                                 
     ######### Plot children
-### Obj a
+        ### Obj a
         pltname = " Unblended img a ";        pltcontent = unblends[0]
         makeplot(pltname, pltcontent)
 
@@ -303,7 +329,7 @@ if __name__ == '__main__':
         pltname = " Resid of: (Deblended child a - Unblended img a) ";        pltcontent = children[0] - unblends[0].array 
         makeplot(pltname, pltcontent)
 
-### Obj b
+        ### Obj b
         pltname = " Unblended img b ";        pltcontent = unblends[1]
         makeplot(pltname, pltcontent)
 
@@ -329,24 +355,6 @@ if __name__ == '__main__':
     print " ***** Now about to run lmfit "
     # Common params to all
 
-    ########################### Using guesses as center
-    curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
-
-    ############### Using actual peaks, to compare
-    # curpeak_a = origpeak_a ;   curpeak_b = origpeak_b
-
-    peak_a =  np.array(curpeak_a) ; peak_b =  np.array(curpeak_b) 
-#    print " \n\n\n peak_a = ",  peak_a 
-
-#  Convert peaks_pix to pixels
-    peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
-                             [p2/0.2 for p2 in peak_b]]
- 
-    print " \n\n\n  ************************* Post deblending "   
-    print " Arcsec: peaks_A = " , peak_a
-    print " Arcsec: peaks_B = " , peak_b
-    print " Pixels: peaks_pix = " ,  peaks_pix 
-
    # The below are just initial guesses for the fitter
     minmaxval = 0.7 # Temporary limit for the fitter till i fix it better by doing value in quadrature
     fit_params = lmfit.Parameters()  
@@ -357,7 +365,7 @@ if __name__ == '__main__':
     fit_params.add('y0_a', value=0)
     fit_params.add('hlr_a', value=0.43)
 
-####### Whether to convolve with PSF
+    ####### Whether to convolve with PSF
     dopsfconvln = 'y'
 
      ###################################### Obj a
