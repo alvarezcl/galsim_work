@@ -50,10 +50,10 @@ args = parser.parse_args()
 
 
 ###################### Rounding vs. Truncation -- 3-24-2015
-fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
+#fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 #fname = args.subdir + 'roundedVsTruncated_offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 #fname = args.subdir + 'roundedVsTruncated_BothHalfpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
-#fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
+fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
 
    # Random qrtr pixel offset left, right one fixed
 #fname = args.subdir + 'offsetLeftOneQrtrPixelLorRRightOneFixed_deblendingTests_50runs.txt'
