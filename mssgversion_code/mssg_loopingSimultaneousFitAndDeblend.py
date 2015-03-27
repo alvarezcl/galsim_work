@@ -1,6 +1,11 @@
 # MSSG, based on JEM and LCA code
 # Start: 3/10/2015
 
+# Three step proc:
+# 1. simfit to A+B
+# 2. deblend using output centers from the simfit
+# 3. fit now to deblended objs
+
 ### Generic imports
 import lmfit
 import ipdb
@@ -26,7 +31,7 @@ presetval = 1
 randnum=galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machine time
 
 
-#################################################### Function to draw gal figs
+#################################################################################### Function to plot gal figs
 def makeplot(pltname, pltcontent, location = 'lower'):
           plt.title(pltname)
           print " >>>>>> Plotting ", pltname          
@@ -38,7 +43,7 @@ def makeplot(pltname, pltcontent, location = 'lower'):
           plt.colorbar()
           plt.show()
     
-#################################################### Function to draw and return simple single gal img
+################################################################## Function to create and return simple single gal img
 def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbeta=3.0 , psffwhm= 0.85):
     # Create gaussian gal objs, sheared in various directions
     gal = galsim.Gaussian(fwhm=fwhm, flux=flux).shear(g1=e1, g2= e2).shift(peak)
@@ -56,7 +61,7 @@ def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbe
 
 
 
-###################################################### Function to create the blended img
+################################################################# Function to create the blended img
 def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0):
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
@@ -157,12 +162,13 @@ if __name__ == '__main__':
 
     ########  Convert peaks_pix to pixels
     peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
-                             [p2/0.2 for p2 in peak_b]]
+                 [p2/0.2 for p2 in peak_b]]
     
     print " Arcsec: peaks_A = " , peak_a
     print " Arcsec: peaks_B = " , peak_b
     print " Pixels: peaks_pix = " ,  peaks_pix 
-    
+
+    ####### Create the blended and unblended imgs    
     blend, unblends = create_blend(peak_a, peak_b, e1a = e1ain,  e2a = e2ain, e1b = e1bin ,e2b = e2bin)
 
     if plotflag > presetval:
@@ -172,8 +178,11 @@ if __name__ == '__main__':
         plt.colorbar()
         plt.show()
 
-######################################################### Sim Fit
-# Parameters for object a
+    ############################################################################################################# 1. Sim Fit
+    # This defines some seed values for the 
+    # lmfit object for galaxy one and two
+
+    # Parameters for object a
     flux_a = 5e6          # total counts on the image
     hlr_a = 1.0            # arcsec
     e1_a = 0.0
@@ -181,7 +190,7 @@ if __name__ == '__main__':
     x0_a = peak_a[0]
     y0_a = peak_a[1]
 
-# Parameters for object b
+    # Parameters for object b
     flux_b = flux_a       # total counts on the image
     hlr_b = hlr_a         # arcsec
     e1_b = 0.0
@@ -189,13 +198,11 @@ if __name__ == '__main__':
     x0_b = peak_b[0]
     y0_b = peak_b[1]
 
-    # Define some seed that's far from true values and insert into
-    # lmfit object for galaxy one and two
-
+    # Declare an array of all the seed values
     p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
-                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b]) # These are all pre-defined nums from above - mg
+                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b])  # These are just the init guesses for the fit (all pre-defined nums from above)
 
-    #################### Common
+    #################### Common vars to set
     galtype = galsim.Gaussian
     imsize = 49
     pixel_scale = 0.2
@@ -204,7 +211,7 @@ if __name__ == '__main__':
     print " ************** About to fit"
 
     
-    
+     ##################################################### Comment out below if no need to test by doing separate fits on unblended objs A and B
     
 #     ############################################## Obj a
 #     params = lmfit.Parameters()
@@ -236,10 +243,10 @@ if __name__ == '__main__':
 
 # # Report the parameters to the interpreter screen                        
 #     lmfit.report_errors(result_b.params)
+##########################################################################
 
 
-
-        ############################################## Obj a+b
+    ############################################## Sim Fit to Obj a+b
     params = lmfit.Parameters()
     params.add('flux_a', value=p0[0], min=0.0)   
     params.add('hlr_a', value=p0[1], min=0.0)
@@ -280,7 +287,7 @@ if __name__ == '__main__':
 
 
          
-######################################################### Deblend
+############################################################################################################# 2. Deblend
 # Use deblending code to separate them
 #    templates = for each img
 #    template_fractions

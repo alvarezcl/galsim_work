@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     ########  Convert peaks_pix to pixels
     peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
-                             [p2/0.2 for p2 in peak_b]]
+                 [p2/0.2 for p2 in peak_b]]
     
     print " Arcsec: peaks_A = " , peak_a
     print " Arcsec: peaks_B = " , peak_b
