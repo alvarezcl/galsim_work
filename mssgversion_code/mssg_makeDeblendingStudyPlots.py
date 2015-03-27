@@ -52,8 +52,8 @@ args = parser.parse_args()
 ###################### Rounding vs. Truncation -- 3-24-2015
 fname = args.subdir + 'offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
 #fname = args.subdir + 'roundedVsTruncated_offsetBothRandomHalfPixelLorR_deblendingTests_50runs.txt'
-fname = args.subdir + 'roundedVsTruncated_BothHalfpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
-fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
+#fname = args.subdir + 'roundedVsTruncated_BothHalfpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
+#fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt'
 
    # Random qrtr pixel offset left, right one fixed
 #fname = args.subdir + 'offsetLeftOneQrtrPixelLorRRightOneFixed_deblendingTests_50runs.txt'
@@ -199,7 +199,7 @@ figindex = 0
 ################################### Print to screen (or ipy nb file)
 print " Using file ", fname
 
-print "\n\n **** About to plot fits to obj A now"
+# print "\n\n **** About to plot fits to obj A now"
 
 ############################################################ e1 a plots
 for e1bin in e1b_range:
@@ -296,7 +296,7 @@ for e1bin in e1b_range:
 #################### Reset FigIndex
 figindex = 0
 
-print "\n\n **** About to plot fits to obj B now"
+# print "\n\n **** About to plot fits to obj B now"
 
 ############################################################ e1 b plots
 for e1ain in e1a_range:
