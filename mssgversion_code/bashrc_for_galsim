@@ -1,0 +1,26 @@
+# Mar 2015
+# For syntax about the prompt, see:
+# http://www.cyberciti.biz/faq/bash-shell-change-the-color-of-my-shell-prompt-under-linux-or-unix/
+
+
+PS1="\e[0;32m\w$\e[m "
+alias a='alias'
+a k="clear ; ls -GtlFh "
+a hm='cd ~'
+a c='pushd '
+a v='mv'
+a u='cd ..'
+a m='more'
+a f='popd'
+a sc='source ~/.bashrc'
+a mggal='c ~/fizzAndAstro/lsst/luisAndMG_galsimwork_dir/mssgversion_code' 
+a ecshrc='emacs ~/.bashrc'
+a ebashrc='emacs ~/.bashrc'
+a h='history'
+a ipy='ipython'
+
+
+source ~/fizzAndAstro/lsst/loadLSST.bash
+
+setup GalSim
+
