@@ -11,7 +11,7 @@ import lmfit
 import ipdb
 import sys
 import random
-import triangle
+# import triangle
 from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 import numpy as np
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
     ################### Initze
     fitdat = []    # Vector that will have all output data in the end
-    numfiles = 2  # Number of runs we want to do
+    numfiles = 50  # Number of runs we want to do
 
     #### Normal input range i've been using
     e1a_range = [0.5,  0, -0.5]

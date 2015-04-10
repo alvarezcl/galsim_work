@@ -103,6 +103,8 @@ fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendi
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_5_runs_withObjCenters.txt'  # 2-10-2015
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_500_runs_withObjCenters.txt'  # 2-10-2015
 
+fname = args.subdir + 'deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
+
 #################################### Load up data
 fitdat = np.loadtxt(fname)
 
@@ -155,12 +157,10 @@ except:
     e1b_unblresid =  e1b_unbl - e1b_in 
     e1b_deblresid =  e1b_debl - e1b_in 
 
-#sys.exit()
+print 'fnum = ', fnum 
 
-# print 'fnum = ', fnum 
-
-# Taking out the print statements for now
 '''
+# Taking out the print statements for now
 print 'e1a_in = ' ,e1a_in 
 print 'e1a_unbl  = ' ,e1a_unbl 
 print 'e1a_debl = ', e1a_debl
@@ -172,31 +172,38 @@ print 'e1b_debl = ', e1b_debl
 print 'e1b_unblresid = ',e1b_unblresid
 '''
 
-numfiles = 50
+#sys.exit()
 
-#e1a_range = [0.5, 0.25, 0, -0.25, -0.5]
-#e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
+####################################### Initzn vars
+#### How many runs we made
+numfiles = 50
 
 #### Normal range i've been using
 e1a_range = [0.5,  0, -0.5]
 e1b_range = [0.5,  0, -0.5]
 
+#### Extended range
+#e1a_range = [0.5, 0.25, 0, -0.25, -0.5]
+#e1b_range = [0.5, 0.25, 0, -0.25, -0.5]
+
 #### To do just round ones, 2/1/2015
 #e1a_range = [ 0]
 #e1b_range = [ 0]
 
+#### To separate data points and show error bars clearly
 xshift = [0.01, 0.01, 0.01]
-
 e1shifted = np.array(e1a_range) + np.array(xshift)
-nbins = 20 # Set num of bins for histo
 
-################################### Initialize the geometry of the grid for the fig
+#### Set num of bins for histo
+nbins = 20 
+
+###################### Initialize the geometry of the grid for the fig
 gs = gridspec.GridSpec(2,3)
 if nonRoundObjs: 
     totfig = plt.figure(figsize=(15,12))
 figindex = 0
 
-################################### Print to screen (or ipy nb file)
+######### Print to screen (or ipy nb file)
 print " Using file ", fname
 
 # print "\n\n **** About to plot fits to obj A now"
@@ -216,9 +223,10 @@ for e1bin in e1b_range:
     # Run over all e1a fits
     for e1ain in e1a_range:
         e1astr = str(e1ain)
+        # Pick the entries where the input vals are as below
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
-#        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
- #       print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
+        print 'e1bin, e1ain,  i = ', e1bin, e1ain, i 
+        print 'e1b_unbl, e1a_unbl = ', e1b_unbl[i], e1a_unbl[i] 
 
         vece1a_in.append( e1a_in[i].mean() )
         vece1a_unbl.append( e1a_unbl[i].mean() )
@@ -228,39 +236,41 @@ for e1bin in e1b_range:
         vece1a_unblerr.append( e1a_unbl[i].std()  )
         vece1a_deblerr.append( e1a_debl[i].std() ) 
         
-        
-# ############### Declare the overall fig box
-# 	totfig = plt.figure(figsize=(15,12))
 
-#         #  Make histo of e1a fit vals
-#         thisfig = totfig.add_subplot(gs[0,0])
-#         plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
-#         plt.hist(e1a_debl[i],bins= nbins)
-# 	print "Mean of e1a_debl ", np.mean(e1a_debl)
+        '''        
+############### Declare the overall fig box
+	totfig = plt.figure(figsize=(15,12))
 
-#         plt.show()
+        #  Make histo of e1a fit vals
+        thisfig = totfig.add_subplot(gs[0,0])
+        plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
+        plt.hist(e1a_debl[i],bins= nbins)
+	print "Mean of e1a_debl ", np.mean(e1a_debl)
 
-# ############## Histos of dists
-#         #  Make histo of x0a fit vals
-#         thisfig = totfig.add_subplot(gs[0,1])
-#         plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
-#         plt.hist(x0a_unbl[i],bins= nbins,  alpha=0.5, label = "x0a from unblended fit")
-#         plt.hist(x0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0a from deblended fit" )
-#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-# 	print "Mean of x0a_unbl ", np.mean(x0a_unbl)
-# 	print "Mean of x0a_debl ", np.mean(x0a_debl)
-#         plt.show()
+        plt.show()
 
-#         #  Make histo of y0a fit vals
-#         thisfig = totfig.add_subplot(gs[0,2])
-#         plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
-#         plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
-#         plt.hist(y0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a from deblended fit" )
-#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-# 	print "\n Mean of y0a_unbl ", np.mean(y0a_unbl)
-# 	print "Mean of y0a_debl ", np.mean(y0a_debl)
-#         plt.show()
-        
+
+############## Histos of dists
+        #  Make histo of x0a fit vals
+        thisfig = totfig.add_subplot(gs[0,1])
+        plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
+        plt.hist(x0a_unbl[i],bins= nbins,  alpha=0.5, label = "x0a from unblended fit")
+        plt.hist(x0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0a from deblended fit" )
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+	print "Mean of x0a_unbl ", np.mean(x0a_unbl)
+	print "Mean of x0a_debl ", np.mean(x0a_debl)
+        plt.show()
+
+        #  Make histo of y0a fit vals
+        thisfig = totfig.add_subplot(gs[0,2])
+        plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
+        plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
+        plt.hist(y0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a from deblended fit" )
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+	print "\n Mean of y0a_unbl ", np.mean(y0a_unbl)
+	print "Mean of y0a_debl ", np.mean(y0a_debl)
+        plt.show()
+        '''        
 
 
     if nonRoundObjs:
