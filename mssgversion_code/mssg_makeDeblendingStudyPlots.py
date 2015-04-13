@@ -103,7 +103,7 @@ fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendi
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_5_runs_withObjCenters.txt'  # 2-10-2015
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_500_runs_withObjCenters.txt'  # 2-10-2015
 
-fname = args.subdir + 'deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
+fname = args.subdir + 'fdf_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -262,6 +262,7 @@ for e1bin in e1b_range:
         plt.show()
 
         #  Make histo of y0a fit vals
+ 
         thisfig = totfig.add_subplot(gs[0,2])
         plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
         plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")

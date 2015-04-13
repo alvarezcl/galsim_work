@@ -1,5 +1,5 @@
 # MSSG, based on JEM and LCA code
-# Start: 3/10/2015
+# Start: 4/13/2015
 
 # Three step proc:
 # 1. simfit to A+B
@@ -334,7 +334,14 @@ if __name__ == '__main__':
             #    template_fractions
             #    children = vector of 2 imgs, best estimates from deblending code
 
+               ########################### Using guesses as center
+                curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
+                #  Convert peaks_pix to pixels
+                peaks_pix = [[p1/0.2 for p1 in curpeak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in curpeak_b]]
+                
                 templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
+
 
                 ########## Plot template
                 if plotflag > presetval:
@@ -386,9 +393,9 @@ if __name__ == '__main__':
                 # curpeak_a = origpeak_a ;   curpeak_b = origpeak_b
 
                 peak_a =  np.array(curpeak_a) ; peak_b =  np.array(curpeak_b) 
-            #    print " \n\n\n peak_a = ",  peak_a 
+                #    print " \n\n\n peak_a = ",  peak_a 
 
-            #  Convert peaks_pix to pixels
+                #  Convert peaks_pix to pixels
                 peaks_pix = [[p1/0.2 for p1 in peak_a],  # Div by 0.2 to convert back to pixels
                                          [p2/0.2 for p2 in peak_b]]
 
