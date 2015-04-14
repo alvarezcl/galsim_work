@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
     ################### Initze
     fitdat = []    # Vector that will have all output data in the end
-    numfiles = 1  # Number of runs we want to do
+    numfiles = 50  # Number of runs we want to do
 
     #### Normal input range i've been using
     #e1a_range = [0.5,  0, -0.5]
@@ -539,4 +539,4 @@ if __name__ == '__main__':
 
     print(fitarray)
 
-#    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl  x0_a y0_a  x0_b y0_b")
+    np.savetxt('deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl  x0_a y0_a  x0_b y0_b")
