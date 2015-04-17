@@ -105,6 +105,10 @@ fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendi
 
 fname = args.subdir + 'fdf_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
+fname = args.subdir + 'fdf_both.ellips.0.5.only.deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt'
+
+fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
+
 #################################### Load up data
 fitdat = np.loadtxt(fname)
 
@@ -176,7 +180,7 @@ print 'e1b_unblresid = ',e1b_unblresid
 
 ####################################### Initzn vars
 #### How many runs we made
-numfiles = 50
+numfiles = 2
 
 #### Normal range i've been using
 e1a_range = [0.5,  0, -0.5]
