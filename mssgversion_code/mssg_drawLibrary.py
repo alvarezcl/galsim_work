@@ -16,7 +16,7 @@ import galsim
 import numpy as np
 import mssg_gauss
 import sys
-import ipdb
+#import ipdb
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 

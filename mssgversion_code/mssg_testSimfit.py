@@ -1,3 +1,4 @@
+
 # MSSG, based on JEM and LCA code
 # Start: 4/13/2015
 
@@ -8,7 +9,7 @@
 
 ### Generic imports
 import lmfit
-import ipdb
+# import ipdb
 import sys
 import random
 # import triangle
@@ -64,9 +65,10 @@ def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbe
 
 ################################################################# Function to create the blended img
 def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = initbasedev):
+    print '\n In create_blend:  randbasedev = ', rand
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
-    flux_in = 5e6
+    flux_in = 1e5 # 5e6
     gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
     gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1b, g2= e2b).shift(peak_b)
     
@@ -84,7 +86,7 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = ini
     # Img1
     proto_image = galsim.ImageD(pixelsize, pixelsize, scale = pixelscale)
     image1 = convgal1.drawImage(image=proto_image, method='phot', rng=rand)
-    print '\n In drawgal:  randnum = ', rand
+    #print '\n In drawgal:  randnum = ', rand
     image1.array[np.where(image1.array < 0)] = 0.
     if plotflag > presetval:
         plt.title(" FIRST PLOT:  Img obj a")
@@ -97,7 +99,7 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = ini
     # Img2
     proto_image = galsim.ImageD(pixelsize, pixelsize, scale = pixelscale)
     image2 = convgal2.drawImage(image=proto_image, method='phot', rng=rand)
-    print '\n In drawgal:  randnum = ', rand
+    #print '\n In drawgal:  randnum = ', rand
 
     image2.array[np.where(image2.array < 0)] = 0.    
     if plotflag > presetval: 
@@ -131,7 +133,7 @@ if __name__ == '__main__':
 # Parse command line args
     parser = ArgumentParser()
     parser.add_argument("--prependname", default="", help="filename to prepend")
-    parser.add_argument("--outfile", default="deblendsOutput/deblendingTests", help="output text filename")
+    parser.add_argument("--dirname", default="deblendsOutput/", help="output dir")
     parser.add_argument("--e1a", default=0, type=float, help="e1a in")
     parser.add_argument("--e2a", default=0, type=float, help="e2a in")
     parser.add_argument("--e1b", default=0, type=float, help="e1b in")
@@ -142,8 +144,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print "testsimfit"
-
+    outdir = args.dirname
     randseed = args.random # Getting the random number seed we'll pass on to create
     randbasedev=galsim.BaseDeviate(randseed) # Random num seed -- when set to zero, uses machine time, otw deterministic
 
@@ -174,8 +175,8 @@ if __name__ == '__main__':
     e1a_range = [0.5,  0, -0.5]
     e1b_range = [0.5,  0, -0.5]
 
-    e1a_range = [0.5]
-    e1b_range = [0.5]
+    #e1a_range = [0.5]
+    #e1b_range = [0.5]
 
     ############################################################################## Begin loop
     for filenum in xrange(0,numfiles):
@@ -184,7 +185,7 @@ if __name__ == '__main__':
         for e1bin in e1b_range:
             for e1ain in e1a_range:
 
-                print " ************************************************ We're doing e1a_in = " , e1ain, "  e2a_in = ", e2ain, " e1b_in = ", e1bin, " e2b_in = ", e2bin
+                print " \n\n ************************************************ We're doing e1a_in = " , e1ain, "  e2a_in = ", e2ain, " e1b_in = ", e1bin, " e2b_in = ", e2bin
 
                 peak_a =  np.array(origpeak_a) ; peak_b =  np.array(origpeak_b) 
                 print " \n\n\n peak_a = ",  peak_a 
@@ -240,7 +241,7 @@ if __name__ == '__main__':
                 # This defines some seed values for when doing the lmfit object for galaxy one and two
 
                 # Parameters for object a
-                flux_a = 5e6          # total counts on the image
+                flux_a = 1e5 # 5e6          # total counts on the image
                 hlr_a = 1.0            # arcsec
                 e1_a = 0.0
                 e2_a = 0.0
@@ -265,7 +266,7 @@ if __name__ == '__main__':
                 pixel_scale = 0.2
                 dopsfconvln='y'
 
-                print " ************** About to fit"
+                print " \n ************************************ 1. About to do first simfit"
 
 
                  ##################################################### Comment out below if no need to test by doing separate fits on unblended objs A and B
@@ -347,6 +348,8 @@ if __name__ == '__main__':
             #    template_fractions
             #    children = vector of 2 imgs, best estimates from deblending code
 
+                print " \n ***************************************** 2. About to deblend"
+
                ########################### Using guesses as center
                 curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
                 #  Convert peaks_pix to pixels
@@ -396,7 +399,7 @@ if __name__ == '__main__':
 
 
                 ################################################################## 3. Run deblended fits
-                print " ***** Now about to run lmfit "
+                print " \n ************************************** 3. Now about to run lmfit for final separate deblended fits "
                 # Common params to all
 
                 ########################### Using guesses as center
@@ -546,10 +549,8 @@ if __name__ == '__main__':
     ################################## End of all loops
     fitarray = np.array(fitdat)
 
-    print(fitarray)
+    #print(fitarray)
     
-    fitarray = np.array(fitdat)
+    #np.savetxt(outdir+prename+'deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +  '_runnum_'+ str(randseed) +'.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl  x0_a y0_a  x0_b y0_b")
 
-    print(fitarray)
-
-#    np.savetxt(prename+'deblendingTests_peak_A_'+str(origpeak_a) + '__peak_B_' + str(origpeak_b) +'_' + str(numfiles)+ '_runs.txt', fitarray, header="filenum   e1a_in e2a_in   e1a_unbl e1a_debl  e2a_unbl e2a_debl    e1b_in e2b_in  e1b_unbl  e1b_debl e2b_unbl e2b_debl    x0a_unbl y0a_unbl x0a_debl y0a_debl   x0b_unbl y0b_unbl   x0b_debl y0b_debl  x0_a y0_a  x0_b y0_b")
+    np.savetxt(outdir+prename+'tmpfile_runnum_'+ str(randseed) +'.txt', fitarray)

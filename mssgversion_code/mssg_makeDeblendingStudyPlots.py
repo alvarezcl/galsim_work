@@ -109,6 +109,10 @@ fname = args.subdir + 'fdf_both.ellips.0.5.only.deblendingTests_peak_A_[-1  0]__
 
 fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
+fname =  'tmpdir/deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_3runs.txt' # 4-16-2015
+
+fname =  'tmpdir/deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
+
 #################################### Load up data
 fitdat = np.loadtxt(fname)
 
@@ -281,8 +285,9 @@ for e1bin in e1b_range:
     if nonRoundObjs:
 ######## e1 a plots
 #    print 'vece1a_unbl = ', vece1a_unbl
-        xlimit = 0.6;    ylimit = 0.15
-#    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
+        xlimit = 0.55;    ylimit = 0.05
+        plt.xlim( -xlimit, xlimit);    
+        plt.ylim( -ylimit, ylimit)
 
 ############ Plot it in this fig slot for this pass
         thisfig = totfig.add_subplot(gs[0,figindex])
@@ -373,8 +378,9 @@ for e1ain in e1a_range:
 ######## e1 b plots
 #    print 'vece1b_unbl = ', vece1b_unbl
  #   plt.figure(figsize=(15,12))
-        xlimit = 0.6;    ylimit = 0.15
-#    plt.xlim( -xlimit, xlimit);    plt.ylim( -ylimit, ylimit)
+        xlimit = 0.55;    ylimit = 0.05
+        plt.xlim( -xlimit, xlimit);    
+        plt.ylim( -ylimit, ylimit)
   
 ############ Plot it in this fig slot for this pass
         thisfig = totfig.add_subplot(gs[1,figindex])
