@@ -109,9 +109,9 @@ fname = args.subdir + 'fdf_both.ellips.0.5.only.deblendingTests_peak_A_[-1  0]__
 
 fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
-fname =  'tmpdir/deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_3runs.txt' # 4-16-2015
+fname =  'tmpdir/fdf_exactcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
+#fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 
-fname =  'tmpdir/deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -184,7 +184,7 @@ print 'e1b_unblresid = ',e1b_unblresid
 
 ####################################### Initzn vars
 #### How many runs we made
-numfiles = 2
+numfiles = 50
 
 #### Normal range i've been using
 e1a_range = [0.5,  0, -0.5]
@@ -285,12 +285,11 @@ for e1bin in e1b_range:
     if nonRoundObjs:
 ######## e1 a plots
 #    print 'vece1a_unbl = ', vece1a_unbl
-        xlimit = 0.55;    ylimit = 0.05
-        plt.xlim( -xlimit, xlimit);    
-        plt.ylim( -ylimit, ylimit)
 
 ############ Plot it in this fig slot for this pass
         thisfig = totfig.add_subplot(gs[0,figindex])
+        xlimit = 0.55;    ylimit = 0.05
+        plt.xlim( -xlimit, xlimit);           plt.ylim( -ylimit, ylimit)
 
 #### Unblended fit plots
 # (Note we are horizontally offsetting these points by xshift, as defined above)
@@ -378,15 +377,14 @@ for e1ain in e1a_range:
 ######## e1 b plots
 #    print 'vece1b_unbl = ', vece1b_unbl
  #   plt.figure(figsize=(15,12))
-        xlimit = 0.55;    ylimit = 0.05
-        plt.xlim( -xlimit, xlimit);    
-        plt.ylim( -ylimit, ylimit)
-  
 ############ Plot it in this fig slot for this pass
         thisfig = totfig.add_subplot(gs[1,figindex])
 
 #### Unblended fit plots
 # (Note we are horizontally offsetting these points by xshift, as defined above)
+        xlimit = 0.55;    ylimit = 0.05
+        plt.xlim( -xlimit, xlimit);            plt.ylim( -ylimit, ylimit)
+
         plt.scatter( e1shifted , vece1b_unblresid, color = 'g' , s=50.0  )
         gline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1b" , linewidth=4.0)
         yline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
