@@ -206,7 +206,7 @@ e1shifted = np.array(e1a_range) + np.array(xshift)
 nbins = 20 
 
 ###################### Initialize the geometry of the grid for the fig
-gs = gridspec.GridSpec(2,3)
+gs = gridspec.GridSpec(20,30)
 if nonRoundObjs: 
     totfig = plt.figure(figsize=(15,12))
 figindex = 0
@@ -287,7 +287,7 @@ for e1bin in e1b_range:
 #    print 'vece1a_unbl = ', vece1a_unbl
 
 ############ Plot it in this fig slot for this pass
-        thisfig = totfig.add_subplot(gs[0,figindex])
+        thisfig = totfig.add_subplot(gs[0:8 , figindex*10+1:(figindex*10)+8])
         xlimit = 0.55;    ylimit = 0.05
         plt.xlim( -xlimit, xlimit);           plt.ylim( -ylimit, ylimit)
 
@@ -378,7 +378,7 @@ for e1ain in e1a_range:
 #    print 'vece1b_unbl = ', vece1b_unbl
  #   plt.figure(figsize=(15,12))
 ############ Plot it in this fig slot for this pass
-        thisfig = totfig.add_subplot(gs[1,figindex])
+        thisfig = totfig.add_subplot(gs[12:19  ,  figindex*10+1:(figindex*10)+8])
 
 #### Unblended fit plots
 # (Note we are horizontally offsetting these points by xshift, as defined above)

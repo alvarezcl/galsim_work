@@ -9,7 +9,7 @@
 
 ### Generic imports
 import lmfit
-# import ipdb
+import ipdb
 import sys
 import random
 # import triangle
@@ -300,7 +300,7 @@ if __name__ == '__main__':
                     x0_b_guess = result.params['x0_b'].value
                     y0_b_guess = result.params['y0_b'].value
 
-                    print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
+                    print "\n\n\n ************** In orig simfit:  x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
                     print " x0_b_guess ,  y0_b_guess = ", x0_b_guess ,  y0_b_guess
 
 
@@ -325,13 +325,21 @@ if __name__ == '__main__':
                     print 'Using Exact centers'
                     curpeak_a = origpeak_a;       curpeak_b = origpeak_b
                 
-                print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
-                print " origpeak_a;       curpeak_b = origpeak_a curpeak_a ,  curpeak_b = ",  curpeak_a,  curpeak_b                              
+#                print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
+                print "    curpeak_a,  curpeak_b = ",  curpeak_a,  curpeak_b                              
                 #  Convert peaks_pix to pixels
                 peaks_pix = [[p1/0.2 for p1 in curpeak_a],  # Div by 0.2 to convert back to pixels
                              [p2/0.2 for p2 in curpeak_b]]
+
+                origpeaks_pix = [[p1/0.2 for p1 in origpeak_a],  # Div by 0.2 to convert back to pixels
+                             [p2/0.2 for p2 in origpeak_b]]
                 
+                print " peaks_pix ,  origpeaks_pix = ", peaks_pix ,  origpeaks_pix 
+
                 templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
+                origtemplates, origtemplate_fractions, origchildren = mssg_deblend.deblend(blend.array, origpeaks_pix, interpolate=False, force_interpolate = False)
+
+                ipdb.set_trace()
 
 
                 ########## Plot template
@@ -440,6 +448,9 @@ if __name__ == '__main__':
                 origimg = children[0]    
                 mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
 
+                origkid0 = origchildren[0]    
+                origmlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origkid0,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
+
                 # Report the parameters to the interpreter screen                        
                 print "********************* Post second fit -- obj A"
                 #lmfit.report_errors(mlresult.params)
@@ -449,6 +460,10 @@ if __name__ == '__main__':
                 e2_a = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
                 e1err = np.sqrt(np.diag(mlresult.covar)[0])
                 e2err = np.sqrt(np.diag(mlresult.covar)[1])
+
+                orige1_a = origmlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+                orige2_a = origmlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
+
 
                 print "\n *********  Deblended Obj a "
                 print "e1_a = ", e1_a, " ,  e1err = ", e1err
@@ -489,6 +504,10 @@ if __name__ == '__main__':
                 origimg = children[1]    
                 mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) )  
 
+                origkid1 = origchildren[1]    
+                origmlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origkid1,imsize,imsize,pixel_scale, galtype, dopsfconvln) ) 
+
+
                 # Report the parameters to the interpreter screen                        
                 print "********************* Post second fit -- obj B"
                 #lmfit.report_errors(mlresult.params)
@@ -498,6 +517,9 @@ if __name__ == '__main__':
                 e2_b = mlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
                 e1err = np.sqrt(np.diag(mlresult.covar)[0])
                 e2err = np.sqrt(np.diag(mlresult.covar)[1])
+
+                orige1_b = origmlresult.params['e1_a'].value  # Get out e1 val of obj a from fit
+                orige2_b = origmlresult.params['e2_a'].value  # Get out e2 val of obj a from fit
 
                 print "\n **********  Deblended Obj b "
                 print "e1_b = ", e1_b, " ,  e1err = ", e1err
@@ -511,6 +533,15 @@ if __name__ == '__main__':
                 y0_b = mlresult.params['y0_a'].value  # Get out y0 val of obj a from fit
                 x0b_debl = x0_b ;  y0b_debl = y0_b
 
+
+                ########################## Final results
+                print "\n\n\n \n **********  Final --- Deblended Obj a "
+                print "e1_a = ", e1_a, " e1ain - e1_a = ", e1ain - e1_a 
+                print "orige1_a = ", e1_a, " e1ain - orige1_a = ", e1ain - orige1_a 
+
+                print "\n **********  Deblended Obj b "
+                print "e1_b = ", e1_b, " e1bin - e1_b = ", e1bin - e1_b 
+                print "orige1_b = ", e1_b, " e1bin - orige1_b = ", e1bin - orige1_b 
 
                     ################### Result vec for this fit
                 fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ]
