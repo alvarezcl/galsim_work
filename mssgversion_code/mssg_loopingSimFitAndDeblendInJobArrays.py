@@ -294,14 +294,17 @@ if __name__ == '__main__':
                     #lmfit.report_errors(result.params)
 
                     #################### Extract the centers
-                    x0_a_guess = result.params['x0_a'].value
-                    y0_a_guess = result.params['y0_a'].value
+                    x0_a_sf = result.params['x0_a'].value
+                    y0_a_sf = result.params['y0_a'].value
 
-                    x0_b_guess = result.params['x0_b'].value
-                    y0_b_guess = result.params['y0_b'].value
+                    x0_b_sf = result.params['x0_b'].value
+                    y0_b_sf = result.params['y0_b'].value
 
-                    print "\n\n\n ************** In orig simfit:  x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
-                    print " x0_b_guess ,  y0_b_guess = ", x0_b_guess ,  y0_b_guess
+                    e1_a_sf = result.params['e1_a'].value  # Get out e1 val of obj a from fit
+                    e1_b_sf = result.params['e1_b'].value  # Get out e1 val of obj b from fit
+                
+                    print "\n\n\n ************** In orig simfit:  x0_a_sf ,  y0_a_sf = ", x0_a_sf ,  y0_a_sf
+                    print " x0_b_sf ,  y0_b_sf = ", x0_b_sf ,  y0_b_sf
 
 
                     #    ipdb.set_trace()
@@ -319,13 +322,13 @@ if __name__ == '__main__':
                 if centers == 'F':
                ########################### Using fit vals as centers
                     print 'Using SimFit centers'
-                    curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess)       
+                    curpeak_a = (x0_a_sf, y0_a_sf);       curpeak_b = (x0_b_sf, y0_b_sf)       
                 else:
                ########################### Using known exact vals as centers
                     print 'Using Exact centers'
                     curpeak_a = origpeak_a;       curpeak_b = origpeak_b
                 
-#                print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
+#                print "\n\n\n x0_a_sf ,  y0_a_sf = ", x0_a_sf ,  y0_a_sf
                 print "    curpeak_a,  curpeak_b = ",  curpeak_a,  curpeak_b                              
                 #  Convert peaks_pix to pixels
                 peaks_pix = [[p1/0.2 for p1 in curpeak_a],  # Div by 0.2 to convert back to pixels
@@ -385,7 +388,7 @@ if __name__ == '__main__':
                 if centers == 'F':
                ########################### Using fit vals as centers
                     print 'Using SimFit centers'
-                    curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess)       
+                    curpeak_a = (x0_a_sf, y0_a_sf);       curpeak_b = (x0_b_sf, y0_b_sf)       
                 else:
                ########################### Using known exact vals as centers
                     print 'Using Exact centers'
@@ -553,7 +556,7 @@ if __name__ == '__main__':
                 #print "orige1_b = ", e1_b, " e1bin - orige1_b = ", e1bin - orige1_b 
 
                     ################### Result vec for this fit
-                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ]
+                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ,x0_a_sf, x0_b_sf, e1_a_sf, e1_b_sf]
                 fitresults.extend(peak_a)
                 fitresults.extend(peak_b)
 

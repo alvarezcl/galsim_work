@@ -112,6 +112,7 @@ fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_
 fname =  'tmpdir/fdf_exactcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 #fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 
+fname =  'tmpdir/tmpfile_runnum_1.txt' # 4/30/2015
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
