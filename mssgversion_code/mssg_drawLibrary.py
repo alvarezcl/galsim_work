@@ -154,8 +154,10 @@ def drawShoot_2comp_galaxy(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, func,
 def draw_galaxy_1(flux, hlr, e1, e2, x0, y0, x_len, y_len, scale, galtype, dopsfconvln = 'n'):
 #    print " e1, e2 = ", e1,e2
 #    print " flux, hlr = ", flux, hlr 
-    if e1 < -0.95:
-        ipdb.set_trace()
+
+#    if e1 < -0.95:
+#        ipdb.set_trace()  # May cause probs if not in there. 4-30-2015
+
 #    print " In draw_gal -- e1, e2 = ", e1,e2
 
     big_fft_params = galsim.GSParams(maximum_fft_size=10024000)

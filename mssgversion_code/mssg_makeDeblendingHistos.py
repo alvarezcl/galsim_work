@@ -249,3 +249,73 @@ for e1ain in e1a_range:
         fig = triangle.corner(z.T)
         plt.show()
 
+
+
+
+        '''        
+############### Declare the overall fig box
+	totfig = plt.figure(figsize=(15,12))
+
+        #  Make histo of e1a fit vals
+        thisfig = totfig.add_subplot(gs[0,0])
+        plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
+        plt.hist(e1a_debl[i],bins= nbins)
+	print "Mean of e1a_debl ", np.mean(e1a_debl)
+
+        plt.show()
+
+
+############## Histos of dists
+        #  Make histo of x0a fit vals
+        thisfig = totfig.add_subplot(gs[0,1])
+        plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
+        plt.hist(x0a_unbl[i],bins= nbins,  alpha=0.5, label = "x0a from unblended fit")
+        plt.hist(x0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0a from deblended fit" )
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+	print "Mean of x0a_unbl ", np.mean(x0a_unbl)
+	print "Mean of x0a_debl ", np.mean(x0a_debl)
+        plt.show()
+
+        #  Make histo of y0a fit vals
+ 
+        thisfig = totfig.add_subplot(gs[0,2])
+        plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
+        plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
+        plt.hist(y0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a from deblended fit" )
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+	print "\n Mean of y0a_unbl ", np.mean(y0a_unbl)
+	print "Mean of y0a_debl ", np.mean(y0a_debl)
+        plt.show()
+        '''        
+
+
+
+############## Histos of dists        
+#         #  Make histo of e1b fit vals
+#         thisfig = totfig.add_subplot(gs[1,0])
+#         plt.title("Histo of e1b debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
+#         plt.hist(e1b_debl[i],bins= nbins)
+# 	print "Mean of e1b_debl ", np.mean(e1b_debl)
+# #        plt.show()
+
+#         #  Make histo of x0a fit vals
+#         thisfig = totfig.add_subplot(gs[1,1])
+#         plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
+#         plt.hist(x0b_unbl[i],bins= nbins,  alpha=0.5 , label = "x0b from unblended fit" )
+#         plt.hist(x0b_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0b from deblended fit")
+#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+# 	print "\n Mean of x0b_unbl ", np.mean(x0b_unbl)
+# 	print "Mean of x0b_debl ", np.mean(x0b_debl)
+# #        plt.show()
+
+#         #  Make histo of y0a fit vals
+#         thisfig = totfig.add_subplot(gs[1,2])
+#         plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
+#         plt.hist(y0b_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
+#         plt.hist(y0b_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0b from unblended fit")
+#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+# 	print "\n Mean of y0b_unbl ", np.mean(y0b_unbl)
+# 	print "Mean of y0b_debl ", np.mean(y0b_debl)
+
+# # Show all the histos
+#         plt.show()

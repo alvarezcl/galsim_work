@@ -9,7 +9,7 @@
 
 ### Generic imports
 import lmfit
-import ipdb
+#import ipdb
 import sys
 import random
 # import triangle
@@ -68,7 +68,7 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = ini
     print '\n In create_blend:  randbasedev = ', rand
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
-    flux_in = 1e5 # 5e6
+    flux_in = 500 # 1e5 before
     gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
     gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1b, g2= e2b).shift(peak_b)
     
@@ -247,9 +247,9 @@ if __name__ == '__main__':
                     # This defines some seed values for when doing the lmfit object for galaxy one and two
 
                     # Parameters for object a
-                    flux_a = 1e5 # 5e6          # total counts on the image
+                    flux_a = 500 # 1e5 # 5e6          # total counts on the image
                     hlr_a = 1.0            # arcsec
-                    e1_a = 0.0
+                    e1_a = e1ain
                     e2_a = 0.0
                     x0_a = peak_a[0]
                     y0_a = peak_a[1]
@@ -257,7 +257,7 @@ if __name__ == '__main__':
                     # Parameters for object b
                     flux_b = flux_a       # total counts on the image
                     hlr_b = hlr_a         # arcsec
-                    e1_b = 0.0
+                    e1_b = e1bin
                     e2_b = 0.0
                     x0_b = peak_b[0]
                     y0_b = peak_b[1]
@@ -410,12 +410,12 @@ if __name__ == '__main__':
                # The below are just initial guesses for the fitter
                 minmaxval = 0.707 # Temporary limit for the fitter till i fix it better by doing value in quadrature
                 fit_params = lmfit.Parameters()  
-                fit_params.add('e1_a', value=0.0, min= -minmaxval, max=minmaxval)
+                fit_params.add('e1_a', value=e1ain, min= -minmaxval, max=minmaxval)
                 fit_params.add('e2_a', value=0.0, min= -minmaxval, max=minmaxval)
                 fit_params.add('flux_a', value=2000.0)
-                fit_params.add('x0_a', value=0)
-                fit_params.add('y0_a', value=0)
-                fit_params.add('hlr_a', value=0.43)
+                fit_params.add('x0_a', value=peak_a[0])
+                fit_params.add('y0_a', value=peak_a[1])
+                fit_params.add('hlr_a', value=1)
 
             ####### Whether to convolve with PSF
                 dopsfconvln = 'y'
@@ -485,6 +485,7 @@ if __name__ == '__main__':
 
 
                 ########### Unbl Obj b        
+                fit_params.add('e1_a', value=e1bin, min= -minmaxval, max=minmaxval)  # Set to actual input value for obj b
                 origimg = unblends[1]    
                 mlresult = lmfit.minimize(mssg_drawLibrary.resid_1obj, fit_params, args=(origimg,imsize,imsize,pixel_scale, galtype, dopsfconvln) )  
 

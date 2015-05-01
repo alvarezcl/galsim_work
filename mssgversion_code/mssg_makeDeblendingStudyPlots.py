@@ -103,16 +103,18 @@ fname = args.subdir + 'roundedVsTruncated_BothQrtrpixelRandomShiftRight_deblendi
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_5_runs_withObjCenters.txt'  # 2-10-2015
 #fname = args.subdir + 'roundObjsOnly_deblendingTests_peak_A_(-0.8, 0)__peak_B_(0.8, 0)_andRandomHalfPixelLorRoffset_500_runs_withObjCenters.txt'  # 2-10-2015
 
-fname = args.subdir + 'fdf_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
+#fname = args.subdir + 'fdf_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
-fname = args.subdir + 'fdf_both.ellips.0.5.only.deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt'
+#fname = args.subdir + 'fdf_both.ellips.0.5.only.deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt'
 
-fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
+#fname = args.subdir + 'fdf_run2_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50_runs.txt' # 4-3-2015
 
-fname =  'tmpdir/fdf_exactcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
+#fname =  'tmpdir/fdf_exactcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 #fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.txt' # 4-16-2015
 
-fname =  'tmpdir/tmpfile_runnum_1.txt' # 4/30/2015
+fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50runs.4-30-2015.txt' # 4-30-2015
+
+fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_752runs.4-30-2015.txt' # 4-30-2015
 
 #################################### Load up data
 fitdat = np.loadtxt(fname)
@@ -147,6 +149,18 @@ try:
     x0b_unbl = fitdat[:,17];    y0b_unbl = fitdat[:,18]
     x0b_debl = fitdat[:,19];    y0b_debl = fitdat[:,20]
 
+    x0_a_sf = fitdat[:,21]
+    x0_b_sf  = fitdat[:,22]
+    e1a_sf  = fitdat[:,23]
+    e1b_sf  = fitdat[:,24]
+    e1a_sfresid =  e1a_sf - e1a_in 
+    e1b_sfresid =  e1b_sf - e1b_in 
+
+    peak_x0_a = fitdat[:,25]
+    peak_y0_a  = fitdat[:,26]
+    peak_x0_b = fitdat[:,27]
+    peak_y0_b = fitdat[:,28]
+    
     print "*********************** Has e2 in output file, and object centers"
 
 except:
@@ -185,7 +199,7 @@ print 'e1b_unblresid = ',e1b_unblresid
 
 ####################################### Initzn vars
 #### How many runs we made
-numfiles = 50
+numfiles = 752
 
 #### Normal range i've been using
 e1a_range = [0.5,  0, -0.5]
@@ -201,13 +215,23 @@ e1b_range = [0.5,  0, -0.5]
 
 #### To separate data points and show error bars clearly
 xshift = [0.01, 0.01, 0.01]
-e1shifted = np.array(e1a_range) + np.array(xshift)
+shiftfac = 3
+e1shiftedL = np.array(e1a_range) - shiftfac *np.array(xshift)
+e1shiftedR = np.array(e1a_range) + shiftfac *np.array(xshift)
 
 #### Set num of bins for histo
 nbins = 20 
 
 ###################### Initialize the geometry of the grid for the fig
-gs = gridspec.GridSpec(20,30)
+gsvert = 20
+gshoriz = 30
+gs = gridspec.GridSpec(gsvert, gshoriz)
+# For later when we put the plots in dif gridspec spots
+gsh = gshoriz/3 
+gsv = gsvert / 2
+horizbuffer = 3
+vertbuffer = 1
+
 if nonRoundObjs: 
     totfig = plt.figure(figsize=(15,12))
 figindex = 0
@@ -224,10 +248,13 @@ for e1bin in e1b_range:
     vece1a_in = []  
     vece1a_unbl = []
     vece1a_debl = []
+    vece1a_sf = []
     vece1a_unblresid = []  
     vece1a_deblresid = []  
+    vece1a_sfresid = []  
     vece1a_unblerr = []  
     vece1a_deblerr = []  
+    vece1a_sferr = []  
 
     # Run over all e1a fits
     for e1ain in e1a_range:
@@ -240,83 +267,58 @@ for e1bin in e1b_range:
         vece1a_in.append( e1a_in[i].mean() )
         vece1a_unbl.append( e1a_unbl[i].mean() )
         vece1a_debl.append( e1a_debl[i].mean() )
+        vece1a_sf.append( e1a_sf[i].mean() )
         vece1a_unblresid.append (e1a_unblresid[i].mean()  )
         vece1a_deblresid.append (e1a_deblresid[i].mean() )
+        vece1a_sfresid.append (e1a_sfresid[i].mean() )
         vece1a_unblerr.append( e1a_unbl[i].std()  )
         vece1a_deblerr.append( e1a_debl[i].std() ) 
+        vece1a_sferr.append( e1a_sf[i].std() ) 
         
-
-        '''        
-############### Declare the overall fig box
-	totfig = plt.figure(figsize=(15,12))
-
-        #  Make histo of e1a fit vals
-        thisfig = totfig.add_subplot(gs[0,0])
-        plt.title("Histo of e1a debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
-        plt.hist(e1a_debl[i],bins= nbins)
-	print "Mean of e1a_debl ", np.mean(e1a_debl)
-
-        plt.show()
-
-
-############## Histos of dists
-        #  Make histo of x0a fit vals
-        thisfig = totfig.add_subplot(gs[0,1])
-        plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
-        plt.hist(x0a_unbl[i],bins= nbins,  alpha=0.5, label = "x0a from unblended fit")
-        plt.hist(x0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0a from deblended fit" )
-        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-	print "Mean of x0a_unbl ", np.mean(x0a_unbl)
-	print "Mean of x0a_debl ", np.mean(x0a_debl)
-        plt.show()
-
-        #  Make histo of y0a fit vals
- 
-        thisfig = totfig.add_subplot(gs[0,2])
-        plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
-        plt.hist(y0a_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
-        plt.hist(y0a_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0a from deblended fit" )
-        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-	print "\n Mean of y0a_unbl ", np.mean(y0a_unbl)
-	print "Mean of y0a_debl ", np.mean(y0a_debl)
-        plt.show()
-        '''        
 
 
     if nonRoundObjs:
-######## e1 a plots
-#    print 'vece1a_unbl = ', vece1a_unbl
+        ########################################### e1 a plots
 
-############ Plot it in this fig slot for this pass
-        thisfig = totfig.add_subplot(gs[0:8 , figindex*10+1:(figindex*10)+8])
+        ############ Plot it in this fig slot for this pass
+        thisfig = totfig.add_subplot(gs[0:gsv-vertbuffer , figindex*gsh:(figindex+1)*gsh-horizbuffer])
         xlimit = 0.55;    ylimit = 0.05
         plt.xlim( -xlimit, xlimit);           plt.ylim( -ylimit, ylimit)
 
-#### Unblended fit plots
-# (Note we are horizontally offsetting these points by xshift, as defined above)
-        plt.scatter( e1shifted , vece1a_unblresid, color = 'g' , s=50.0  ) # The central value point -- 's' here is the size of the point -- 
-        gline = plt.errorbar( e1shifted, vece1a_unblresid, vece1a_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1a" , linewidth=4.0)
-        yline = plt.errorbar( e1shifted, vece1a_unblresid, vece1a_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
+        #### Unblended fit plots
+        # (Note we are horizontally offsetting these points by xshift, as defined above)
+        plt.scatter( e1a_range , vece1a_unblresid, color = 'g' , s=50.0  ) # The central value point -- 's' here is the size of the point -- 
+        gline = plt.errorbar( e1a_range, vece1a_unblresid, vece1a_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1a" , linewidth=4.0)
+        yline = plt.errorbar( e1a_range, vece1a_unblresid, vece1a_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
-#### Deblended fit plots
-        plt.scatter( e1a_range, vece1a_deblresid, color = 'b' , s=50.0  )
-        bline = plt.errorbar(e1a_range, vece1a_deblresid, vece1a_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1a" , linewidth= 4.0)
-        rline = plt.errorbar(e1a_range, vece1a_deblresid, vece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
+        #### Deblended fit plots
+        plt.scatter( e1shiftedL, vece1a_deblresid, color = 'b' , s=50.0  )
+        bline = plt.errorbar(e1shiftedL , vece1a_deblresid, vece1a_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1a" , linewidth= 4.0)
+        rline = plt.errorbar(e1shiftedL , vece1a_deblresid, vece1a_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
 
+        #### Simfit plots
+        plt.scatter( e1shiftedR, vece1a_sfresid, color = 'm' , s=50.0  )
+        kline = plt.errorbar(e1shiftedR , vece1a_sfresid, vece1a_sferr,  ecolor='k',linestyle=' ', label = "Resid for simfit for e1a" , linewidth= 4.0)
+        cline = plt.errorbar(e1shiftedR , vece1a_sfresid, vece1a_sferr/np.sqrt(numfiles),  ecolor='c',linestyle=' ', label = "Resid for simfit, error/sqrt(N)" , linewidth= 8.0 )
+
+        # Title + legend
         plt.title("Resids for fits with e1bin = " +e1bstr )
-        plt.legend(loc=4,prop={'size':9}) # This loc is the lower right corner, and this is good font size for the box
+        # plt.legend(loc=4,prop={'size':9}) # This loc is the lower right corner, and this is good font size for the box
         plt.xlabel('$e_{1a in}$',fontsize=18)
         plt.ylabel('$e_{1a fit}-e_{1a in}$',fontsize=18)
         plt.axhline( 0,color='k',linestyle='-', linewidth= 2)     
         
+        # Increment figindex for next pass through this loop
         figindex += 1
 
 #    plt.savefig("resid_e1aBlended-e1aUnbl_vs_e1aIn_e1b_" + e1bstr + ".png")
+plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+print "Finished e1a plots"
 
-#################### Reset FigIndex
+#################### Reset FigIndex for next loop
 figindex = 0
 
-# print "\n\n **** About to plot fits to obj B now"
+
 
 ############################################################ e1 b plots
 for e1ain in e1a_range:
@@ -325,10 +327,13 @@ for e1ain in e1a_range:
     vece1b_in = []  
     vece1b_unbl = []
     vece1b_debl = []
+    vece1b_sf = []
     vece1b_unblresid = []  
     vece1b_deblresid = []  
+    vece1b_sfresid = []  
     vece1b_unblerr = []  
     vece1b_deblerr = []  
+    vece1b_sferr = []  
 
     for e1bin in e1b_range:
         i = np.where(np.logical_and(e1a_in == e1ain, e1b_in == e1bin))
@@ -338,70 +343,57 @@ for e1ain in e1a_range:
         vece1b_in.append( e1b_in[i].mean() )
         vece1b_unbl.append( e1b_unbl[i].mean() )
         vece1b_debl.append( e1b_debl[i].mean() )
+        vece1b_sf.append( e1b_sf[i].mean() )
         vece1b_unblresid.append (e1b_unblresid[i].mean()  )
         vece1b_deblresid.append (e1b_deblresid[i].mean() )
+        vece1b_sfresid.append (e1b_sfresid[i].mean() )
         vece1b_unblerr.append( e1b_unbl[i].std()  )
         vece1b_deblerr.append( e1b_debl[i].std() ) 
+        vece1b_sferr.append( e1b_sf[i].std() ) 
 
-
-############## Histos of dists        
-#         #  Make histo of e1b fit vals
-#         thisfig = totfig.add_subplot(gs[1,0])
-#         plt.title("Histo of e1b debl fit dist for e1ain = " +e1astr + " with e1bin = " +e1bstr )
-#         plt.hist(e1b_debl[i],bins= nbins)
-# 	print "Mean of e1b_debl ", np.mean(e1b_debl)
-# #        plt.show()
-
-#         #  Make histo of x0a fit vals
-#         thisfig = totfig.add_subplot(gs[1,1])
-#         plt.title("Histo of x0a unbl fit dist for x0ain = -0.8 " )
-#         plt.hist(x0b_unbl[i],bins= nbins,  alpha=0.5 , label = "x0b from unblended fit" )
-#         plt.hist(x0b_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "x0b from deblended fit")
-#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-# 	print "\n Mean of x0b_unbl ", np.mean(x0b_unbl)
-# 	print "Mean of x0b_debl ", np.mean(x0b_debl)
-# #        plt.show()
-
-#         #  Make histo of y0a fit vals
-#         thisfig = totfig.add_subplot(gs[1,2])
-#         plt.title("Histo of y0a unbl fit dist for y0ain = 0 " )
-#         plt.hist(y0b_unbl[i],bins= nbins,  alpha=0.5 , label = "y0a from unblended fit")
-#         plt.hist(y0b_debl[i],bins= nbins, color = 'g',  alpha=0.5 , label = "y0b from unblended fit")
-#         plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
-# 	print "\n Mean of y0b_unbl ", np.mean(y0b_unbl)
-# 	print "Mean of y0b_debl ", np.mean(y0b_debl)
-
-# # Show all the histos
-#         plt.show()
         
     if nonRoundObjs:
-######## e1 b plots
+        ######################################################## e1 b plots
 #    print 'vece1b_unbl = ', vece1b_unbl
  #   plt.figure(figsize=(15,12))
-############ Plot it in this fig slot for this pass
-        thisfig = totfig.add_subplot(gs[12:19  ,  figindex*10+1:(figindex*10)+8])
+        ############ Plot it in this fig slot for this pass
+        thisfig = totfig.add_subplot(gs[gsv:2*gsv-1 , figindex*gsh:(figindex+1)*gsh-horizbuffer])
 
-#### Unblended fit plots
+
+        #### Unblended fit plots
 # (Note we are horizontally offsetting these points by xshift, as defined above)
         xlimit = 0.55;    ylimit = 0.05
         plt.xlim( -xlimit, xlimit);            plt.ylim( -ylimit, ylimit)
 
-        plt.scatter( e1shifted , vece1b_unblresid, color = 'g' , s=50.0  )
-        gline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1b" , linewidth=4.0)
-        yline = plt.errorbar( e1shifted, vece1b_unblresid, vece1b_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
+        plt.scatter( e1b_range , vece1b_unblresid, color = 'g' , s=50.0  )
+        gline = plt.errorbar( e1b_range, vece1b_unblresid, vece1b_unblerr,  ecolor='g',linestyle=' ', label = "Resid for unblended fit for e1b" , linewidth=4.0)
+        yline = plt.errorbar( e1b_range, vece1b_unblresid, vece1b_unblerr/np.sqrt(numfiles),  ecolor='y',linestyle=' ', label = "Resid for unblended fit, error/sqrt(N)" , linewidth= 8.0 )
         
-#### Deblended fit plots
-        plt.scatter( e1b_range, vece1b_deblresid, color = 'b' , s=50.0  )
-        bline = plt.errorbar(e1b_range, vece1b_deblresid, vece1b_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1b" , linewidth= 4.0)
-        rline = plt.errorbar(e1b_range, vece1b_deblresid, vece1b_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
-        
+        #### Deblended fit plots
+        plt.scatter( e1shiftedL, vece1b_deblresid, color = 'b' , s=50.0  )
+        bline = plt.errorbar(e1shiftedL, vece1b_deblresid, vece1b_deblerr,  ecolor='b',linestyle=' ', label = "Resid for deblended fit for e1b" , linewidth= 4.0)
+        rline = plt.errorbar(e1shiftedL, vece1b_deblresid, vece1b_deblerr/np.sqrt(numfiles),  ecolor='r',linestyle=' ', label = "Resid for deblended fit, error/sqrt(N)" , linewidth= 8.0 )
+
+        #### Simfit plots
+        plt.scatter( e1shiftedR, vece1b_sfresid, color = 'm' , s=50.0  )
+        bline = plt.errorbar(e1shiftedR , vece1b_sfresid, vece1b_sferr,  ecolor='k',linestyle=' ', label = "Resid for sfended fit for e1b" , linewidth= 4.0)
+        rline = plt.errorbar(e1shiftedR, vece1b_sfresid, vece1b_sferr/np.sqrt(numfiles),  ecolor='c',linestyle=' ', label = "Resid for sfended fit, error/sqrt(N)" , linewidth= 8.0 )
+
         plt.title("Resids for fits with e1ain = " +e1astr )
-        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
         plt.xlabel('$e_{1b in}$',fontsize=18)
         plt.ylabel('$e_{1b fit}-e_{1b in}$',fontsize=18)
         plt.axhline( 0,color='k',linestyle='-', linewidth= 2)     
-        
+
+
+        '''
+        #### Legend
+        plt.legend(loc=1,prop={'size':9}) # This loc is the upper right corner, and this is good font size for the box
+        '''
+
         figindex += 1
+print "Finished e1b plots"
+
+#totfig.legend()
 
 plt.show()
 
