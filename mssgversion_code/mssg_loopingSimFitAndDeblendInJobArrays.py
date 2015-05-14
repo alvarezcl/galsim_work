@@ -64,7 +64,7 @@ def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbe
 
 
 ################################################################# Function to create the blended img
-def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = initbasedev):
+def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, rand = initbasedev, includepsf = False ):
     print '\n In create_blend:  randbasedev = ', rand
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
