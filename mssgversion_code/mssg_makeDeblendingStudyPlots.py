@@ -116,7 +116,7 @@ fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_50r
 
 fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_752runs.4-30-2015.txt' # 4-30-2015
 
-#fname =  'tmpdir/singletmpfile.txt'
+fname =  'tmpdir/singletmpfile.txt'
 
 
 #################################### Load up data

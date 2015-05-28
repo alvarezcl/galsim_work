@@ -133,13 +133,13 @@ if __name__ == '__main__':
 # Parse command line args
     parser = ArgumentParser()
     parser.add_argument("--prependname", default="", help="filename to prepend")
-    parser.add_argument("--dirname", default="deblendsOutput/", help="output dir")
+    parser.add_argument("--dirname", default="tmpdir/", help="output dir")
     parser.add_argument("--e1a", default=0, type=float, help="e1a in")
     parser.add_argument("--e2a", default=0, type=float, help="e2a in")
     parser.add_argument("--e1b", default=0, type=float, help="e1b in")
     parser.add_argument("--e2b", default=0, type=float, help="e2b in")
     parser.add_argument("--plotflag", default=0, type=int, help="Set to 1 to make plots")
-    parser.add_argument("--centers", default='E', type=str, help="Set to E to use exact centers, F to use centers from simfit")
+    parser.add_argument("--centers", default='F', type=str, help="Set to E to use exact centers, F to use centers from simfit")
     parser.add_argument("--random", default=1, type=int, help="random number seed")
 
     args = parser.parse_args()
@@ -293,7 +293,7 @@ if __name__ == '__main__':
                     # Report the parameters to the interpreter screen                        
                     #lmfit.report_errors(result.params)
 
-                    #################### Extract the centers
+                    #################### Extract the centers from the simfit
                     x0_a_sf = result.params['x0_a'].value
                     y0_a_sf = result.params['y0_a'].value
 
