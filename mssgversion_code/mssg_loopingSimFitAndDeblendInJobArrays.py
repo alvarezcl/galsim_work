@@ -31,6 +31,11 @@ presetval = 1
 
 initbasedev = galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machine time
 
+########## Flags
+
+### Flag to tell if if we want to do the simfit at all
+simfit_flag = 0
+ 
 #################################################################################### Function to plot gal figs
 def makeplot(pltname, pltcontent, location = 'lower'):
           plt.title(pltname)
@@ -557,7 +562,14 @@ if __name__ == '__main__':
                 #print "orige1_b = ", e1_b, " e1bin - orige1_b = ", e1bin - orige1_b 
 
                     ################### Result vec for this fit
-                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ,x0_a_sf, x0_b_sf, e1_a_sf, e1_b_sf]
+
+                # Case of simfit centers
+                if centers == 'F':
+                    fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ,x0_a_sf, x0_b_sf, e1_a_sf, e1_b_sf]
+
+                # In case of exact centers, we don't want to refer to any of the simfit outputs
+                fitresults = [int(filenum), e1ain, e2ain, e1a_unbl,e1a_debl, e2a_unbl,e2a_debl,   e1bin, e2bin, e1b_unbl,e1b_debl, e2b_unbl, e2b_debl,   x0a_unbl,y0a_unbl, x0a_debl,y0a_debl, x0b_unbl,y0b_unbl, x0b_debl,y0b_debl ] 
+
                 fitresults.extend(peak_a)
                 fitresults.extend(peak_b)
 
