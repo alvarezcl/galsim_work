@@ -9,7 +9,7 @@ import numpy as np
 from argparse import ArgumentParser
 import matplotlib.gridspec as gridspec
 
-nonRoundObjs = True  # Boolean if we are plotting results of fits on more than a single type of obj (e.g. more than round ones)
+nonRoundObjs = False  # Boolean if we are plotting results of fits on more than a single type of obj (e.g. more than round ones)
 
 ########### Start the input arg parsing
 
@@ -122,6 +122,8 @@ fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs
 
 fname =  'tmpdir/fdf_fitcenters_deblendingTests_peak_A_[-1  0]__peak_B_[1 0]_752runs.4-30-2015.txt' # 4-30-2015
 
+# fname = args.subdir + 'deblendingTests_peak_A_(-1.0, 0)__peak_B_(1.0, 0)_50_runs.txt' # 7/7/2015
+
 #fname =  'tmpdir/singletmpfile.txt'
 
 
@@ -197,7 +199,7 @@ except:   ############### NB: *check* the input file columns if there is a probl
 
 print 'fnum = ', fnum 
 
-'''
+
 # Taking out the print statements for now
 print 'e1a_in = ' ,e1a_in 
 print 'e1a_unbl  = ' ,e1a_unbl 
@@ -208,7 +210,7 @@ print 'e1b_in = ' ,e1b_in
 print 'e1b_unbl  = ' ,e1b_unbl 
 print 'e1b_debl = ', e1b_debl
 print 'e1b_unblresid = ',e1b_unblresid
-'''
+
 
 #sys.exit()
 
@@ -299,8 +301,8 @@ for e1bin in e1b_range:
 
         ############ Plot it in this fig slot for this pass
         thisfig = totfig.add_subplot(gs[0:gsv-vertbuffer , figindex*gsh:(figindex+1)*gsh-horizbuffer])
-        xlimit = 0.55;    ylimit = 0.05
-        plt.xlim( -xlimit, xlimit);           plt.ylim( -ylimit, ylimit)
+#        xlimit = 0.55;    ylimit = 0.05
+#        plt.xlim( -xlimit, xlimit);           plt.ylim( -ylimit, ylimit)
 
         print "  \n\n\n vece1a_unblresid =  ", vece1a_unblresid
 
@@ -390,8 +392,9 @@ for e1ain in e1a_range:
 
             #### Unblended fit plots
             # (Note we are horizontally offsetting these points by xshift, as defined above)
-            xlimit = 0.55;    ylimit = 0.05
-            plt.xlim( -xlimit, xlimit);            plt.ylim( -ylimit, ylimit)
+# 7/19/2015
+#            xlimit = 0.55;    ylimit = 0.05
+#            plt.xlim( -xlimit, xlimit);            plt.ylim( -ylimit, ylimit)
 
             print "  \n\n\n vece1b_unblresid =  ", vece1b_unblresid
 
