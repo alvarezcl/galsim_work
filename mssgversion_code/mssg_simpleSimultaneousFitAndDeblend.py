@@ -6,7 +6,7 @@ import lmfit
 import ipdb
 import sys
 import random
-import triangle
+#import triangle
 from argparse import ArgumentParser
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,103 +15,19 @@ import numpy as np
 import galsim
 import mssg_deblend
 import mssg_drawLibrary
-
+from mssg_makeplot import *
+from mssg_create_blend import *
 
 
 ################### Initze
 
 #### Level to do printing at (setting it lower will print more stuff)
-presetval = 1
+presetval = 0
 
-randnum=galsim.BaseDeviate(1) # Random num seed -- when set to zero, uses machine time
-
-
-#################################################### Function to draw gal figs
-def makeplot(pltname, pltcontent, location = 'lower'):
-          plt.title(pltname)
-          print " >>>>>> Plotting ", pltname          
-          dummyarr = np.array([1, 2, 3])
-          if type(pltcontent) != type(dummyarr):
-              print pltcontent, " is not a numpy array, will convert"
-              pltcontent = pltcontent.array 
-          plt.imshow( pltcontent , origin=location );    
-          plt.colorbar()
-          plt.show()
-    
-#################################################### Function to draw and return simple single gal img
-def drawgal(peak =(0,0), e1 = 0, e2 = 0 , fwhm=1.0, flux=1.0e5,  psfshr=0, psfbeta=3.0 , psffwhm= 0.85):
-    # Create gaussian gal objs, sheared in various directions
-    gal = galsim.Gaussian(fwhm=fwhm, flux=flux).shear(g1=e1, g2= e2).shift(peak)
-    # Add psf 
-    psf = galsim.Moffat(beta=psfbeta, fwhm=psffwhm).shear(e1=psfshr,  e2= 0.0)
-    convgal = galsim.Convolve([gal,psf])
-    # Now make img
-    pixelsize = 49;    pixelscale = 0.2
-    # Img
-    proto_image = galsim.ImageD(pixelsize, pixelsize, scale = pixelscale)
-    img = convgal.drawImage(image=proto_image, method='phot', rng=randnum)
-    img.array[np.where(img.array < 0)] = 0.
-    return img
+plt.rcParams['image.cmap'] = 'seismic'
 
 
-
-
-###################################################### Function to create the blended img
-def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0):
-    # Create gaussian gal objs, sheared in various directions
-    hlr_in = 1.0
-    flux_in = 5e2
-    gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
-    gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1b, g2= e2b).shift(peak_b)
-    
-    # Add psf 
-    psfshr = 0.00
-    psf = galsim.Moffat(beta=3, fwhm=0.85).shear(e1 = psfshr,  e2 = -psfshr)
-
-    convgal1 = galsim.Convolve([gal1,psf])
-    convgal2 = galsim.Convolve([gal2,psf])
-    
-    # Now make imgs
-    pixelsize = 49
-    pixelscale = 0.2
-
-    # Img1
-    proto_image = galsim.ImageD(pixelsize, pixelsize, scale = pixelscale)
-    image1 = convgal1.drawImage(image=proto_image, method='phot', rng=randnum)
-    image1.array[np.where(image1.array < 0)] = 0.
-    if plotflag > presetval:
-        plt.title(" FIRST PLOT:  Img obj a")
-        plt.imshow( image1.array , origin='lower');    
-        plt.colorbar()
-        plt.show()
-        print " >>>>>> Plotting img obj a"
-        print " image1.array.sum() " , image1.array.sum()
-
-    # Img2
-    proto_image = galsim.ImageD(pixelsize, pixelsize, scale = pixelscale)
-    image2 = convgal2.drawImage(image=proto_image, method='phot', rng=randnum)
-    image2.array[np.where(image2.array < 0)] = 0.    
-    if plotflag > presetval: 
-        plt.title(" Img obj b")
-        print " >>>>>> Plotting img obj b"
-        plt.imshow( image2.array , origin='lower');    
-        plt.colorbar()
-        plt.show()
-
-### Add them into one image
-    imagesum =  image1+image2
-
-    if plotflag > presetval:
-        plt.title(" Img obj a + b")
-        print " >>>>>> Plotting imgsum"
-        plt.imshow( imagesum.array , origin='lower');    
-        plt.colorbar()
-        plt.show()
-
-    return imagesum, [image1, image2]
-
-
-
+#################### Drawgal used to be here
 
 
 
@@ -160,27 +76,42 @@ if __name__ == '__main__':
     
     print " Arcsec: peaks_A = " , peak_a
     print " Arcsec: peaks_B = " , peak_b
-    print " Pixels: peaks_pix = " ,  peaks_pix 
+    print " Pixels: peaks_pix = " ,  peaks_pix
+
+    print " Pixels: peaks_pix[0] = " ,  peaks_pix[0][0] 
     
-    blend, unblends = create_blend(peak_a, peak_b, e1a = e1ain,  e2a = e2ain, e1b = e1bin ,e2b = e2bin)
+    ########### Img params
+    imsize = 101
+    pixel_scale = 0.2
+
+    ################## Create the blended obj    
+    blend, unblends = create_blend(peak_a, peak_b, e1a = e1ain,  e2a = e2ain, e1b = e1bin ,e2b = e2bin, imgsize= imsize, pixelscale = pixel_scale, mrkrsize = 10)
+
+#    print "unblends[0].array = ", unblends[0].array
+        
+#    print "unblends[0].array[imsize/2, imsize/2] = ", unblends[0].array[imsize/2, imsize/2]
+
+
 
     if plotflag > presetval:
-        plt.title(" Img blended obj - (a+b) ")
+        plt.title(" Sanity check: Img blended obj - (a+b) ")
         print " >>>>>> Plotting blend.array - (unblends[0].array + unblends[1].array)  "
-        plt.imshow( blend.array - (unblends[0].array + unblends[1].array) , origin='lower');    
+        plt.imshow( blend.array - (unblends[0].array + unblends[1].array) , origin='lower',  interpolation='none' );    
         plt.colorbar()
         plt.show()
 
+
+
 ######################################################### Sim Fit
-# Parameters for object a
-    flux_a = 5e2          # total counts on the image
+# Parameters for object a, init guesses
+    flux_a = 1e5          # total counts on the image 
     hlr_a = 1.0            # arcsec
     e1_a = 0.0
     e2_a = 0.0
     x0_a = peak_a[0]
     y0_a = peak_a[1]
 
-# Parameters for object b
+# Parameters for object b, init guesses
     flux_b = flux_a       # total counts on the image
     hlr_b = hlr_a         # arcsec
     e1_b = 0.0
@@ -196,13 +127,10 @@ if __name__ == '__main__':
 
     #################### Common
     galtype = galsim.Gaussian
-    imsize = 49
-    pixel_scale = 0.2
     dopsfconvln='y'
 
     print " ************** About to fit"
 
-    
     
     
     ############################################## Obj a
@@ -311,39 +239,91 @@ if __name__ == '__main__':
                              [p2/0.2 for p2 in peak_b]]
 
     templates, template_fractions, children = mssg_deblend.deblend(blend.array, peaks_pix, interpolate=False, force_interpolate = False)
-    
+
+    ##### Needed to plot points at center of imgs
+    imgsize = imsize
+    pixelscale = pixel_scale 
+    imgcent = imgsize/2
+    acent = (imgcent+peak_a[0]/pixelscale, imgcent+peak_a[1]/pixelscale)
+    bcent = (imgcent+peak_b[0]/pixelscale, imgcent+peak_b[1]/pixelscale)
+
+    center= (acent,bcent)
+    print "center[0][0] = ",center[0][0]
+    print "center[0][1] = ",center[0][1]
+    print "center[1][0] = ",center[1][0]
+    print "center[1][1] = ",center[1][1] 
+
     ########## Plot template
-    if plotflag > presetval:
+    if plotflag > presetval-1:
         pltname = " Template obj a "
         pltcontent = template_fractions[0] 
-        makeplot(pltname, pltcontent)
+        makeplot(pltname, pltcontent, centre=center)
                                 
     ######### Plot children
         ### Obj a
         pltname = " Unblended img a ";        pltcontent = unblends[0]
-        makeplot(pltname, pltcontent)
+        if plotflag > presetval:
+                  makeplot(pltname, pltcontent, centre=center)
 
         pltname = " Deblended img a ";        pltcontent = children[0]
-        makeplot(pltname, pltcontent)
+        if plotflag > presetval:
+                  makeplot(pltname, pltcontent, centre=center)
 
-        pltname = " Resid of: (Deblended child a - Unblended img a) ";        pltcontent = children[0] - unblends[0].array 
-        makeplot(pltname, pltcontent)
+
+        pltname = " Resid of: (Deblended child a - Unblended img a) ";        pltcontent = (children[0] - unblends[0].array)
+        makeplot(pltname, pltcontent, centre=center)
+
+        # Normalize these        
+        pltname = " Resid of: (Deblended child a - Unblended img a) / Unblended img a ";        pltcontent = (children[0] - unblends[0].array)/  unblends[0].array
+        makeplot(pltname, pltcontent, centre=center)
+
+        
+        pltname = " Colorbar = -1 to 1 & Resid of: (Deblended child a - Unblended img a) / Unblended img a ";        pltcontent = (children[0] - unblends[0].array)/  unblends[0].array
+        makeplot(pltname, pltcontent, centre=center, colorbarlimit=1)
+
+        peakval = unblends[0].array[acent[0], acent[1]]
+        print " peakval = ", peakval
+        
+        pltname = " Resid of: (Deblended child a - Unblended img a) / peak val of a ";        pltcontent = (children[0] - unblends[0].array)/  peakval
+        makeplot(pltname, pltcontent, centre=center)
+        
+        pltname = " Resid of: (Unblended img a) / Unblended img a ";        pltcontent = (unblends[0].array)/  unblends[0].array
+        if plotflag > presetval:
+                  makeplot(pltname, pltcontent, centre=center)
 
         ### Obj b
         pltname = " Unblended img b ";        pltcontent = unblends[1]
-        makeplot(pltname, pltcontent)
+        if plotflag > presetval:
+                  makeplot(pltname, pltcontent, centre=center)
 
         pltname = " Deblended img b ";        pltcontent = children[1]
-        makeplot(pltname, pltcontent)
+        if plotflag > presetval:
+                  makeplot(pltname, pltcontent, centre=center)
 
         pltname = " Resid of: (Deblended child b - Unblended img b) ";        pltcontent = children[1] - unblends[1].array 
-        makeplot(pltname, pltcontent)
+        makeplot(pltname, pltcontent, centre=center)
+
+        # Normalized
+        pltname = " Resid of: (Deblended child b - Unblended img b) /  Unblended img b ";        pltcontent = (children[1] - unblends[1].array ) /  unblends[1].array 
+        makeplot(pltname, pltcontent ,  centre=center)
+        
+        pltname = " Colorbar = -1 to 1 & Resid of: (Deblended child b - Unblended img b) /  Unblended img b ";        pltcontent = (children[1] - unblends[1].array ) /  unblends[1].array 
+        makeplot(pltname, pltcontent , colorbarlimit=1, centre=center)
+
+        peakval = unblends[1].array[bcent[0], bcent[1]]
+        print " peakval = ", peakval
+        
+        pltname = " Resid of: (Deblended child b - Unblended img b) / peak val of b ";        pltcontent = (children[1] - unblends[1].array)/  peakval
+        makeplot(pltname, pltcontent, centre=center)
+        
+        pltname = " Resid of: (Unblended img b) /  Unblended img b ";        pltcontent = (unblends[1].array ) / unblends[1].array 
+        makeplot(pltname, pltcontent, colorbarlimit=1, centre=center)
  
 
 
 
 
-
+        sys.exit()
 
 
 
@@ -469,4 +449,4 @@ if __name__ == '__main__':
 #    lmfit.report_errors(mlresult.params)
 
 # ....................
-        
+

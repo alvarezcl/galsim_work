@@ -66,7 +66,6 @@ p0 = 1.0*np.array([flux_a,HLR_a,e1_a,e2_a,x0_a,y0_a])  # These are all pre-defin
 
 
 
-
 # ----------------------------------------------------------------------- Fit
 # This declares ann lmfit obj in prep for actually doing the fit
 parameters = lmfit.Parameters()
