@@ -16,9 +16,12 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
     
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
-    flux_in = 1e5
-    gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in).shear(g1=e1a, g2= e2a).shift(peak_a)
-    gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_in/1.2 ).shear(g1=e1b, g2= e2b).shift(peak_b)
+
+    flux_a = 1e5
+    flux_b = flux_a / 2
+    
+    gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_a).shear(g1=e1a, g2= e2a).shift(peak_a)
+    gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_b ).shear(g1=e1b, g2= e2b).shift(peak_b)
     
     # Add psf 
     psfshr = 0.00
@@ -41,12 +44,12 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
     proto_image = galsim.ImageD(imgsize, imgsize, scale = pixelscale)
     image1 = convgal1.drawImage(image=proto_image, method='phot', rng=randnum)
 #    image1 = convgal1.drawImage(image=proto_image)
-    print "************** About to print where img pixels are < 0"
-    print image1.array[np.where(image1.array < 0)] 
-    image1.array[np.where(image1.array < 0)] = 0.
+    print '************** About to show plots with flux a = ', flux_a , ', flux_b = ', flux_b
+#    print image1.array[np.where(image1.array < 0)] 
+#    image1.array[np.where(image1.array < 0)] = 0.
     if plotflag > presetval:
         plt.title(" FIRST PLOT:  Img obj a")
-        plt.imshow( image1.array , origin='lower', interpolation='none');    
+        plt.imshow( image1.array , origin='lower', interpolation='none' );    
         plt.colorbar()
         plt.plot( acent[0], acent[1], color='g', marker = 'o', markersize=mrkrsize, markeredgewidth=1)
         plt.show()
