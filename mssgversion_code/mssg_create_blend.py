@@ -17,7 +17,7 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
     # Create gaussian gal objs, sheared in various directions
     hlr_in = 1.0
 
-    flux_a = 1e5
+    flux_a = 1e7
     flux_b = flux_a / 2
     
     gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_a).shear(g1=e1a, g2= e2a).shift(peak_a)
