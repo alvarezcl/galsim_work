@@ -13,14 +13,16 @@ estimating bias in ellipticity measurements of blended objects.
 
 ------ Dec 2015
 
-X                                  Img Made by?      a_HLR  b_HLR  sep of a&b   flux of b/a 
-   
-1 mssg_deblendAndPlotResids.ipynb    photon shooting   1      1      2                1
-2 mssg_deblendAndPlotResids.X.ipynb  FT                1      1      2                0.5
-3 mssg_deblendAndPlotResids.X.ipynb  FT                1      1      2                0.2
-4 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                1
-5 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                0.5
-6 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                0.2
+ Filename                                   Img Made by?      a_HLR  b_HLR  sep of a&b   flux of b/a 
+-------------------------------------------------------------------------------------------------------
+ mssg_simpleSimultaneousFitAndDeblend.ipynb photon shooting   1      1      2                 1.0
+ 
+ mssg_deblendAndPlotResids.1.ipynb          FT                1      1      2                1.0
+ mssg_deblendAndPlotResids.2.ipynb          FT                1      1      2                0.5
+ mssg_deblendAndPlotResids.3.ipynb          FT                1      1      2                0.2
+ mssg_deblendAndPlotResids.4.ipynb          FT                1      1.5      2              1.0
+ mssg_deblendAndPlotResids.5.ipynb          FT                1      1.5      2              0.5
+ mssg_deblendAndPlotResids.6.ipynb          FT                1      1.5      2              0.2
 
 
 ------ mssg_galsim_Sersic_test.py --- early code that replaced the
