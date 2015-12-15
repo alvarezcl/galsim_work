@@ -15,13 +15,14 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
     plotflag =  1  # Print more
     
     # Create gaussian gal objs, sheared in various directions
-    hlr_in = 1.0
+    hlr_a = 1.0
+    hlr_b = hlr_a * 1.5
 
     flux_a = 1e7
-    flux_b = flux_a / 2
+    flux_b = flux_a /2
     
-    gal1 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_a).shear(g1=e1a, g2= e2a).shift(peak_a)
-    gal2 = galsim.Gaussian(half_light_radius= hlr_in , flux= flux_b ).shear(g1=e1b, g2= e2b).shift(peak_b)
+    gal1 = galsim.Gaussian(half_light_radius= hlr_a , flux= flux_a).shear(g1=e1a, g2= e2a).shift(peak_a)
+    gal2 = galsim.Gaussian(half_light_radius= hlr_b , flux= flux_b ).shear(g1=e1b, g2= e2b).shift(peak_b)
     
     # Add psf 
     psfshr = 0.00
@@ -42,8 +43,8 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
 
     # Img1
     proto_image = galsim.ImageD(imgsize, imgsize, scale = pixelscale)
-    image1 = convgal1.drawImage(image=proto_image, method='phot', rng=randnum)
-#    image1 = convgal1.drawImage(image=proto_image)
+#    image1 = convgal1.drawImage(image=proto_image, method='phot', rng=randnum)
+    image1 = convgal1.drawImage(image=proto_image)
     print '************** About to show plots with flux a = ', flux_a , ', flux_b = ', flux_b
 #    print image1.array[np.where(image1.array < 0)] 
 #    image1.array[np.where(image1.array < 0)] = 0.
@@ -58,8 +59,8 @@ def create_blend(peak_a, peak_b, e1a = 0, e1b = 0 , e2a = 0, e2b = 0, imgsize = 
 
     # Img2
     proto_image = galsim.ImageD(imgsize, imgsize, scale = pixelscale)
-    image2 = convgal2.drawImage(image=proto_image, method='phot', rng=randnum)
-#    image2 = convgal2.drawImage(image=proto_image)
+#    image2 = convgal2.drawImage(image=proto_image, method='phot', rng=randnum)
+    image2 = convgal2.drawImage(image=proto_image)
     image2.array[np.where(image2.array < 0)] = 0.    
     if plotflag > presetval: 
         plt.title(" Img obj b")

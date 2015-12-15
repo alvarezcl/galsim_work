@@ -102,112 +102,6 @@ if __name__ == '__main__':
 
 
 
-######################################################### Sim Fit
-# Parameters for object a, init guesses
-    flux_a = 1e5          # total counts on the image 
-    hlr_a = 1.0            # arcsec
-    e1_a = 0.0
-    e2_a = 0.0
-    x0_a = peak_a[0]
-    y0_a = peak_a[1]
-
-# Parameters for object b, init guesses
-    flux_b = flux_a       # total counts on the image
-    hlr_b = hlr_a         # arcsec
-    e1_b = 0.0
-    e2_b = 0.0
-    x0_b = peak_b[0]
-    y0_b = peak_b[1]
-
-    # Define some seed that's far from true values and insert into
-    # lmfit object for galaxy one and two
-
-    p0 = 1.0*np.array([flux_a,hlr_a,e1_a,e2_a,x0_a,y0_a,
-                       flux_b,hlr_b,e1_b,e2_b,x0_b,y0_b]) # These are just the init guesses for the fit (all pre-defined nums from above)
-
-    #################### Common
-    galtype = galsim.Gaussian
-    dopsfconvln='y'
-
-    print " ************** About to fit"
-
-    
-    
-    ############################################## Obj a
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[0])   
-    params.add('hlr_a', value=p0[1], min=0.0)
-    params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[4])
-    params.add('y0_a',value=p0[5])
-    
-    params_a = params
-    result_a = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_a,   args=(unblends[0], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
-
-# Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result_a.params)
-
-    
-    ############################################## Obj b
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[6])
-    params.add('hlr_a', value=p0[7], min=0.0)
-    params.add('e1_a', value=p0[8], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[9], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[10])
-    params.add('y0_a',value=p0[11])
-    
-    params_b = params
-    result_b = lmfit.minimize(mssg_drawLibrary.resid_1obj,   params_b,   args=(unblends[1], imsize,imsize,pixel_scale, galtype, dopsfconvln ))
-
-# Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result_b.params)
-
-
-
-
-        ############################################## Obj a+b
-    params = lmfit.Parameters()
-    params.add('flux_a', value=p0[0], min=0.0)   
-    params.add('hlr_a', value=p0[1], min=0.0)
-    params.add('e1_a', value=p0[2], min=-1.0, max=1.0)
-    params.add('e2_a', value=p0[3], min=-1.0, max=1.0)
-    params.add('x0_a',value=p0[4])
-    params.add('y0_a',value=p0[5])
-    
-    params.add('flux_b', value=p0[6], min=0.0)
-    params.add('hlr_b', value=p0[7], min=0.0)
-    params.add('e1_b', value=p0[8], min=-1.0, max=1.0)
-    params.add('e2_b', value=p0[9], min=-1.0, max=1.0)
-    params.add('x0_b',value=p0[10])
-    params.add('y0_b',value=p0[11])
-
-    tot =  unblends[0]+unblends[1]
-    #ipdb.set_trace()
-
-    result = lmfit.minimize(mssg_drawLibrary.resid_2obj,   params,   args=( tot , imsize,imsize,pixel_scale, galtype, galtype ))
-
-    # Report the parameters to the interpreter screen                        
-    lmfit.report_errors(result.params)
-
-    #################### Extract the centers
-    x0_a_guess = result.params['x0_a'].value
-    y0_a_guess = result.params['y0_a'].value
-
-    x0_b_guess = result.params['x0_b'].value
-    y0_b_guess = result.params['y0_b'].value
-
-    print "\n\n\n x0_a_guess ,  y0_a_guess = ", x0_a_guess ,  y0_a_guess
-    print " x0_b_guess ,  y0_b_guess = ", x0_b_guess ,  y0_b_guess
-        
-    #    sys.exit()
-    
-#    ipdb.set_trace()
-
-
-
-         
 ######################################################### Deblend
 # Use deblending code to separate them
 #    templates = for each img
@@ -215,12 +109,7 @@ if __name__ == '__main__':
 #    children = vector of 2 imgs, best estimates from deblending code
 
     print 'centers = ',centers
-    sys.exit()
 
-
-    ########################### Using simfit peaks as centers
-    if centers == 2:
-        curpeak_a = (x0_a_guess, y0_a_guess);       curpeak_b = (x0_b_guess, y0_b_guess);       
 
     ########################## Using actual known peaks, to compare
     if centers == 1:

@@ -10,6 +10,19 @@ estimating bias in ellipticity measurements of blended objects.
 
 ---------------------------------- Under: mssgversion
 
+
+------ Dec 2015
+
+X                                  Img Made by?      a_HLR  b_HLR  sep of a&b   flux of b/a 
+   
+1 mssg_deblendAndPlotResids.ipynb    photon shooting   1      1      2                1
+2 mssg_deblendAndPlotResids.X.ipynb  FT                1      1      2                0.5
+3 mssg_deblendAndPlotResids.X.ipynb  FT                1      1      2                0.2
+4 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                1
+5 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                0.5
+6 mssg_deblendAndPlotResids.X.ipynb  FT                1      1.5      2                0.2
+
+
 ------ mssg_galsim_Sersic_test.py --- early code that replaced the
 Gaussians in Luis' galsim_first_test with Sersic profiles -- creates a
 gal with 2 components, adds them, and writes out a FITS file too (cur:
